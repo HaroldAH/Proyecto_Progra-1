@@ -1,39 +1,33 @@
-
-
 #include <iostream>
 #include <string>
 
 using namespace std;
 
-struct CodigoDescuento {
-    string codigo;
-    bool usado;
+struct DiscountCode {
+    string code;
+    bool used;
 };
 
-class Descuento {
+class Discount {
 private:
-    float porcentajeDescuento;       
-    int cantidadDescuentos;          
-    CodigoDescuento* codigos;        
+    float discountPercentage;       
+    int discountCount;              
+    DiscountCode* codes;            
 
-   
-    string generarCodigo();
+    
+    string generateCode();
 
 public:
     
-    Descuento(float porcentaje, int cantidad);
-
-   
-    ~Descuento();
+    Discount(float percentage, int count);
 
     
-    bool verificarCodigo(const string& codigo);
+    ~Discount();
 
     
-    float obtenerPorcentajeDescuento() const;
+    bool verifyCode(const string& code);
 
-    
-    void mostrarCodigos() const;
+    float getDiscountPercentage() const;
+
+    void showCodes() const;
 };
-
-

@@ -3,6 +3,7 @@
 class Menu
 {
 public:
-    void mostrarMenu();
-    void configurarDescuentos();
+    void showMenu();
+    void configureDiscounts();
 };
+void showAbout();

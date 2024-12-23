@@ -3,42 +3,42 @@
 #include <ctime>
 
 // Constructor
-Descuento::Descuento(float porcentaje, int cantidad) {
-    this->porcentajeDescuento = porcentaje;
-    this->cantidadDescuentos = cantidad;
-    this->codigos = new CodigoDescuento[cantidad]; 
+Discount::Discount(float percentage, int count) {
+    this->discountPercentage = percentage;
+    this->discountCount = count;
+    this->codes = new DiscountCode[count]; 
 
-    srand(time(0)); //
+    srand(time(0)); // Seed for random number generation
 
-    for (int i = 0; i < cantidad; i++) {
-        codigos[i].codigo = generarCodigo();
-        codigos[i].usado = false; 
+    for (int i = 0; i < count; i++) {
+        codes[i].code = generateCode();
+        codes[i].used = false; 
     }
 }
 
 // Destructor
-Descuento::~Descuento() {
-    delete[] codigos; 
+Discount::~Discount() {
+    delete[] codes; 
 }
 
-
-string Descuento::generarCodigo() {
-    string codigo;
-    const char caracteres[] =
+// Generate a random discount code
+string Discount::generateCode() {
+    string code;
+    const char characters[] =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    int longitud = 10; // Longitud del código
-    for (int i = 0; i < longitud; i++) {
-        codigo += caracteres[rand() % (sizeof(caracteres) - 1)];
+    int length = 10; // Length of the code
+    for (int i = 0; i < length; i++) {
+        code += characters[rand() % (sizeof(characters) - 1)];
     }
-    return codigo;
+    return code;
 }
 
-
-bool Descuento::verificarCodigo(const string& codigo) {
-    for (int i = 0; i < this->cantidadDescuentos; i++) {
-        if (codigos[i].codigo == codigo) { 
-            if (!codigos[i].usado) { 
-                codigos[i].usado = true; // Marcar como usado
+// Verify if a discount code is valid and unused
+bool Discount::verifyCode(const string& code) {
+    for (int i = 0; i < this->discountCount; i++) {
+        if (codes[i].code == code) { 
+            if (!codes[i].used) { 
+                codes[i].used = true; // Mark as used
                 return true;
             }
             break; 
@@ -47,16 +47,16 @@ bool Descuento::verificarCodigo(const string& codigo) {
     return false; 
 }
 
-
-float Descuento::obtenerPorcentajeDescuento() const {
-    return this->porcentajeDescuento;
+// Get the discount percentage
+float Discount::getDiscountPercentage() const {
+    return this->discountPercentage;
 }
 
-
-void Descuento::mostrarCodigos() const {
-    cout << "Códigos de descuento generados:\n";
-    for (int i = 0; i < this->cantidadDescuentos; i++) {
-        cout << codigos[i].codigo << " - "
-             << (codigos[i].usado ? "Usado" : "Disponible") << endl;
+// Display all generated discount codes and their status
+void Discount::showCodes() const {
+    cout << "Generated discount codes:\n";
+    for (int i = 0; i < this->discountCount; i++) {
+        cout << codes[i].code << " - "
+             << (codes[i].used ? "Used" : "Available") << endl;
     }
 }

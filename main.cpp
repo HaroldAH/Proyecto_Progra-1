@@ -1,11 +1,11 @@
 #include <iostream>
 #include "Menu.h"
+
 using namespace std;
 
 int main()
-{
+{   
     Menu menu;
-    menu.mostrarMenu();
-    menu.configurarDescuentos();
+    menu.showMenu();
     return 0;
 }

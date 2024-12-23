@@ -2,63 +2,113 @@
 #include <iostream>
 using namespace std;
 
-void Menu::mostrarMenu()
+void Menu::showMenu()
 {
-    int opcion;
+    int option;
 
     do
     {
-        cout << "\n=== Menu Principal ===" << endl;
-        cout << "1. Configurar evento" << endl;
-        cout << "2. Configurar descuentos" << endl;
-        cout << "3. Vender entrada" << endl;
-        cout << "4. Consultar estado de las ventas" << endl;
-        cout << "5. Acerca de" << endl;
-        cout << "6. Salir" << endl;
-        cout << "Seleccione una opcion: ";
-        cin >> opcion;
+        cout << "\033[31m";
+        cout << " ______  ______  ______  ______  ______  ______  ______  ______ \n";
+        cout << "| |__| || |__| || |__| || |__| || |__| || |__| || |__| || |__| |\n";
+        cout << "|  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  |\n";
+        cout << "|______||______||______||______||______||______||______||______|\n";
+        cout << " ______                                                  ______ \n";
+        cout << "| |__| |  _____     _            _ _                    | |__| |\n";
+        cout << "|  ()  | | ____|___| |_ __ _  __| (_) ___               |  ()  |\n";
+        cout << "|______| |  _| / __| __/ _` |/ _` | |/ _ \\              |______|\n";
+        cout << " ______  | |___\\__ \\ || (_| | (_| | | (_) |              ______ \n";
+        cout << "| |__| | |_____|___/\\__\\__,_|\\__,_|_|\\___/              | |__| |\n";
+        cout << "|  ()  |  ____              _   _                       |  ()  |\n";
+        cout << "|______| / ___|  __ _ _ __ | |_(_) __ _  __ _  ___      |______|\n";
+        cout << " ______  \\\___ \\\ / _` | '_ \\\\| __| |/ _` |/ _` |/ _ \\      ______ \n";
+        cout << "| |__| |  ___) | (_| | | | | |_| | (_| | (_| | (_) |    | |__| |\n";
+        cout << "|  ()  | |____/ \\\__,_|_| |_|\\__|_|\\__,_|\\__, |\\___/     |  ()  |\n";
+        cout << "|______| | __ )  ___ _ __ _ __   __ _| ||___//_/ _   _  |______|\n";
+        cout << " ______  |  _ \\\\ / _ \\\\ '__| '_ \\\\ / _` | '_ \\\\ / _ \\\\ | | |  ______ \n";
+        cout << "| |__| | | |_) |  __/ |  | | | | (_| | |_) |  __/ |_| | | |__| |\n";
+        cout << "|  ()  | |____/ \\\___|_|  |_| |_|\\__,_|_.__/ \\\___|\\__,_| |  ()  |\n";
+        cout << "|______|                                                |______|\n";
+        cout << " ______  ______  ______  ______  ______  ______  ______  ______ \n";
+        cout << "| |__| || |__| || |__| || |__| || |__| || |__| || |__| || |__| |\n";
+        cout << "|  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  |\n";
+        cout << "|______||______||______||______||______||______||______||______|\n";
 
-        switch (opcion)
+        cout << "\033[37m";
+
+        cout << "               +==========================+\n";
+        cout << "                |     Menu Principal      |\n";
+        cout << "                +==========================+\n";
+        cout << "                | 1. Configurar Evento    |\n";
+        cout << "                | 2. Configurar Descuentos|\n";
+        cout << "                | 3. Vender Entrada       |\n";
+        cout << "                | 4. Consultar Ventas     |\n";
+        cout << "                | 5. Acerca de            |\n";
+        cout << "                | 6. Salir                |\n";
+        cout << "                +==========================+\n";
+        cout << "                | Seleccione una opcion:  |\n";
+        cout << "                +--------------------------+\n";
+        cout << "                >> ";
+        cin >> option;
+
+        switch (option)
         {
         case 1:
-            cout << "Opcion 1: Configurar evento seleccionada." << endl;
+            cout << "Opción 1: Configurar Evento seleccionada." << endl;
             break;
         case 2:
-            configurarDescuentos();
+            configureDiscounts();
             break;
         case 3:
-            cout << "Opcion 3: Vender entrada seleccionada." << endl;
+            cout << "Opcion 3: Vender Entrada seleccionada." << endl;
             break;
         case 4:
-            cout << "Opcion 4: Consultar estado de las ventas seleccionada." << endl;
+            cout << "Opcion 4: Consultar Ventas seleccionada." << endl;
             break;
         case 5:
-            cout << "Opcion 5: Acerca de seleccionada." << endl;
+            showAbout();
             break;
         case 6:
             cout << "Saliendo del programa. ¡Gracias!" << endl;
             break;
         default:
-            cout << "Opcion invalida. Intente nuevamente." << endl;
+            cout << "Opcion inválida. Intente nuevamente." << endl;
         }
-    } while (opcion != 6);
-} // <- Cierra correctamente la función mostrarMenu
+    } while (option != 6);
+}
 
-void Menu::configurarDescuentos()
+void Menu::configureDiscounts()
 {
-    float porcentaje;
-    int cantidad;
+    float discountPercentage;
+    int discountCount;
 
     cout << "\n=== Configurar Descuentos ===" << endl;
     cout << "Ingrese el porcentaje de descuento: ";
-    cin >> porcentaje;
+    cin >> discountPercentage;
 
     cout << "Ingrese la cantidad de descuentos a generar: ";
-    cin >> cantidad;
+    cin >> discountCount;
 
-    // Crea una instancia local de Descuento
-    Descuento descuento(porcentaje, cantidad);
+    Discount discount(discountPercentage, discountCount);
 
-    cout << "\nCódigos de descuento generados:\n";
-    descuento.mostrarCodigos(); // Muestra los códigos generados
+    discount.showCodes(); 
+    cout << "RECUERDE EL CODIGO";
+    cout << "\nPresione Enter para continuar...";
+    cin.ignore();
+    cin.get();
+    system("cls");
+}
+
+void showAbout() {
+    cout << "\n=========================================\n";
+    cout << "               ACERCA DE                 \n";
+    cout << "=========================================\n";
+    cout << "Integrantes del Proyecto:\n";
+    cout << "  - Harold Avila Hernandez\n";
+    cout << "  - Cristhian Cordero Varela\n";
+    cout << "=========================================\n";
+    cout << "\nPresione Enter para continuar...";
+    cin.ignore();
+    cin.get();
+    system("cls");
 }
