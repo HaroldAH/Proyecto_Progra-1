@@ -1,3 +1,5 @@
+#ifndef USER_H
+#define USER_H
 
 #include <iostream>
 #include <string>
@@ -15,11 +17,9 @@ public:
     
     User(string cedula, string nombre, string fechaNacimiento, int cantidadEntradasCompradas);
 
-   
     void comprarEntradas(int cantidad);
 
-   
     void obtenerDatos();
 };
 
-
+#endif 
