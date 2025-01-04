@@ -79,9 +79,14 @@ float Discount::getDiscountPercentage() const {
 
 // Mostrar todos los códigos de descuento generados y su estado
 void Discount::showCodes() const {
-    cout << "Generated discount codes:\n";
+    cout << "Codigos de descuento generados:\n";
     for (int i = 0; i < this->discountCount; i++) {
-        cout << codes[i].code << " - "
-             << (codes[i].used ? "Used" : "Available") << endl;
+        cout << codes[i].code << " - ";
+        if (codes[i].used) {
+            cout << "Usado";
+        } else {
+            cout << "Disponible";
+        }
+        cout << endl;
     }
 }

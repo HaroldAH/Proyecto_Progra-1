@@ -8,18 +8,22 @@
 #include <vector>
 #include "Utilities.h" // Si tienes funciones auxiliares
 
+#include "SeatVisualization.h"
 using namespace std;
 
 // Definición de validateChoice con un solo parámetro
-int Menu::validateChoice(int maxOption) {
+int Menu::validateChoice(int maxOption)
+{
     int choice;
-    while (true) {
+    while (true)
+    {
         cout << "Ingrese su eleccion (1-" << maxOption << "): ";
         cin >> choice;
 
         // Verificar si la entrada falló (no era un número)
-        if (cin.fail()) {
-            cin.clear(); // Limpiar el estado de error
+        if (cin.fail())
+        {
+            cin.clear();                                         // Limpiar el estado de error
             cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignorar la entrada inválida
             cout << "Entrada invalida. Por favor, ingrese un numero entre 1 y " << maxOption << ".\n";
             continue;
@@ -29,9 +33,12 @@ int Menu::validateChoice(int maxOption) {
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
         // Verificar si la elección está dentro del rango permitido
-        if (choice >= 1 && choice <= maxOption) {
+        if (choice >= 1 && choice <= maxOption)
+        {
             return choice;
-        } else {
+        }
+        else
+        {
             cout << "Opcion fuera de rango. Por favor, ingrese un numero entre 1 y " << maxOption << ".\n";
         }
     }
@@ -60,7 +67,31 @@ void Menu::showMenu()
     do
     {
         cout << "\033[31m";
-        // (ASCII Art omitido para brevedad)
+        cout << " ______  ______  ______  ______  ______  ______  ______  ______ " << endl;
+        cout << "| |__| || |__| || |__| || |__| || |__| || |__| || |__| || |__| |" << endl;
+        cout << "|  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  |" << endl;
+        cout << "|______||______||______||______||______||______||______||______|" << endl;
+        cout << " ______                                                  ______ " << endl;
+        cout << "| |__| |  _____     _            _ _                    | |__| |" << endl;
+        cout << "|  ()  | | ____|___| |_ __ _  __| (_) ___               |  ()  |" << endl;
+        cout << "|______| |  _| / __| __/ _` |/ _` | |/ _ \\              |______|" << endl;
+        cout << " ______  | |___\\__ \\ || (_| | (_| | | (_) |              ______ " << endl;
+        cout << "| |__| | |_____|___/\\__\\__,_|\\__,_|_|\\___/              | |__| |" << endl;
+        cout << "|  ()  |  ____              _   _                       |  ()  |" << endl;
+        cout << "|______| / ___|  __ _ _ __ | |_(_) __ _  __ _  ___      |______|" << endl;
+        cout << " ______  \\___ \\ / _` | '_ \\| __| |/ _` |/ _` |/ _ \\      ______ " << endl;
+        cout << "| |__| |  ___) | (_| | | | | |_| | (_| | (_| | (_) |    | |__| |" << endl;
+        cout << "|  ()  | |____/ \\__,_|_| |_|\\__|_|\\__,_|\\__, |\\___/     |  ()  |" << endl;
+        cout << "|______| | __ )  ___ _ __ _ __   __ _| ||___//_/ _   _  |______|" << endl;
+        cout << " ______  |  _ \\ / _ \\ '__| '_ \\ / _` | '_ \\ / _ \\ | | |  ______ " << endl;
+        cout << "| |__| | | |_) |  __/ |  | | | | (_| | |_) |  __/ |_| | | |__| |" << endl;
+        cout << "|  ()  | |____/ \\___|_|  |_| |_|\\__,_|_.__/ \\___|\\__,_| |  ()  |" << endl;
+        cout << "|______|                                                |______|" << endl;
+        cout << " ______  ______  ______  ______  ______  ______  ______  ______ " << endl;
+        cout << "| |__| || |__| || |__| || |__| || |__| || |__| || |__| || |__| |" << endl;
+        cout << "|  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  |" << endl;
+        cout << "|______||______||______||______||______||______||______||______|" << endl;
+
         cout << "\033[37m";
 
         cout << "               +==========================+\n";
@@ -85,7 +116,23 @@ void Menu::showMenu()
             configureDiscounts();
             break;
         case 3:
-            sellTicket();
+            // Crear un objeto de la clase SeatVisualization
+            SeatVisualization stadium;
+
+            // Establecer las dimensiones del estadio
+            stadium.amountOfRows = 5;    // Número de filas
+            stadium.amountOfColumns = 7; // Número de columnas
+
+            // Inicializar el estadio
+            stadium.initializestadium();
+
+            // Simular la compra de algunos asientos
+            stadium.isSeatPurchased[0][0] = true; // Fila 1, Columna A (vendido)
+            stadium.isSeatPurchased[2][3] = true; // Fila 3, Columna D (vendido)
+
+            // Mostrar los asientos
+            stadium.displaySeats();
+
             break;
         case 4:
             consultarVentas();
@@ -115,7 +162,7 @@ void Menu::configureDiscounts()
     cout << "Ingrese la cantidad de descuentos a generar: ";
     cin >> discountCount;
 
-    // En vez de crear un Discount local, 
+    // En vez de crear un Discount local,
     // usa el discountManager del Menu:
     discountManager.configure(discountPercentage, discountCount);
 
@@ -442,7 +489,7 @@ void Menu::venta()
         // Verificar si la entrada falló (no era un número)
         if (cin.fail())
         {
-            cin.clear(); // Limpiar el estado de error
+            cin.clear();                                         // Limpiar el estado de error
             cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignorar la entrada inválida
             cout << "Entrada invalida. Por favor, ingrese un numero entre 1 y " << (5 - boletosActuales) << ".\n";
             continue;
@@ -654,7 +701,7 @@ void Menu::venta()
     cin.get();
 }
 // Implementación de buscarUsuarioPorCedula
-User* Menu::buscarUsuarioPorCedula(const string &cedula)
+User *Menu::buscarUsuarioPorCedula(const string &cedula)
 {
     for (int i = 0; i < numUsuarios; i++)
     {
@@ -667,15 +714,18 @@ User* Menu::buscarUsuarioPorCedula(const string &cedula)
 }
 
 // Implementación de consultarVentas
-void Menu::consultarVentas() {
-    if (event.getEventCount() == 0) {
+void Menu::consultarVentas()
+{
+    if (event.getEventCount() == 0)
+    {
         cout << "No hay eventos disponibles.\n";
         return;
     }
 
     // Mostrar todos los eventos disponibles
     cout << "\nEventos disponibles:\n";
-    for (int i = 0; i < event.getEventCount(); i++) {
+    for (int i = 0; i < event.getEventCount(); i++)
+    {
         cout << i + 1 << ". " << event.getEvents()[i].getName() << "\n";
     }
 
@@ -685,26 +735,29 @@ void Menu::consultarVentas() {
     eventoSeleccionado = validateChoice(event.getEventCount());
 
     // Obtener segmentos asociados al evento seleccionado
-    Segment** segmentos = segment.getSegmentsByEvent();
-    if (segmentos == nullptr) {
+    Segment **segmentos = segment.getSegmentsByEvent();
+    if (segmentos == nullptr)
+    {
         cout << "Error: No se pudieron obtener los segmentos del evento.\n";
         return;
     }
 
-    int* segmentCounts = new int[event.getEventCount()];
+    int *segmentCounts = new int[event.getEventCount()];
     segment.getSegmentCount(event, segmentCounts);
 
     int numSegmentos = segmentCounts[eventoSeleccionado - 1];
     delete[] segmentCounts;
 
-    if (numSegmentos <= 0) {
+    if (numSegmentos <= 0)
+    {
         cout << "No hay segmentos disponibles para este evento.\n";
         return;
     }
 
     // Mostrar segmentos disponibles
     cout << "\nSegmentos disponibles para el evento \"" << event.getEvents()[eventoSeleccionado - 1].getName() << "\":\n";
-    for (int i = 0; i < numSegmentos; i++) {
+    for (int i = 0; i < numSegmentos; i++)
+    {
         cout << i + 1 << ". " << segmentos[eventoSeleccionado - 1][i].getName()
              << " - Precio: " << segmentos[eventoSeleccionado - 1][i].getPrice() << "\n";
     }
@@ -718,7 +771,8 @@ void Menu::consultarVentas() {
     auto seatingKey = std::make_tuple(eventoSeleccionado - 1, segmentoSeleccionado - 1);
 
     // Verificar si el segmento ya tiene un Seating asociado
-    if (seatingMap.find(seatingKey) == seatingMap.end()) {
+    if (seatingMap.find(seatingKey) == seatingMap.end())
+    {
         Seating newSeating;
         int filas = segmentos[eventoSeleccionado - 1][segmentoSeleccionado - 1].getRows();
         int columnas = segmentos[eventoSeleccionado - 1][segmentoSeleccionado - 1].getSeats();
@@ -733,7 +787,7 @@ void Menu::consultarVentas() {
     }
 
     // Mostrar la representación gráfica del segmento
-    Seating& seating = seatingMap[seatingKey];
+    Seating &seating = seatingMap[seatingKey];
     cout << "\nRepresentacion grafica del segmento \"" << segmentos[eventoSeleccionado - 1][segmentoSeleccionado - 1].getName() << "\":\n";
     seating.displaySeats();
 
