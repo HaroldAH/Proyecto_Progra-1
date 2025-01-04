@@ -1,6 +1,7 @@
 #pragma once
 #include "Event.h"
 #include <string>
+ #include "Seating.h"
 using namespace std;
 
 class Segment {
@@ -13,13 +14,14 @@ private:
     int* segmentCount; 
     Segment** segmentsByEvent; 
     int numEvents;
+   Seating seating;
 
 public:
     Segment();  
     ~Segment(); 
 
     string getName();
-    void setName(string& aSegmentName);
+  void setName(const std::string& aSegmentName);
 
     int getRows();
     void setRows(int& aRows);

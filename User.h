@@ -1,25 +1,41 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
-using namespace std;
+#include <string>
+
+#include <string>
 
 class User {
 private:
-    string cedula;              
-    string nombre;                   
-    string fechaNacimiento;          
-    int cantidadEntradasCompradas;  
+    std::string cedula;
+    std::string nombre;
+    std::string fechaNacimiento;
+    int cantidadEntradasCompradas;
 
 public:
-    
-    User(string cedula, string nombre, string fechaNacimiento, int cantidadEntradasCompradas);
+    // Constructores
+    User(std::string cedula, std::string nombre, std::string fechaNacimiento, int cantidadEntradasCompradas);
+    User();
 
-   
-    void comprarEntradas(int cantidad);
+    // Getters
+    std::string getCedula() const;
+    std::string getNombre() const;
+    std::string getFechaNacimiento() const;
+    int getCantidadEntradasCompradas() const;
 
-   
-    void obtenerDatos();
+    // Setters
+    void setCedula(const std::string& cedula);
+    void setNombre(const std::string& nombre);
+    void setFechaNacimiento(const std::string& fechaNacimiento);
+    void setCantidadEntradasCompradas(int cantidad);
+
+    // Métodos adicionales
+    void obtenerDatos() const;
+    bool comprarEntradas(int cantidad); // Retorna true si la compra fue exitosa
 };
+
+
 
 
