@@ -1,5 +1,4 @@
 #include "Segment.h"
-#include "Event.h"
 #include <iostream>
 #include <limits>
 
@@ -26,6 +25,7 @@ Segment::~Segment()
             delete[] segmentsByEvent[i];
         }
         delete[] segmentsByEvent;
+        delete[] segmentCount;
     }
     if (segmentCount != NULL)
     {
@@ -161,6 +161,16 @@ int Segment::getValidIntInput()
     int input;
     while (!(cin >> input))
     {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Por favor, ingrese un numero valido." << endl;
+    }
+    return input;
+}
+
+float Segment::getValidFloatInput() {
+    float input;
+    while (!(cin >> input)) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Por favor, ingrese un numero valido." << endl;

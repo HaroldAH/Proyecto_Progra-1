@@ -67,30 +67,30 @@ void Menu::showMenu()
     do
     {
         cout << "\033[31m";
-        cout << " ______  ______  ______  ______  ______  ______  ______  ______ " << endl;
-        cout << "| |__| || |__| || |__| || |__| || |__| || |__| || |__| || |__| |" << endl;
-        cout << "|  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  |" << endl;
-        cout << "|______||______||______||______||______||______||______||______|" << endl;
-        cout << " ______                                                  ______ " << endl;
-        cout << "| |__| |  _____     _            _ _                    | |__| |" << endl;
-        cout << "|  ()  | | ____|___| |_ __ _  __| (_) ___               |  ()  |" << endl;
-        cout << "|______| |  _| / __| __/ _` |/ _` | |/ _ \\              |______|" << endl;
-        cout << " ______  | |___\\__ \\ || (_| | (_| | | (_) |              ______ " << endl;
-        cout << "| |__| | |_____|___/\\__\\__,_|\\__,_|_|\\___/              | |__| |" << endl;
-        cout << "|  ()  |  ____              _   _                       |  ()  |" << endl;
-        cout << "|______| / ___|  __ _ _ __ | |_(_) __ _  __ _  ___      |______|" << endl;
-        cout << " ______  \\___ \\ / _` | '_ \\| __| |/ _` |/ _` |/ _ \\      ______ " << endl;
-        cout << "| |__| |  ___) | (_| | | | | |_| | (_| | (_| | (_) |    | |__| |" << endl;
-        cout << "|  ()  | |____/ \\__,_|_| |_|\\__|_|\\__,_|\\__, |\\___/     |  ()  |" << endl;
-        cout << "|______| | __ )  ___ _ __ _ __   __ _| ||___//_/ _   _  |______|" << endl;
-        cout << " ______  |  _ \\ / _ \\ '__| '_ \\ / _` | '_ \\ / _ \\ | | |  ______ " << endl;
-        cout << "| |__| | | |_) |  __/ |  | | | | (_| | |_) |  __/ |_| | | |__| |" << endl;
-        cout << "|  ()  | |____/ \\___|_|  |_| |_|\\__,_|_.__/ \\___|\\__,_| |  ()  |" << endl;
-        cout << "|______|                                                |______|" << endl;
-        cout << " ______  ______  ______  ______  ______  ______  ______  ______ " << endl;
-        cout << "| |__| || |__| || |__| || |__| || |__| || |__| || |__| || |__| |" << endl;
-        cout << "|  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  |" << endl;
-        cout << "|______||______||______||______||______||______||______||______|" << endl;
+        cout << " ______  ______  ______  ______  ______  ______  ______  ______ \n";
+        cout << "| |__| || |__| || |__| || |__| || |__| || |__| || |__| || |__| |\n";
+        cout << "|  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  |\n";
+        cout << "|______||______||______||______||______||______||______||______|\n";
+        cout << " ______                                                  ______ \n";
+        cout << "| |__| |  _____     _            _ _                    | |__| |\n";
+        cout << "|  ()  | | ____|___| |_ __ _  __| (_) ___               |  ()  |\n";
+        cout << "|______| |  _| / __| __/ _` |/ _` | |/ _ \\              |______|\n";
+        cout << " ______  | |___\\__ \\ || (_| | (_| | | (_) |              ______ \n";
+        cout << "| |__| | |_____|___/\\__\\__,_|\\__,_|_|\\___/              | |__| |\n";
+        cout << "|  ()  |  ____              _   _                       |  ()  |\n";
+        cout << "|______| / ___|  __ _ _ __ | |_(_) __ _  __ _  ___      |______|\n";
+        cout << " ______  \\\___ \\\ / _` | '_ \\\\| __| |/ _` |/ _` |/ _ \\      ______ \n";
+        cout << "| |__| |  ___) | (_| | | | | |_| | (_| | (_| | (_) |    | |__| |\n";
+        cout << "|  ()  | |____/ \\\__,_|_| |_|\\__|_|\\__,_|\\__, |\\___/     |  ()  |\n";
+        cout << "|______| | __ )  ___ _ __ _ __   __ _| ||___//_/ _   _  |______|\n";
+        cout << " ______  |  _ \\\\ / _ \\\\ '__| '_ \\\\ / _` | '_ \\\\ / _ \\\ | | |  ______ \n";
+        cout << "| |__| | | |_) |  __/ |  | | | | (_| | |_) |  __/ |_| | | |__| |\n";
+        cout << "|  ()  | |____/ \\\___|_|  |_| |_|\\__,_|_.__/ \\\___|\\__,_| |  ()  |\n";
+        cout << "|______|                                                |______|\n";
+        cout << " ______  ______  ______  ______  ______  ______  ______  ______ \n";
+        cout << "| |__| || |__| || |__| || |__| || |__| || |__| || |__| || |__| |\n";
+        cout << "|  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  ||  ()  |\n";
+        cout << "|______||______||______||______||______||______||______||______|\n";
 
         cout << "\033[37m";
 
@@ -110,7 +110,7 @@ void Menu::showMenu()
         switch (option)
         {
         case 1:
-            showEventMenu(event);
+            configureEvent(event, segment);
             break;
         case 2:
             configureDiscounts();
@@ -144,7 +144,7 @@ void Menu::showMenu()
             cout << "Saliendo del programa. ¡Gracias!" << endl;
             break;
         default:
-            cout << "Opcion inválida. Intente nuevamente." << endl;
+            cout << endl;
         }
     } while (option != 6);
 }
@@ -173,29 +173,41 @@ void Menu::configureDiscounts()
     cin.get();
 }
 
-// Implementación de showEventMenu
-void Menu::showEventMenu(Event &event)
-{
-    while (true)
-    {
+void Menu::showAbout() {
+    cout << "\n=========================================\n";
+    cout << "               ACERCA DE                 \n";
+    cout << "=========================================\n";
+    cout << "Integrantes del Proyecto:\n";
+    cout << "  - Harold Avila Hernandez\n";
+    cout << "  - Cristhian Cordero Varela\n";
+    cout << "=========================================\n";
+    cout << "\nPresione Enter para continuar...";
+    cin.ignore();
+    cin.get();
+    system("cls");
+}
+
+void Menu::configureEvent(Event& event, Segment& segment) {
+
+    while (true) {
+
         int choice, size = 4;
         cout << "\n=== Configurar Eventos ===" << endl;
         cout << "1. Agregar nuevo evento" << endl;
         cout << "2. Modificar segmentos" << endl;
         cout << "3. Mostrar eventos actuales" << endl;
         cout << "4. Regresar al menu principal" << endl;
+        
+        validateChoice(choice, size);
 
-        choice = validateChoice(size);
-
-        if (choice == 1)
-        {
-            event.saveEvent(event);
+        if (choice == 1) {
+            saveEvent(event, segment); 
             continue;
         }
 
-        if (choice == 2)
-        {
-            segment.saveSegments(event);
+        if (choice == 2) {
+            int events = updateSegmentEventCount(event);
+            segment.saveSegments(segment, events);
             continue;
         }
 
@@ -224,9 +236,7 @@ void Menu::listEventAndSegments(Event &event, Segment &segment)
         return;
     }
 
-    cout << endl
-         << "Lista de eventos y segmentos:" << endl
-         << endl;
+    cout << endl << "Lista de eventos y segmentos:" << endl << endl;
 
     Segment **segmentsByEvent = segment.getSegmentsByEvent();
 
@@ -237,22 +247,17 @@ void Menu::listEventAndSegments(Event &event, Segment &segment)
         cout << "Fecha: " << event.getEvents()[i].getDate() << endl;
         cout << "Descripcion: " << event.getEvents()[i].getDescription() << endl;
 
-        cout << "Segmentos asociados:" << endl
-             << endl;
+        cout << "Segmentos asociados:" << endl << endl;
+        int* segmentCounts = segment.getSegmentCount();
 
-        if (segmentsByEvent[i] == NULL)
-        {
+         if (segmentCounts == nullptr || segmentsByEvent[i] == nullptr || segmentCounts[i] == 0) {
             cout << "  No hay segmentos asociados para este evento." << endl;
             cout << "--------------------------" << endl;
             continue;
         }
-
-        int *segmentCounts = new int[event.getEventCount()];
-        segment.getSegmentCount(event, segmentCounts);
         int numSegments = segmentCounts[i];
 
-        for (int j = 0; j < numSegments; j++)
-        {
+        for (int j = 0; j < numSegments; j++) {
             cout << "  Segmento #" << j + 1 << ":" << endl;
             cout << "    Nombre: " << segmentsByEvent[i][j].getName() << endl;
             cout << "    Filas: " << segmentsByEvent[i][j].getRows() << endl;
@@ -261,8 +266,6 @@ void Menu::listEventAndSegments(Event &event, Segment &segment)
         }
 
         cout << "--------------------------" << endl;
-
-        delete[] segmentCounts;
     }
 }
 

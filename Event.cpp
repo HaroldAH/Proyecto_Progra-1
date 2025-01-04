@@ -1,5 +1,4 @@
 #include "Event.h"
-#include "Segment.h"
 #include <iostream>
 #include <string>
 #include <limits>
@@ -11,9 +10,8 @@ Event::Event()
     name = "";
     date = "";
     description = "";
-    eventCapacity = 2;
-    eventCount = 0;
-    events = NULL;
+    eventCount = 0;     
+    events = nullptr; 
 }
 
 Event::~Event()
@@ -33,44 +31,50 @@ string Event::getDescription() { return description; }
 
 void Event::setDescription(string &aDescription) { description = aDescription; }
 
-void Event::initializeEvents(int &eventCapacity) { events = new Event[eventCapacity]; }
+Event* Event::getEvents() { return events; }
 
-void Event::saveEvent(Event &event)
+int Event::getEventCount(){ return eventCount; };
+
+int Event::getValidIntInput() 
 {
-    int numEvents;
+    int input;
+    while (!(cin >> input)) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Por favor, ingrese un numero valido." << endl;
+    }
+    return input;
+}
+
+void Event::expandAndAssignEvents(Event& event, int& numEvents) {
+    
+    if (event.eventCount + numEvents > 0) {
+        int newCapacity = event.eventCount + numEvents;
+
+        Event* newEvents = new Event[newCapacity];
+        for (int j = 0; j < event.eventCount; j++) {
+            newEvents[j] = event.events[j];  
+        }
+        delete[] event.events;  
+        event.events = newEvents;  
+         
+    }
+}
+
+void Event::saveEvent(Event& event) {
+
+    int numEvents = 0;
 
     cout << "Cuantos eventos desea agregar?" << endl;
     numEvents = getValidIntInput();
 
-    if (event.events == NULL)
-    {
-        event.initializeEvents(event.eventCapacity);
-    }
+    expandAndAssignEvents(event, numEvents);
+    
+    for (int i = 0; i < numEvents; i++) {
 
-    if (event.eventCount + numEvents > event.eventCapacity)
-    {
-        int newCapacity = event.eventCapacity;
-        while (event.eventCount + numEvents > newCapacity)
-        {
-            newCapacity *= 2;
-        }
-
-        Event *newEvents = new Event[newCapacity];
-        for (int j = 0; j < event.eventCount; j++)
-        {
-            newEvents[j] = event.events[j];
-        }
-
-        delete[] event.events;
-        event.events = newEvents;
-        event.eventCapacity = newCapacity;
-    }
-
-    for (int i = 0; i < numEvents; i++)
-    {
         string name, date, description;
-        cout << endl
-             << "Ingrese el nombre del evento " << i + 1 << ":" << endl;
+        
+        cout << endl << "Ingrese el nombre del evento " << event.eventCount + 1  << ":" << endl;
         cin.ignore();
         getline(cin, name);
 
@@ -78,11 +82,11 @@ void Event::saveEvent(Event &event)
              << "Ingrese la fecha del evento (por ejemplo: DD/MM/AAAA):" << endl;
         getline(cin, date);
 
-        cout << endl
-             << "Ingrese la descripcion del evento " << i + 1 << ":" << endl;
+        cout << endl << "Ingrese la descripcion del evento " << event.eventCount + 1 << ":" << endl;
         getline(cin, description);
 
-        event.events[event.eventCount].setName(name);
+
+        event.events[event.eventCount].setName(name);  
         event.events[event.eventCount].setDate(date);
         event.events[event.eventCount].setDescription(description);
         event.eventCount++;
@@ -97,16 +101,3 @@ void Event::saveEvent(Event &event)
 
 Event *Event::getEvents() { return events; }
 
-int Event::getEventCount() { return eventCount; };
-
-int Event::getValidIntInput()
-{
-    int input;
-    while (!(cin >> input))
-    {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Por favor, ingrese un numero valido." << endl;
-    }
-    return input;
-}

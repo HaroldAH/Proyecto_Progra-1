@@ -1,42 +1,26 @@
-// Menu.h
 
-#include "User.h"
+#include "Discount.h"
 #include "Event.h"
 #include "Segment.h"
-#include "discount.h" // Asegúrate de incluir todos los managers necesarios
-#include "Seating.h"
-#include <map>
-#include <tuple>
-#include <string>
 
-// Declaración anticipada si Seating está definido en otro archivo
-class Seating;
-
-class Menu {
-public:
-    void showMenu();
-    void venta();
-    void showAbout();
-    void configureDiscounts();
-    void showEventMenu(Event &event);
-    void listEventAndSegments(Event &event, Segment &segment);
-    void sellTicket();
-    void crearUsuario();
-    void consultarVentas();
-    User* buscarUsuarioPorCedula(const std::string &cedula);
-
+class Menu
+{
 private:
-    // Declaración del método validateChoice con un solo parámetro
-    int validateChoice(int maxOption);
+  Segment segment;
+  Event event;
 
-    // Mapa para almacenar Seating por clave única
-    std::map<std::tuple<int, int>, Seating> seatingMap;
+public:
+  void showMenu();
+  void venta();
+  void showAbout();
+  void configureDiscounts();
 
-    // Otros miembros privados
-    Event event;
-    Segment segment;
-    Discount discountManager;
-    User* usuarios = nullptr; // Inicialización adecuada
-    int numUsuarios = 0;
-    int capacidadUsuarios = 0;
+  void configureEvent(Event &event, Segment &segment);
+  void listEventAndSegments(Event &event, Segment &segment);
+
+  int validateChoice(int &choice, int &size);
+  int updateSegmentEventCount(Event &event);
+
+  void showAbout();
+  void saveEvent(Event &event, Segment &segment);
 };
