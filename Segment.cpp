@@ -167,13 +167,3 @@ int Segment::getValidIntInput()
     }
     return input;
 }
-
-float Segment::getValidFloatInput() {
-    float input;
-    while (!(cin >> input)) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Por favor, ingrese un numero valido." << endl;
-    }
-    return input;
-}

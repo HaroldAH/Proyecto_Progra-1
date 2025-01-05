@@ -1,32 +1,29 @@
-#include <iostream>
 #include <string>
+#include <cstdlib>
+#include <ctime>
+#include <iostream>
 using namespace std;
 
-struct DiscountCode
-{
+struct DiscountCode {
     string code;
     bool used;
 };
 
-class Discount
-{
+class Discount {
 private:
     float discountPercentage;
     int discountCount;
-    DiscountCode *codes;
-
-    string generateCode();
+    DiscountCode* codes;
 
 public:
-    // Constructor sin parámetros
     Discount();
     Discount(float percentage, int count);
     ~Discount();
 
-    // Métodos
     string generateCode();
-    bool verifyCode(const string &code);
-    void configure(float percentage, int count); // Configurar descuentos después de la inicialización
+    bool verifyCode(const string& code);
+    void configure(float percentage, int count);
     float getDiscountPercentage() const;
     void showCodes() const;
 };
+

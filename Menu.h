@@ -1,26 +1,39 @@
-
-#include "Discount.h"
+#include "User.h"
 #include "Event.h"
 #include "Segment.h"
+#include "discount.h"
+#include "Seating.h"
+#include <map>
+#include <tuple>
+#include <string>
 
-class Menu
-{
-private:
-  Segment segment;
-  Event event;
+class Seating;
 
+class Menu {
 public:
-  void showMenu();
-  void venta();
-  void showAbout();
-  void configureDiscounts();
+    void showMenu();
+    void sell();
+    void showAbout();
+    void configureDiscounts();
+    void showEventMenu(Event &event);
+    void listEventAndSegments(Event &event, Segment &segment);
+    void sellTicket();
+    void createUser();
+    void checkSales();
+    User* searchUserById(const std::string &id);
 
-  void configureEvent(Event &event, Segment &segment);
-  void listEventAndSegments(Event &event, Segment &segment);
+private:
+    int validateChoice(int maxOption);
 
-  int validateChoice(int &choice, int &size);
-  int updateSegmentEventCount(Event &event);
+    std::map<std::tuple<int, int>, Seating> seatingMap;
 
-  void showAbout();
-  void saveEvent(Event &event, Segment &segment);
+    Event event;
+    Segment segment;
+    Discount discountManager;
+    User* users = nullptr;
+    int userCount = 0;
+    int userCapacity = 0;
+    int numUsers;
+    int maxUsers;
+
 };

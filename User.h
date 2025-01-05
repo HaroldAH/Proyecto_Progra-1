@@ -1,43 +1,27 @@
-#ifndef USER_H
-#define USER_H
-
-#include <iostream>
-#include <string>
-#include <vector>
-
-#include <string>
-
+#pragma once
 #include <string>
 
 class User {
 private:
-    std::string cedula;
-    std::string nombre;
-    std::string fechaNacimiento;
-    int cantidadEntradasCompradas;
+    std::string idNumber;
+    std::string name;
+    std::string birthDate;
+    int ticketsPurchased;
 
 public:
-    // Constructores
-    User(std::string cedula, std::string nombre, std::string fechaNacimiento, int cantidadEntradasCompradas);
+    User(std::string idNumber, std::string name, std::string birthDate, int ticketsPurchased);
     User();
 
-    // Getters
-    std::string getCedula() const;
-    std::string getNombre() const;
-    std::string getFechaNacimiento() const;
-    int getCantidadEntradasCompradas() const;
+    std::string getIdNumber() const;
+    std::string getName() const;
+    std::string getBirthDate() const;
+    int getTicketsPurchased() const;
 
-    // Setters
-    void setCedula(const std::string& cedula);
-    void setNombre(const std::string& nombre);
-    void setFechaNacimiento(const std::string& fechaNacimiento);
-    void setCantidadEntradasCompradas(int cantidad);
+    void setIdNumber(const std::string& idNumber);
+    void setName(const std::string& name);
+    void setBirthDate(const std::string& birthDate);
+    void setTicketsPurchased(int quantity);
 
-    // Métodos adicionales
-    void obtenerDatos() const;
-    bool comprarEntradas(int cantidad); // Retorna true si la compra fue exitosa
+    void displayData() const;
+    bool purchaseTickets(int quantity);
 };
-
-
-
-

@@ -2,52 +2,44 @@
 #include <string>
 #include "Field.h"
 
-class Seating
-{
+class Seating {
 private:
-  int cost; // Cambiado a float para ser coherente con getCost()
-  int segmentNumber;
-  int amountOfRows;
-  int amountOfColumns;
-  bool **isSeatPurchased; // Matriz dinámica para indicar qué asientos están comprados
-  Field *fields;
-  int amountFields;
+    float cost; // Cambiado a float para ser coherente con getCost()
+    int segmentNumber;
+    int numberOfRows;
+    int numberOfColumns;
+    bool **seatPurchased; // Matriz dinámica para indicar qué asientos están comprados
+    Field *fields;
+    int numberOfFields;
 
 public:
-  // Constructor
-  Seating();
+    Seating();
 
-  // Getters y Setters
-  int getCost() const; // Devuelve el costo
-  void setCost(int c); // Asigna el costo
+    float getCost() const;
+    void setCost(float c);
 
-  int getSegmentNumber() const;
-  void setSegmentNumber(int segNum);
+    int getSegmentNumber() const;
+    void setSegmentNumber(int segNum);
 
-  int getAmountOfRows() const;
-  void setAmountOfRows(int rows);
+    int getNumberOfRows() const;
+    void setNumberOfRows(int rows);
 
-  int getAmountOfColumns() const;
-  void setAmountOfColumns(int cols);
+    int getNumberOfColumns() const;
+    void setNumberOfColumns(int cols);
 
-  bool **getIsSeatPurchased() const;
-  void setIsSeatPurchased(bool **seats);
+    bool **getSeatPurchased() const;
+    void setSeatPurchased(bool **seats);
 
-  // Métodos principales
-  void initializeRoom();
-  void displaySeats();
-  bool isRoomFull();
+    void initializeRoom();
+    void displaySeats();
+    bool isRoomFull();
 
-  // Métodos auxiliares
-  float getCost(); // (Si quieres mantener esta firma adicional)
-
-  bool verifyAnswer(int *number, int lowestOption, int highestOption);
-  void displayRoomInfo();
-  bool isRoomComplete();
-  void sellField(int filas, int columnas);
-  void removeField(int position);
-  void confirmReserve();
-  bool checkSeatStatus();
-  void finishTicket();
-  bool hasNotBeenUsed(int fieldId);
+    void displayRoomInfo();
+    bool isRoomComplete();
+    void sellField(int row, int column);
+    void removeField(int position);
+    void confirmReserve();
+    bool checkSeatStatus();
+    void finishTicket();
+    bool hasNotBeenUsed(int fieldId);
 };

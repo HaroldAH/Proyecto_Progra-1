@@ -2,16 +2,16 @@
 
 #include "Utilities.h"
 
-class Field
-{
+class Field {
     int fieldId;
-    int seatInN;
-    int seatInM;
+    int seatRow;
+    int seatColumn;
+
 public:
     Field();
     void setFieldId(int const m_fieldId);
-    int getSeatInN();
-    int getSeatInM();
+    int getSeatRow();
+    int getSeatColumn();
     int getFieldId();
-    void fillField(int const sizeN,int const sizeM);
+    void fillField(int const sizeN, int const sizeM);
 };

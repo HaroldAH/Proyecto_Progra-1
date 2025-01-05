@@ -1,71 +1,70 @@
-// User.cpp
 #include "User.h"
 #include <iostream>
 
 using namespace std;
 
 // Constructores
-User::User(string cedula, string nombre, string fechaNacimiento, int cantidadEntradasCompradas)
-    : cedula(cedula), nombre(nombre), fechaNacimiento(fechaNacimiento), cantidadEntradasCompradas(cantidadEntradasCompradas) {}
+User::User(string idNumber, string name, string birthDate, int ticketsPurchased)
+    : idNumber(idNumber), name(name), birthDate(birthDate), ticketsPurchased(ticketsPurchased) {}
 
-User::User() : cedula(""), nombre(""), fechaNacimiento(""), cantidadEntradasCompradas(0) {}
+User::User() : idNumber(""), name(""), birthDate(""), ticketsPurchased(0) {}
 
 // Getters
-string User::getCedula() const {
-    return cedula;
+string User::getIdNumber() const {
+    return idNumber;
 }
 
-string User::getNombre() const {
-    return nombre;
+string User::getName() const {
+    return name;
 }
 
-string User::getFechaNacimiento() const {
-    return fechaNacimiento;
+string User::getBirthDate() const {
+    return birthDate;
 }
 
-int User::getCantidadEntradasCompradas() const {
-    return cantidadEntradasCompradas;
+int User::getTicketsPurchased() const {
+    return ticketsPurchased;
 }
 
 // Setters
-void User::setCedula(const string& cedula) {
-    this->cedula = cedula;
+void User::setIdNumber(const string& idNumber) {
+    this->idNumber = idNumber;
 }
 
-void User::setNombre(const string& nombre) {
-    this->nombre = nombre;
+void User::setName(const string& name) {
+    this->name = name;
 }
 
-void User::setFechaNacimiento(const string& fechaNacimiento) {
-    this->fechaNacimiento = fechaNacimiento;
+void User::setBirthDate(const string& birthDate) {
+    this->birthDate = birthDate;
 }
 
-void User::setCantidadEntradasCompradas(int cantidad) {
-    this->cantidadEntradasCompradas = cantidad;
+void User::setTicketsPurchased(int quantity) {
+    this->ticketsPurchased = quantity;
 }
 
 // Método para mostrar los datos del usuario
-void User::obtenerDatos() const {
-    cout << "Cédula: " << cedula << endl;
-    cout << "Nombre: " << nombre << endl;
-    cout << "Fecha de Nacimiento: " << fechaNacimiento << endl;
-    cout << "Entradas Compradas: " << cantidadEntradasCompradas << endl;
+void User::displayData() const {
+    cout << "Cedula: " << idNumber << endl;
+    cout << "Nombre: " << name << endl;
+    cout << "Fecha de Nacimiento: " << birthDate << endl;
+    cout << "Entradas Compradas: " << ticketsPurchased << endl;
 }
 
 // Método para comprar entradas con verificación
-bool User::comprarEntradas(int cantidad) {
-    if (cantidad <= 0) {
+bool User::purchaseTickets(int quantity) {
+    if (quantity <= 0) {
         cout << "La cantidad de entradas a comprar debe ser positiva." << endl;
         return false;
     }
 
-    if (cantidadEntradasCompradas + cantidad > 5) {
-        cout << "Error: No puedes comprar más de 5 entradas en total. Ya has comprado " 
-             << cantidadEntradasCompradas << " entradas." << endl;
+    if (ticketsPurchased + quantity > 5) {
+        cout << "Error: No puedes comprar mas de 5 entradas en total. Ya has comprado " 
+             << ticketsPurchased << " entradas." << endl;
         return false;
     }
 
-    cantidadEntradasCompradas += cantidad;
-    cout << "Entradas compradas exitosamente. Total ahora: " << cantidadEntradasCompradas << endl;
+    ticketsPurchased += quantity;
+    cout << "Entradas compradas exitosamente. Total ahora: " << ticketsPurchased << endl;
     return true;
 }

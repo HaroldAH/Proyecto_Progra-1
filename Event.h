@@ -1,6 +1,5 @@
-#ifndef EVENT_H
-#define EVENT_H
-
+#pragma once
+class Segment;
 #include <string>
 using namespace std;
 
@@ -9,7 +8,8 @@ private:
     string name;
     string date;
     string description;      
-    int eventCount;              
+    int eventCount;       
+    int eventCapacity;             
     Event* events;    
 
 public:
@@ -26,6 +26,7 @@ public:
     void setDescription(string& aDescription);
 
     void saveEvent(Event& event); 
+    void initializeEvents(int& eventcapacity);
     
     Event* getEvents(); 
     int getEventCount(); 
@@ -35,5 +36,3 @@ public:
 
     int getValidIntInput();
 };
-
-#endif 
