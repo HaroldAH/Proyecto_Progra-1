@@ -5,7 +5,7 @@ using namespace std;
 SeatVisualization::SeatVisualization() {
     amountOfRows = 0;
     amountOfColumns = 0;
-    isSeatPurchased = NULL; 
+    isSeatPurchased = nullptr; 
 }
 
 void SeatVisualization::initializestadium() {
@@ -19,7 +19,7 @@ void SeatVisualization::initializestadium() {
     for (int i = 0; i < amountOfRows; i++) {
         isSeatPurchased[i] = new bool[amountOfColumns](); // Inicializa automáticamente en `false`
     }
-
+}
 void SeatVisualization::displaySeats() {
     // Chars para el cuadro
     char color[] = "\033[37m";

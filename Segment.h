@@ -1,6 +1,6 @@
-#pragma once
-#include "Event.h"
-#include "Seating.h"
+#ifndef SEGMENT_H
+#define SEGMENT_H
+
 #include <string>
 using namespace std;
 
@@ -11,17 +11,17 @@ private:
     int seats;
     float price;     
     int segmentCapacity;  
+    int numEvents; 
+    int index;
     int* segmentCount; 
     Segment** segmentsByEvent; 
-   Seating* seating;
-    int numEvents; 
 
 public:
     Segment();  
     ~Segment(); 
 
     string getName();
-  void setName(const std::string& aSegmentName);
+    void setName(string& aSegmentName);
 
     int getRows();
     void setRows(int& aRows);
@@ -32,12 +32,20 @@ public:
     float getPrice();
     void setPrice(float& aPrice);
 
-    void initializeSegments(int& capacity);
-    void saveSegments(Event& event);
+    int* getSegmentCount();
+    void expandSegments(Segment& segment, int& numEvents);
 
-Segment** getSegmentsByEvent();
-    void getSegmentCount(Event& event, int* destino);
+    void manageSegments(Segment& segment, int& numEvents);
+    void saveSegments(Segment& segment, int events);  
+
+    void addSegmentData(Segment& segment);
+    bool askToAddSegments(int& eventIndex);
+
     int getValidIntInput();
+    float getValidFloatInput();
+    
+    Segment** getSegmentsByEvent();
 
 };
 
+#endif

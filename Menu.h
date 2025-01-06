@@ -1,3 +1,6 @@
+#ifndef MENU_H
+#define MENU_H
+
 #include "User.h"
 #include "Event.h"
 #include "Segment.h"
@@ -11,19 +14,27 @@ class Seating;
 
 class Menu {
 public:
+
     void showMenu();
-    void sell();
-    void showAbout();
-    void configureDiscounts();
-    void showEventMenu(Event &event);
-    void listEventAndSegments(Event &event, Segment &segment);
     void sellTicket();
     void createUser();
-    void checkSales();
+    void checkSales(Event& event);
+    void configureDiscounts();
+
+   
+    void configureEvent(Event& event, Segment& segment);
+    void listEventAndSegments(Event& event, Segment& segment);
+    int updateSegmentEventCount(Event& event);
+    void saveEvent(Event& event, Segment& segment);
+
+  
+    void sell();
+    void showAbout();
     User* searchUserById(const std::string &id);
 
 private:
-    int validateChoice(int maxOption);
+
+    int validateChoice(int& choice, int& size);
 
     std::map<std::tuple<int, int>, Seating> seatingMap;
 
@@ -31,9 +42,11 @@ private:
     Segment segment;
     Discount discountManager;
     User* users = nullptr;
+
     int userCount = 0;
     int userCapacity = 0;
     int numUsers;
     int maxUsers;
-
 };
+
+#endif

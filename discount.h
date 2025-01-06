@@ -1,11 +1,10 @@
+#ifndef DISCOUNT_H
+#define DISCOUNT_H
+
 #include <string>
-#include <cstdlib>
-#include <ctime>
-#include <iostream>
-using namespace std;
 
 struct DiscountCode {
-    string code;
+    std::string code;
     bool used;
 };
 
@@ -20,10 +19,11 @@ public:
     Discount(float percentage, int count);
     ~Discount();
 
-    string generateCode();
-    bool verifyCode(const string& code);
+    std::string generateCode();
+    bool verifyCode(const std::string& code);
     void configure(float percentage, int count);
     float getDiscountPercentage() const;
     void showCodes() const;
 };
 
+#endif

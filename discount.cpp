@@ -1,4 +1,10 @@
 #include "discount.h"
+#include <iostream>
+#include <cstdlib> 
+#include <ctime> 
+#include <string>
+
+using namespace std;
 
 Discount::Discount() {
     discountPercentage = 0;
@@ -51,7 +57,7 @@ string Discount::generateCode() {
     return code;
 }
 
-bool Discount::verifyCode(const string& code) {
+bool Discount::verifyCode(const std::string& code) {
     for (int i = 0; i < this->discountCount; i++) {
         if (codes[i].code == code) {
             if (!codes[i].used) {

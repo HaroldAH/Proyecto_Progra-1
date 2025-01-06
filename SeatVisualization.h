@@ -1,15 +1,17 @@
-#pragma once
+#ifndef SEAT_VISUALIZATION_H
+#define SEAT_VISUALIZATION_H
 
-class SeatVisualization{
+class SeatVisualization {
+private:
+    int amountOfRows;
+    int amountOfColumns;
+    bool** isSeatPurchased;
 
-  int amountOfRows;
-  int amountOfColumns;
-  bool isSeatPurchased;
-
-  public:
-
-SeatVisualization();
-void initializestadium();
-void displaySeats();
-bool isRoomFull();
+public:
+    SeatVisualization();
+    void initializestadium();
+    void displaySeats();
+    bool isRoomFull();
 };
+
+#endif 

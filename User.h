@@ -1,4 +1,6 @@
-#pragma once
+#ifndef USER_H
+#define USER_H
+
 #include <string>
 
 class User {
@@ -25,3 +27,5 @@ public:
     void displayData() const;
     bool purchaseTickets(int quantity);
 };
+
+#endif 

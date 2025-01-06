@@ -1,4 +1,4 @@
-// Menu.cpp
+
 #include "Menu.h"
 #include <iostream>
 #include <limits>
@@ -11,7 +11,7 @@
 using namespace std;
 
 void Menu::showMenu() {
-    int option, size = 6;
+    int option = 0, size = 6;
 
     do {
         cout << "\033[31m";
@@ -48,11 +48,11 @@ void Menu::showMenu() {
         cout << "                | 6. Salir                |\n";
         cout << "                +==========================+\n";
 
-        option = validateChoice(size);
+        option = validateChoice(option, size);
 
         switch (option) {
         case 1:
-            showEventMenu(event);
+            configureEvent(event,segment);
             break;
         case 2:
             configureDiscounts();
@@ -61,7 +61,7 @@ void Menu::showMenu() {
             sellTicket();
             break;
         case 4:
-            checkSales();
+            checkSales(event);
             break;
         case 5:
             showAbout();
@@ -74,27 +74,15 @@ void Menu::showMenu() {
         }
     } while (option != 6);
 }
-int Menu::validateChoice(int maxOption) {
-    int choice;
-    while (true) {
-        cout << "Ingrese su eleccion (1-" << maxOption << "): ";
-        cin >> choice;
 
-        if (cin.fail()) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Entrada invalida. Por favor, ingrese un numero entre 1 y " << maxOption << ".\n";
-            continue;
-        }
-
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-        if (choice >= 1 && choice <= maxOption) {
-            return choice;
-        } else {
-            cout << "Opcion fuera de rango. Por favor, ingrese un numero entre 1 y " << maxOption << ".\n";
-        }
+int Menu::validateChoice(int& choice, int& size) {
+    cout << "Seleccione una opcion: " << endl;
+    if (cin >> choice && choice >= 1 && choice < size) {
+        return choice;
     }
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    return -1;  
 }
 
 void Menu::configureDiscounts() {
@@ -117,98 +105,67 @@ void Menu::configureDiscounts() {
     cin.get();
 }
 
+void Menu::configureEvent(Event& event, Segment& segment) {
 
-// Definición de showAbout como método miembro de Menu
-void Menu::showAbout()
-{
-    cout << "\n=========================================\n";
-    cout << "               ACERCA DE                 \n";
-    cout << "=========================================\n";
-    cout << "Integrantes del Proyecto:\n";
-    cout << "  - Harold Avila Hernandez\n";
-    cout << "  - Cristhian Cordero Varela\n";
-    cout << "=========================================\n";
-    cout << "\nPresione Enter para continuar...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
-}
+    while (true) {
 
-
-
-
-
-// Implementación de showEventMenu
-void Menu::showEventMenu(Event &event)
-{
-    while (true)
-    {
         int choice, size = 4;
         cout << "\n=== Configurar Eventos ===" << endl;
         cout << "1. Agregar nuevo evento" << endl;
         cout << "2. Modificar segmentos" << endl;
         cout << "3. Mostrar eventos actuales" << endl;
         cout << "4. Regresar al menu principal" << endl;
+        
+        validateChoice(choice, size);
 
-        choice = validateChoice(size);
-
-        if (choice == 1)
-        {
-            event.saveEvent(event);
+        if (choice == 1) {
+            saveEvent(event, segment); 
             continue;
         }
 
-        if (choice == 2)
-        {
-            segment.saveSegments(event);
+        if (choice == 2) {
+            int events = updateSegmentEventCount(event);
+            segment.saveSegments(segment, events);
             continue;
         }
 
-        if (choice == 3)
-        {
-            listEventAndSegments(event, segment);
+        if (choice == 3) {
+           listEventAndSegments(event, segment);
             continue;
         }
 
-        if (choice == 4)
-        {
-            return;
+        if (choice == 4) {
+            return;  
         }
-        cout << endl
-             << " Entrada invalida. Intente de nuevo." << endl
-             << endl;
+        cout << endl << " Entrada invalida. Intente de nuevo." << endl << endl;
     }
 }
 
-void Menu::listEventAndSegments(Event &event, Segment &segment) {
+void Menu::listEventAndSegments(Event& event, Segment& segment) {
+
     if (event.getEventCount() == 0) {
         cout << "No hay eventos guardados." << endl;
-        return;
+        return;  
     }
 
-    cout << endl
-         << "Lista de eventos y segmentos:" << endl
-         << endl;
+    cout << endl << "Lista de eventos y segmentos:" << endl << endl;
 
-   
- Segment **segmentsByEvent = segment.getSegmentsByEvent();
- 
+    Segment** segmentsByEvent = segment.getSegmentsByEvent();
+
     for (int i = 0; i < event.getEventCount(); i++) {
         cout << "Evento #" << i + 1 << ":" << endl;
-        cout << "Nombre: " << event.getEvents()[i].getName() << endl;
+        cout << "Nombre: " << event.getEvents()[i].getName() << endl;  
         cout << "Fecha: " << event.getEvents()[i].getDate() << endl;
         cout << "Descripcion: " << event.getEvents()[i].getDescription() << endl;
 
-        cout << "Segmentos asociados:" << endl
-             << endl;
+        cout << "Segmentos asociados:" << endl << endl;
+        int* segmentCounts = segment.getSegmentCount();
 
-        if (segmentsByEvent[i] == NULL) {
+         if (segmentCounts == nullptr || segmentsByEvent[i] == nullptr || segmentCounts[i] == 0) {
             cout << "  No hay segmentos asociados para este evento." << endl;
             cout << "--------------------------" << endl;
             continue;
         }
-
-        int *segmentCounts = new int[event.getEventCount()];
-        segment.getSegmentCount(event, segmentCounts);
         int numSegments = segmentCounts[i];
 
         for (int j = 0; j < numSegments; j++) {
@@ -220,12 +177,9 @@ void Menu::listEventAndSegments(Event &event, Segment &segment) {
         }
 
         cout << "--------------------------" << endl;
-
-        delete[] segmentCounts;
     }
 }
 
-// Implementación de sellTicket
 void Menu::sellTicket() {
     int choice, totalOptions = 2;
 
@@ -236,8 +190,7 @@ void Menu::sellTicket() {
     cout << "1. Agregar usuario" << endl;
     cout << "2. Hacer compra" << endl;
 
-    cout << "Seleccione una opcion: ";
-    cin >> choice;
+    validateChoice(choice,totalOptions);
 
     while (choice < 1 || choice > totalOptions) {
         cout << "Opcion invalida. Intente nuevamente: ";
@@ -263,7 +216,7 @@ void Menu::createUser() {
     cout << "|   REGISTRO DE USUARIO |" << endl;
     cout << "+=======================+" << endl;
 
-    // Solicitar datos del usuario
+    
     cout << "Ingrese la cedula del usuario: ";
     cin >> idNumber;
 
@@ -274,33 +227,33 @@ void Menu::createUser() {
     cout << "Ingrese la fecha de nacimiento del usuario (DD/MM/AAAA): ";
     cin >> birthDate;
 
-    // Redimensionar el arreglo si es necesario
+    
     if (numUsers == maxUsers) {
         int newCapacity = (maxUsers == 0) ? 1 : maxUsers * 2;
         User* newUserArray = new User[newCapacity];
 
-        // Copiar los usuarios existentes al nuevo arreglo
+        
         for (int i = 0; i < numUsers; i++) {
             newUserArray[i] = users[i];
         }
 
-        // Liberar memoria del arreglo anterior
+        
         delete[] users;
 
-        // Actualizar puntero y capacidad
+        
         users = newUserArray;
         maxUsers = newCapacity;
     }
 
-    // Agregar el nuevo usuario al arreglo
+
     users[numUsers] = User(idNumber, name, birthDate, 0);
     numUsers++;
 
     cout << "Usuario registrado exitosamente.\n";
 }
 
-
 void Menu::sell() {
+
     if (event.getEventCount() == 0) {
         cout << "No hay eventos disponibles.\n";
         return;
@@ -315,7 +268,7 @@ void Menu::sell() {
 
         currentUser = searchUserById(idNumber);
 
-        if (currentUser != nullptr) { // Verifica si el usuario ya existe
+        if (currentUser != nullptr) { 
             cout << "Usuario encontrado. Bienvenido, " << currentUser->getName() << ".\n";
             break;
         }
@@ -325,8 +278,8 @@ void Menu::sell() {
         cin >> option;
 
         if (tolower(option) == 's') {
-            createUser(); // Crea un nuevo usuario
-            currentUser = searchUserById(idNumber); // Intenta buscar al usuario registrado
+            createUser(); 
+            currentUser = searchUserById(idNumber); 
             if (currentUser != nullptr) {
                 cout << "Usuario registrado y encontrado. Bienvenido, " << currentUser->getName() << ".\n";
                 break;
@@ -346,7 +299,8 @@ void Menu::sell() {
         cout << i + 1 << ". " << event.getEvents()[i].getName() << "\n";
     }
 
-    int selectedEvent = validateChoice(event.getEventCount());
+    int selectedEvent, totalEvents = event.getEventCount();
+    validateChoice(selectedEvent, totalEvents);
 
     Segment** segments = segment.getSegmentsByEvent();
     if (!segments) {
@@ -355,7 +309,7 @@ void Menu::sell() {
     }
 
     int* segmentCounts = new int[event.getEventCount()];
-    segment.getSegmentCount(event, segmentCounts);
+    segment.getSegmentCount();
 
     int numSegments = segmentCounts[selectedEvent - 1];
     delete[] segmentCounts;
@@ -371,7 +325,7 @@ void Menu::sell() {
              << " - Precio: $" << fixed << setprecision(2) << segments[selectedEvent - 1][i].getPrice() << "\n";
     }
 
-    int selectedSegment = validateChoice(numSegments);
+    int selectedSegment = validateChoice(selectedSegment, numSegments);
     auto seatingKey = make_tuple(selectedEvent - 1, selectedSegment - 1);
 
     if (seatingMap.find(seatingKey) == seatingMap.end()) {
@@ -502,8 +456,7 @@ User* Menu::searchUserById(const string& idNumber) {
     return nullptr;
 }
 
-
-void Menu::checkSales() {
+void Menu::checkSales(Event& event) {
     if (event.getEventCount() == 0) {
         cout << "No hay eventos disponibles.\n";
         return;
@@ -516,7 +469,9 @@ void Menu::checkSales() {
 
     int selectedEvent;
     cout << "\nSeleccione un evento para ver sus segmentos: ";
-    selectedEvent = validateChoice(event.getEventCount());
+    int choice = 0;
+    int size = event.getEventCount();
+    selectedEvent = validateChoice(choice, size);
 
     Segment** segments = segment.getSegmentsByEvent();
     if (segments == nullptr) {
@@ -525,7 +480,7 @@ void Menu::checkSales() {
     }
 
     int* segmentCounts = new int[event.getEventCount()];
-    segment.getSegmentCount(event, segmentCounts);
+    segment.getSegmentCount();
 
     int numSegments = segmentCounts[selectedEvent - 1];
     delete[] segmentCounts;
@@ -541,9 +496,9 @@ void Menu::checkSales() {
              << " - Precio: " << segments[selectedEvent - 1][i].getPrice() << "\n";
     }
 
-    int selectedSegment;
+    int selectedSegment, option;
     cout << "\nSeleccione un segmento para ver su representacion grafica: ";
-    selectedSegment = validateChoice(numSegments);
+     validateChoice(option, selectedSegment);
 
     auto seatingKey = std::make_tuple(selectedEvent - 1, selectedSegment - 1);
 
@@ -566,6 +521,31 @@ void Menu::checkSales() {
     seating.displaySeats();
 
     cout << "Presione Enter para continuar...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
+}
+
+int Menu::updateSegmentEventCount(Event& event) {
+    int events = event.getEventCount();
+    return events;
+}
+
+void Menu::saveEvent(Event& event, Segment& segment){
+
+int events = event.getEventCount();
+event.saveEvent(event);
+}
+
+void Menu::showAbout()
+{
+    cout << "\n=========================================\n";
+    cout << "               ACERCA DE                 \n";
+    cout << "=========================================\n";
+    cout << "Integrantes del Proyecto:\n";
+    cout << "  - Harold Avila Hernandez\n";
+    cout << "  - Cristhian Cordero Varela\n";
+    cout << "=========================================\n";
+    cout << "\nPresione Enter para continuar...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
 }

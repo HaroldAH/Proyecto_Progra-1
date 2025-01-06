@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SEATING_H
+#define SEATING_H
+
 #include <string>
 #include "Field.h"
 
@@ -43,3 +45,5 @@ public:
     void finishTicket();
     bool hasNotBeenUsed(int fieldId);
 };
+
+#endif 
