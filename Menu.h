@@ -4,7 +4,7 @@
 #include "User.h"
 #include "Event.h"
 #include "Segment.h"
-#include "discount.h"
+#include "Discount.h"
 #include "Seating.h"
 #include <map>
 #include <tuple>
@@ -16,7 +16,7 @@ class Menu {
 public:
 
     void showMenu();
-    void sellTicket();
+    void sellTicket(User& user);
     void createUser();
     void checkSales(Event& event);
     void configureDiscounts();
@@ -30,7 +30,7 @@ public:
   
     void sell();
     void showAbout();
-    User* searchUserById(const std::string &id);
+   
 
 private:
 
@@ -40,12 +40,14 @@ private:
 
     Event event;
     Segment segment;
+    User user;
     Discount discountManager;
     User* users = nullptr;
+    
 
     int userCount = 0;
     int userCapacity = 0;
-    int numUsers;
+    int numUsers = 0;
     int maxUsers;
 };
 

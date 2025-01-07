@@ -20,6 +20,7 @@ void SeatVisualization::initializestadium() {
         isSeatPurchased[i] = new bool[amountOfColumns](); // Inicializa automáticamente en `false`
     }
 }
+
 void SeatVisualization::displaySeats() {
     // Chars para el cuadro
     char color[] = "\033[37m";

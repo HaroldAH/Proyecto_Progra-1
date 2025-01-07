@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
-#include "Utilities.h" // Si tienes funciones auxiliares
+#include "Utilities.h" 
 
 using namespace std;
 
@@ -58,7 +58,7 @@ void Menu::showMenu() {
             configureDiscounts();
             break;
         case 3:
-            sellTicket();
+            sellTicket(user);
             break;
         case 4:
             checkSales(event);
@@ -69,20 +69,20 @@ void Menu::showMenu() {
         case 6:
             cout << "Saliendo del programa. Gracias!" << endl;
             break;
-        default:
-            cout << "Opcion invalida. Intente nuevamente." << endl;
         }
     } while (option != 6);
 }
 
 int Menu::validateChoice(int& choice, int& size) {
-    cout << "Seleccione una opcion: " << endl;
-    if (cin >> choice && choice >= 1 && choice < size) {
-        return choice;
+    while (true) {
+        cout << "Seleccione una opcion: " << endl;
+        if (cin >> choice && choice >= 1 && choice <= size) {
+            return choice;
+        }
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Entrada invalida. Intente de nuevo." << endl;
     }
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    return -1;  
 }
 
 void Menu::configureDiscounts() {
@@ -180,7 +180,8 @@ void Menu::listEventAndSegments(Event& event, Segment& segment) {
     }
 }
 
-void Menu::sellTicket() {
+void Menu::sellTicket(User& user) {
+
     int choice, totalOptions = 2;
 
     cout << "\n+=======================+" << endl;
@@ -199,7 +200,7 @@ void Menu::sellTicket() {
 
     switch (choice) {
     case 1:
-        createUser();
+        user.createUser(user);
         break;
     case 2:
         sell();
@@ -209,48 +210,6 @@ void Menu::sellTicket() {
     }
 }
 
-void Menu::createUser() {
-    string idNumber, name, birthDate;
-
-    cout << "\n+=======================+" << endl;
-    cout << "|   REGISTRO DE USUARIO |" << endl;
-    cout << "+=======================+" << endl;
-
-    
-    cout << "Ingrese la cedula del usuario: ";
-    cin >> idNumber;
-
-    cout << "Ingrese el nombre del usuario: ";
-    cin.ignore();
-    getline(cin, name);
-
-    cout << "Ingrese la fecha de nacimiento del usuario (DD/MM/AAAA): ";
-    cin >> birthDate;
-
-    
-    if (numUsers == maxUsers) {
-        int newCapacity = (maxUsers == 0) ? 1 : maxUsers * 2;
-        User* newUserArray = new User[newCapacity];
-
-        
-        for (int i = 0; i < numUsers; i++) {
-            newUserArray[i] = users[i];
-        }
-
-        
-        delete[] users;
-
-        
-        users = newUserArray;
-        maxUsers = newCapacity;
-    }
-
-
-    users[numUsers] = User(idNumber, name, birthDate, 0);
-    numUsers++;
-
-    cout << "Usuario registrado exitosamente.\n";
-}
 
 void Menu::sell() {
 
@@ -266,7 +225,7 @@ void Menu::sell() {
         cout << "Ingrese su numero de cedula: ";
         cin >> idNumber;
 
-        currentUser = searchUserById(idNumber);
+        currentUser = user.searchUserById(idNumber);
 
         if (currentUser != nullptr) { 
             cout << "Usuario encontrado. Bienvenido, " << currentUser->getName() << ".\n";
@@ -278,8 +237,8 @@ void Menu::sell() {
         cin >> option;
 
         if (tolower(option) == 's') {
-            createUser(); 
-            currentUser = searchUserById(idNumber); 
+            user.createUser(user); 
+            currentUser = user.searchUserById(idNumber); 
             if (currentUser != nullptr) {
                 cout << "Usuario registrado y encontrado. Bienvenido, " << currentUser->getName() << ".\n";
                 break;
@@ -447,14 +406,14 @@ cout << "=================================================\n";
     cin.get();
 }
 
-User* Menu::searchUserById(const string& idNumber) {
+/*User* Menu::searchUserById(const string& idNumber) {
     for (int i = 0; i < numUsers; i++) {
         if (users[i].getIdNumber() == idNumber) {
             return &users[i];
         }
     }
     return nullptr;
-}
+}*/
 
 void Menu::checkSales(Event& event) {
     if (event.getEventCount() == 0) {
@@ -549,3 +508,5 @@ void Menu::showAbout()
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
 }
+
+
