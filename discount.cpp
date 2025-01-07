@@ -46,6 +46,25 @@ void Discount::configure(float percentage, int count) {
     }
 }
 
+
+void Discount::configureDiscounts() {
+    
+    float discountPercentage;
+    int discountCount;
+
+    cout << "\n=== Configurar Descuentos ===" << endl;
+    cout << "Ingrese el porcentaje de descuento: ";
+    cin >> discountPercentage;
+
+    cout << "Ingrese la cantidad de descuentos a generar: ";
+    cin >> discountCount;
+
+    configure(discountPercentage, discountCount);  
+
+    showCodes();  
+}
+
+
 string Discount::generateCode() {
     string code;
     const char characters[] =

@@ -24,6 +24,8 @@ public:
     void configure(float percentage, int count);
     float getDiscountPercentage() const;
     void showCodes() const;
+
+    void configureDiscounts(); 
 };
 
 #endif

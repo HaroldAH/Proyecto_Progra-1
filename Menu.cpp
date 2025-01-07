@@ -86,19 +86,9 @@ int Menu::validateChoice(int& choice, int& size) {
 }
 
 void Menu::configureDiscounts() {
-    float discountPercentage;
-    int discountCount;
+    
+     discountManager.configureDiscounts();
 
-    cout << "\n=== Configurar Descuentos ===" << endl;
-    cout << "Ingrese el porcentaje de descuento: ";
-    cin >> discountPercentage;
-
-    cout << "Ingrese la cantidad de descuentos a generar: ";
-    cin >> discountCount;
-
-    discountManager.configure(discountPercentage, discountCount);
-
-    discountManager.showCodes();
     cout << "RECUERDE EL CODIGO\n";
     cout << "\nPresione Enter para continuar...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -267,8 +257,8 @@ void Menu::sell() {
         return;
     }
 
-    int* segmentCounts = new int[event.getEventCount()];
-    segment.getSegmentCount();
+    int* segmentCounts = segment.getSegmentCount();
+  
 
     int numSegments = segmentCounts[selectedEvent - 1];
     delete[] segmentCounts;
@@ -281,7 +271,7 @@ void Menu::sell() {
     cout << "\nSegmentos disponibles:\n";
     for (int i = 0; i < numSegments; i++) {
         cout << i + 1 << ". " << segments[selectedEvent - 1][i].getName()
-             << " - Precio: $" << fixed << setprecision(2) << segments[selectedEvent - 1][i].getPrice() << "\n";
+             << " - Precio: ₡" << fixed << setprecision(2) << segments[selectedEvent - 1][i].getPrice() << "\n";
     }
 
     int selectedSegment = validateChoice(selectedSegment, numSegments);
@@ -397,7 +387,7 @@ for (const auto& seat : purchasedSeats) {
 }
 cout << "\n";
 
-cout << "Total pagado: $" << totalCost << "\n";
+cout << "Total pagado: ₡" << totalCost << "\n";
 cout << "=================================================\n";
 
 
@@ -406,14 +396,6 @@ cout << "=================================================\n";
     cin.get();
 }
 
-/*User* Menu::searchUserById(const string& idNumber) {
-    for (int i = 0; i < numUsers; i++) {
-        if (users[i].getIdNumber() == idNumber) {
-            return &users[i];
-        }
-    }
-    return nullptr;
-}*/
 
 void Menu::checkSales(Event& event) {
     if (event.getEventCount() == 0) {

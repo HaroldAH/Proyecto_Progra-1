@@ -44,7 +44,15 @@ float Segment::getPrice() { return price; }
 
 void Segment::setPrice(float& aPrice) { price = aPrice; }
 
-Segment** Segment::getSegmentsByEvent() { return segmentsByEvent; }
+Segment** Segment::getSegmentsByEvent() {
+    if (segmentsByEvent == nullptr) {
+        std::cout << "No hay segmentos asociados\n";
+        return nullptr;
+    }
+    return segmentsByEvent;
+}
+
+
 
 int* Segment::getSegmentCount() { return segmentCount; }
 
