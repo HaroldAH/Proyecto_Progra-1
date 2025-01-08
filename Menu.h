@@ -9,6 +9,7 @@
 #include <map>
 #include <tuple>
 #include <string>
+#include <limits>
 
 class Seating;
 
@@ -23,6 +24,7 @@ private:
     Segment segment;
     User user;
     Discount discount;
+    Seating seating;
     User* users = nullptr;
     
 

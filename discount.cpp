@@ -64,6 +64,7 @@ void Discount::configureDiscounts() {
 }
 
 string Discount::generateCode() {
+    
     string code;
     const char characters[] =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -75,6 +76,7 @@ string Discount::generateCode() {
 }
 
 bool Discount::verifyCode(const std::string& code) {
+
     for (int i = 0; i < this->discountCount; i++) {
         if (codes[i].code == code) {
             if (!codes[i].used) {

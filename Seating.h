@@ -2,21 +2,29 @@
 #define SEATING_H
 
 #include <string>
+#include <map>
+#include <tuple>
+#include <limits>
 #include "Field.h"
+#include "Event.h"
+#include "Segment.h"
 
 class Seating {
 private:
-    float cost; // Cambiado a float para ser coherente con getCost()
+    float cost; 
     int segmentNumber;
     int numberOfRows;
     int numberOfColumns;
-    bool **seatPurchased; // Matriz dinámica para indicar qué asientos están comprados
+    bool **seatPurchased; 
     Field *fields;
     int numberOfFields;
+    Event event;
+    Segment segment;
+     
 
 public:
     Seating();
-
+    std::map<std::tuple<int, int>, Seating> seatingMap;
     float getCost() const;
     void setCost(float c);
 
@@ -44,6 +52,8 @@ public:
     bool checkSeatStatus();
     void finishTicket();
     bool hasNotBeenUsed(int fieldId);
+    void checkSales(Event &event, Segment &segment);
+    int validateChoice(int &choice, int &size);
 };
 
 #endif 

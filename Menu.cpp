@@ -73,7 +73,7 @@ void Menu::showMenu()
 
         if (option == 4)
         {
-            checkSales(event);
+            seating.checkSales(event,segment);
             continue;
         }
 
@@ -111,7 +111,6 @@ int Menu::validateChoice(int &choice, int &size)
 
 void Menu::configureDiscounts(Discount &discount)
 {
-
     discount.configureDiscounts();
 
     cout << "RECUERDE EL CODIGO\n";
@@ -250,6 +249,33 @@ void Menu::sellTicket(User &user)
 
         cout << "Opcion invalida. Intente nuevamente." << endl;
     }
+}
+
+int Menu::updateSegmentEventCount(Event &event)
+{
+    int events = event.getEventCount();
+    return events;
+}
+
+void Menu::saveEvent(Event &event, Segment &segment)
+{
+
+    int events = event.getEventCount();
+    event.saveEvent(event);
+}
+
+void Menu::showAbout()
+{
+    cout << "\n=========================================\n";
+    cout << "               ACERCA DE                 \n";
+    cout << "=========================================\n";
+    cout << "Integrantes del Proyecto:\n";
+    cout << "  - Harold Avila Hernandez\n";
+    cout << "  - Cristhian Cordero Varela\n";
+    cout << "=========================================\n";
+    cout << "\nPresione Enter para continuar...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
 }
 
 void Menu::sell()
@@ -475,7 +501,7 @@ void Menu::sell()
     cin.get();
 }
 
-void Menu::checkSales(Event &event)
+/*void Menu::checkSales(Event &event)
 {
 
     if (event.getEventCount() == 0)
@@ -548,31 +574,8 @@ void Menu::checkSales(Event &event)
     cout << "Presione Enter para continuar...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
-}
+}*/
 
-int Menu::updateSegmentEventCount(Event &event)
-{
-    int events = event.getEventCount();
-    return events;
-}
 
-void Menu::saveEvent(Event &event, Segment &segment)
-{
 
-    int events = event.getEventCount();
-    event.saveEvent(event);
-}
 
-void Menu::showAbout()
-{
-    cout << "\n=========================================\n";
-    cout << "               ACERCA DE                 \n";
-    cout << "=========================================\n";
-    cout << "Integrantes del Proyecto:\n";
-    cout << "  - Harold Avila Hernandez\n";
-    cout << "  - Cristhian Cordero Varela\n";
-    cout << "=========================================\n";
-    cout << "\nPresione Enter para continuar...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
-}

@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <cstdio>
 #include <cstring>
-#include "Field.h"
+
 using namespace std;
 
 Seating::Seating() {
@@ -13,12 +13,13 @@ Seating::Seating() {
     cost = 0.0f;
     seatPurchased = NULL;
     fields = NULL;
+    
 
     initializeRoom();
 }
 
 void Seating::initializeRoom() {
-    
+
     seatPurchased = new bool*[numberOfRows];
     for (int i = 0; i < numberOfRows; i++) {
         seatPurchased[i] = new bool[numberOfColumns];
@@ -208,4 +209,101 @@ bool Seating::checkSeatStatus() {
 
 void Seating::finishTicket() {
     fields[numberOfFields - 1].fillField(numberOfColumns, numberOfRows);
+}
+
+void Seating::checkSales(Event &event, Segment &segment)
+{
+    if (event.getEventCount() == 0)
+    {
+        cout << "No hay eventos disponibles.\n";
+        return;
+    }
+
+    cout << "\nEventos disponibles:\n";
+    for (int i = 0; i < event.getEventCount(); i++)
+    {
+        cout << i + 1 << ". " << event.getEvents()[i].getName() << "\n";
+    }
+
+    int selectedEvent = 0;
+    cout << "\nSeleccione un evento para ver sus segmentos: ";
+    int size = event.getEventCount();
+    selectedEvent = validateChoice(selectedEvent, size);
+
+    Segment **segments = segment.getSegmentsByEvent();
+    if (segments == nullptr)
+    {
+        cout << "Error: No se pudieron obtener los segmentos del evento.\n";
+        return;
+    }
+
+    // Usar el segmentCount real
+    int *segmentCounts = segment.getSegmentCount();
+    if (!segmentCounts)
+    {
+        cout << "Error: No se pudo obtener el conteo de segmentos.\n";
+        return;
+    }
+
+    int numSegments = segmentCounts[selectedEvent - 1];
+    if (numSegments <= 0)
+    {
+        cout << "No hay segmentos disponibles para este evento.\n";
+        return;
+    }
+
+    cout << "\nSegmentos disponibles para el evento \"" 
+         << event.getEvents()[selectedEvent - 1].getName() << "\":\n";
+    for (int i = 0; i < numSegments; i++)
+    {
+        cout << i + 1 << ". " << segments[selectedEvent - 1][i].getName()
+             << " - Precio: " << segments[selectedEvent - 1][i].getPrice() << "\n";
+    }
+
+    int selectedSegment, option = 0;
+    cout << "\nSeleccione un segmento para ver su representacion grafica: ";
+    selectedSegment = validateChoice(option, numSegments);
+
+    auto seatingKey = std::make_tuple(selectedEvent - 1, selectedSegment - 1);
+
+    if (seatingMap.find(seatingKey) == seatingMap.end())
+    {
+        Seating newSeating;
+        int rows = segments[selectedEvent - 1][selectedSegment - 1].getRows();
+        int columns = segments[selectedEvent - 1][selectedSegment - 1].getSeats();
+        float price = segments[selectedEvent - 1][selectedSegment - 1].getPrice();
+
+        newSeating.setNumberOfRows(rows);
+        newSeating.setNumberOfColumns(columns);
+        newSeating.setCost(price);
+        newSeating.initializeRoom();
+
+        seatingMap[seatingKey] = newSeating;
+    }
+
+    Seating &seating = seatingMap[seatingKey];
+    cout << "\nRepresentacion grafica del segmento \"" 
+         << segments[selectedEvent - 1][selectedSegment - 1].getName() << "\":\n";
+    seating.displaySeats();
+
+    cout << "Presione Enter para continuar...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
+}
+
+
+
+int Seating::validateChoice(int &choice, int &size)
+{
+    while (true)
+    {
+        cout << "Seleccione una opcion: " << endl;
+        if (cin >> choice && choice >= 1 && choice <= size)
+        {
+            return choice;
+        }
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Entrada invalida. Intente de nuevo." << endl;
+    }
 }
