@@ -55,7 +55,7 @@ void Menu::showMenu() {
             configureEvent(event,segment);
             break;
         case 2:
-            configureDiscounts();
+            configureDiscounts(discount);
             break;
         case 3:
             sellTicket(user);
@@ -85,9 +85,9 @@ int Menu::validateChoice(int& choice, int& size) {
     }
 }
 
-void Menu::configureDiscounts() {
-    
-     discountManager.configureDiscounts();
+void Menu::configureDiscounts(Discount& discount) {
+
+     discount.configureDiscounts();
 
     cout << "RECUERDE EL CODIGO\n";
     cout << "\nPresione Enter para continuar...";
@@ -200,7 +200,6 @@ void Menu::sellTicket(User& user) {
     }
 }
 
-
 void Menu::sell() {
 
     if (event.getEventCount() == 0) {
@@ -271,7 +270,7 @@ void Menu::sell() {
     cout << "\nSegmentos disponibles:\n";
     for (int i = 0; i < numSegments; i++) {
         cout << i + 1 << ". " << segments[selectedEvent - 1][i].getName()
-             << " - Precio: ₡" << fixed << setprecision(2) << segments[selectedEvent - 1][i].getPrice() << "\n";
+             << " - Precio: $" << fixed << setprecision(2) << segments[selectedEvent - 1][i].getPrice() << "\n";
     }
 
     int selectedSegment = validateChoice(selectedSegment, numSegments);
@@ -345,8 +344,8 @@ void Menu::sell() {
         cin.ignore();
         getline(cin, discountCode);
 
-        if (discountManager.verifyCode(discountCode)) {
-            discountPercentage = discountManager.getDiscountPercentage();
+        if (discount.verifyCode(discountCode)) {
+            discountPercentage = discount.getDiscountPercentage();
             cout << "Descuento aplicado: " << discountPercentage << "%\n";
         } else {
             cout << "Codigo de descuento invalido o ya utilizado.\n";
@@ -387,7 +386,7 @@ for (const auto& seat : purchasedSeats) {
 }
 cout << "\n";
 
-cout << "Total pagado: ₡" << totalCost << "\n";
+cout << "Total pagado:" << 58 << totalCost << "\n";
 cout << "=================================================\n";
 
 
@@ -395,7 +394,6 @@ cout << "=================================================\n";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
 }
-
 
 void Menu::checkSales(Event& event) {
     if (event.getEventCount() == 0) {
@@ -410,9 +408,8 @@ void Menu::checkSales(Event& event) {
 
     int selectedEvent;
     cout << "\nSeleccione un evento para ver sus segmentos: ";
-    int choice = 0;
     int size = event.getEventCount();
-    selectedEvent = validateChoice(choice, size);
+    selectedEvent = validateChoice(selectedEvent, size);
 
     Segment** segments = segment.getSegmentsByEvent();
     if (segments == nullptr) {
@@ -421,7 +418,7 @@ void Menu::checkSales(Event& event) {
     }
 
     int* segmentCounts = new int[event.getEventCount()];
-    segment.getSegmentCount();
+    
 
     int numSegments = segmentCounts[selectedEvent - 1];
     delete[] segmentCounts;
@@ -437,9 +434,9 @@ void Menu::checkSales(Event& event) {
              << " - Precio: " << segments[selectedEvent - 1][i].getPrice() << "\n";
     }
 
-    int selectedSegment, option;
+    int selectedSegment, option = 0;
     cout << "\nSeleccione un segmento para ver su representacion grafica: ";
-     validateChoice(option, selectedSegment);
+    selectedSegment = validateChoice(option, numSegments);
 
     auto seatingKey = std::make_tuple(selectedEvent - 1, selectedSegment - 1);
 

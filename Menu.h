@@ -13,25 +13,6 @@
 class Seating;
 
 class Menu {
-public:
-
-    void showMenu();
-    void sellTicket(User& user);
-    void createUser();
-    void checkSales(Event& event);
-    void configureDiscounts();
-
-   
-    void configureEvent(Event& event, Segment& segment);
-    void listEventAndSegments(Event& event, Segment& segment);
-    int updateSegmentEventCount(Event& event);
-    void saveEvent(Event& event, Segment& segment);
-
-  
-    void sell();
-    void showAbout();
-   
-
 private:
 
     int validateChoice(int& choice, int& size);
@@ -41,7 +22,7 @@ private:
     Event event;
     Segment segment;
     User user;
-    Discount discountManager;
+    Discount discount;
     User* users = nullptr;
     
 
@@ -49,6 +30,24 @@ private:
     int userCapacity = 0;
     int numUsers = 0;
     int maxUsers;
+
+public:
+
+    void showMenu();
+    void sellTicket(User& user);
+    void createUser();
+    void checkSales(Event& event);
+    void configureDiscounts(Discount& discount);
+
+   
+    void configureEvent(Event& event, Segment& segment);
+    void listEventAndSegments(Event& event, Segment& segment);
+    int updateSegmentEventCount(Event& event);
+    void saveEvent(Event& event, Segment& segment);
+
+    void sell();
+    void showAbout();
+   
 };
 
 #endif
