@@ -18,6 +18,7 @@ Seating::Seating() {
 }
 
 void Seating::initializeRoom() {
+    
     seatPurchased = new bool*[numberOfRows];
     for (int i = 0; i < numberOfRows; i++) {
         seatPurchased[i] = new bool[numberOfColumns];

@@ -46,7 +46,6 @@ void Discount::configure(float percentage, int count) {
     }
 }
 
-
 void Discount::configureDiscounts() {
     
     float discountPercentage;
@@ -64,12 +63,11 @@ void Discount::configureDiscounts() {
     showCodes();  
 }
 
-
 string Discount::generateCode() {
     string code;
     const char characters[] =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    int length = 10;
+    int length = 5;
     for (int i = 0; i < length; i++) {
         code += characters[rand() % (sizeof(characters) - 1)];
     }
