@@ -1,6 +1,5 @@
 #include "User.h"
 
-
 void User::expandAndAssignUsers(User &usersObj, int quantity) {
     
     if (usersObj.userCount + quantity > usersObj.capacity) {
@@ -19,42 +18,7 @@ void User::expandAndAssignUsers(User &usersObj, int quantity) {
     }
 }
 
-void User::createUser(User &usersObj) {
-    int quantity = 0;
-    std::cout << "¿Cuántos usuarios desea agregar? ";
-    quantity = getValidIntInput();   
-
-
-    expandAndAssignUsers(usersObj, quantity);
-
-    for (int i = 0; i < quantity; i++) {
-        std::string idNumber, name, birthDate;
-
-        std::cout << "\nIngrese la cédula del usuario " 
-                  << usersObj.userCount + 1 << ": ";
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::getline(std::cin, idNumber);
-
-        std::cout << "Ingrese el nombre del usuario " 
-                  << usersObj.userCount + 1 << ": ";
-        std::getline(std::cin, name);
-
-        std::cout << "Ingrese la fecha de nacimiento del usuario " 
-                  << usersObj.userCount + 1 << " (DD/MM/AAAA): ";
-        std::getline(std::cin, birthDate);
-
-        usersObj.users[usersObj.userCount].setIdNumber(idNumber);
-        usersObj.users[usersObj.userCount].setName(name);
-        usersObj.users[usersObj.userCount].setBirthDate(birthDate);
-
-        usersObj.userCount++;
-        std::cout << "Usuario registrado exitosamente.\n";
-    }
-
-    std::cout << "\nSe han registrado " << quantity << " usuarios correctamente.\n";
-}
-
-void User::createUser(User &usersObj, const std::string &idNumber) {
+void User::createUser(User &usersObj, const string &idNumber) {
     
     expandAndAssignUsers(usersObj, 1);
 
@@ -62,26 +26,23 @@ void User::createUser(User &usersObj, const std::string &idNumber) {
     usersObj.users[usersObj.userCount].setIdNumber(idNumber);
 
     
-    std::string name, birthDate;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    string name, birthDate;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    std::cout << "Ingrese el nombre del usuario " << usersObj.userCount + 1 << ": ";
-    std::getline(std::cin, name);
+    cout << "Ingrese el nombre del usuario " << usersObj.userCount + 1 << ": ";
+    getline(cin, name);
     usersObj.users[usersObj.userCount].setName(name);
 
-    std::cout << "Ingrese la fecha de nacimiento del usuario " 
+    cout << "Ingrese la fecha de nacimiento del usuario " 
               << usersObj.userCount + 1 << " (DD/MM/AAAA): ";
-    std::getline(std::cin, birthDate);
+    getline(cin, birthDate);
     usersObj.users[usersObj.userCount].setBirthDate(birthDate);
 
     
     usersObj.userCount++;
-
-    std::cout << "Usuario registrado exitosamente con la cédula " 
-              << idNumber << ".\n";
 }
 
-UserData* User::searchUserById(std::string &idNumber) {
+UserData* User::searchUserById(string &idNumber) {
     for (int i = 0; i < userCount; i++) {
         if (users[i].getIdNumber() == idNumber) {
             return &users[i];
@@ -89,4 +50,3 @@ UserData* User::searchUserById(std::string &idNumber) {
     }
     return nullptr;
 }
-

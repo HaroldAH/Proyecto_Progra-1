@@ -15,6 +15,7 @@ Discount::Discount() {
 }
 
 Discount::Discount(float percentage, int count) {
+    
     discountPercentage = 0.0f;
     discountCount = 0;
     codes = nullptr;
@@ -63,7 +64,7 @@ void Discount::configure(float percentage, int count) {
 }
 
 void Discount::configureDiscounts() {
-    
+
     float perc;
     int countValue;
     cout << "\n=== Configurar Descuentos ===\n";

@@ -109,6 +109,8 @@ bool Event::isValidDate(string &date) {
         if ((i == 2 || i == 5) && date[i] != '/') return false;
         if (i != 2 && i != 5 && (date[i] < '0' || date[i] > '9')) return false;
     }
+    
+    if (date[6] != '2' || date[7] != '0') return false;
 
     int day = (date[0] - '0') * 10 + (date[1] - '0');
     int month = (date[3] - '0') * 10 + (date[4] - '0');

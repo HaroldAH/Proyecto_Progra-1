@@ -1,14 +1,8 @@
 #include "Sale.h"
-#include <iostream>
-#include <iomanip>
 
 using namespace std;
 
-void Sale::sell(User &user,
-                Event &event,
-                Segment &segment,
-                map<tuple<int, int>, Seating> &seatingMap,
-                Discount &discount)
+void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>, Seating> &seatingMap, Discount &discount)
 {
     if (!checkEventsAvailability(event)) return;
 
@@ -16,6 +10,9 @@ void Sale::sell(User &user,
     if (!currentUser) return;
 
     int selectedEvent = chooseEvent(event);
+    
+    if (selectedEvent < 0) return;
+
     int selectedSegment = chooseSegment(segment, selectedEvent);
     if (selectedSegment < 0) return;
 
@@ -30,6 +27,7 @@ void Sale::sell(User &user,
     for (int i = 0; i < numTickets; i++) {
         int row;
         char col;
+
         cout << "Ingrese la columna del asiento (A-"
              << char('A' + seating.getNumberOfColumns() - 1) << "): ";
         cin >> col;
@@ -37,6 +35,16 @@ void Sale::sell(User &user,
         cout << "Ingrese la fila del asiento (1-"
              << seating.getNumberOfRows() << "): ";
         cin >> row;
+
+       
+        if (row < 1 || row > seating.getNumberOfRows() ||
+            toupper(col) < 'A' ||
+            toupper(col) >= 'A' + seating.getNumberOfColumns())
+        {
+            cout << "Asiento fuera de rango. Elija otro.\n";
+            i--; 
+            continue;
+        }
 
         if (seating.getSeatPurchased()[row - 1][toupper(col) - 'A']) {
             cout << "Asiento ocupado. Elija otro.\n";
@@ -53,7 +61,9 @@ void Sale::sell(User &user,
     float ticketPrice = seating.getCost();
     float totalCost = ticketPrice * numTickets;
 
-    if (discountPercentage > 0) totalCost -= totalCost * (discountPercentage / 100.0f);
+    if (discountPercentage > 0) {
+        totalCost -= totalCost * (discountPercentage / 100.0f);
+    }
 
     string cardNumber = askCardNumber();
     printInvoice(currentUser, event, selectedEvent, segments, selectedSegment,
@@ -64,7 +74,6 @@ void Sale::sell(User &user,
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
 }
-
 
 bool Sale::checkEventsAvailability(Event &event) {
 
@@ -78,7 +87,7 @@ bool Sale::checkEventsAvailability(Event &event) {
 UserData* Sale::getOrRegisterUser(User &user) {
 
     while (true) {
-        
+
         string idNumber;
         cout << "Ingrese su numero de cedula: ";
         cin >> idNumber;
@@ -100,10 +109,11 @@ UserData* Sale::getOrRegisterUser(User &user) {
         }
 
         user.createUser(user, idNumber);
+
         currentUser = user.searchUserById(idNumber);
         if (currentUser) {
-            cout << "Usuario registrado y encontrado. Bienvenido, "
-                 << currentUser->getName() << ".\n";
+            cout << "Usuario registrado."<<endl << "Bienvenido "
+                 << currentUser->getName() << "procederemos con la compra:"<<endl;
             return currentUser;
         }
 
@@ -112,6 +122,7 @@ UserData* Sale::getOrRegisterUser(User &user) {
 }
 
 int Sale::chooseEvent(Event &event) {
+
     if (event.getEventCount() == 0) {
         cout << "No hay eventos disponibles.\n";
         return -1;
@@ -122,19 +133,18 @@ int Sale::chooseEvent(Event &event) {
         cout << i + 1 << ". " << event.getEvents()[i].getName() << "\n";
     }
 
-    int selected;
-    while (true) {
-        cin >> selected;
-        if (!cin.fail() && selected >= 1 && selected <= event.getEventCount()) {
-            return selected - 1;
-        }
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Entrada invalida. Intente nuevamente: ";
-    }
+    int selected = readIntInRange(
+        1,                               
+        event.getEventCount(),           
+        "Entrada invalida. Intente nuevamente: "  
+    );
+
+   
+    return selected - 1;
 }
 
 int Sale::chooseSegment(Segment &segment, int selectedEvent) {
+
     Segment** segments = segment.getSegmentsByEvent();
     int* segmentCounts = segment.getSegmentCount();
 
@@ -159,23 +169,19 @@ int Sale::chooseSegment(Segment &segment, int selectedEvent) {
              << "\n";
     }
 
-    int chosen;
-    while (true) {
-        cin >> chosen;
-        if (!cin.fail() && chosen >= 1 && chosen <= numSegments) {
-            return chosen - 1;
-        }
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Entrada invalida. Intente nuevamente: ";
-    }
+    
+    int chosen = readIntInRange(
+        1,
+        numSegments,
+        "Entrada invalida. Intente nuevamente: "
+    );
+
+    return chosen - 1;
 }
 
-Seating& Sale::ensureSeating(int selectedEvent,
-                             int selectedSegment,
-                             Segment** segments,
-                             map<tuple<int,int>,Seating> &seatingMap) {
+Seating& Sale::ensureSeating(int selectedEvent, int selectedSegment, Segment** segments, map<tuple<int,int>,Seating> &seatingMap) {
     tuple<int,int> seatingKey = make_tuple(selectedEvent, selectedSegment);
+
     if (seatingMap.find(seatingKey) == seatingMap.end()) {
         Seating newSeating;
         Segment &seg = segments[selectedEvent][selectedSegment];
@@ -185,27 +191,32 @@ Seating& Sale::ensureSeating(int selectedEvent,
         newSeating.initializeRoom();
         seatingMap[seatingKey] = newSeating;
     }
+
     Seating &seating = seatingMap[seatingKey];
     seating.displaySeats();
     return seating;
 }
 
 int Sale::buyTickets(UserData *currentUser, Seating &seating) {
+
     int currentTickets = currentUser->getTicketsPurchased();
     if (currentTickets >= 5) {
         cout << "Ya has comprado el numero maximo de 5 boletos.\n";
         return 0;
     }
-    int numTickets;
+    
     while (true) {
-        cout << "\nCuantos boletos desea comprar? ";
-        cin >> numTickets;
-        if (cin.fail() || numTickets < 1 || numTickets > (5 - currentTickets)) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Entrada invalida. Por favor, ingrese un numero valido.\n";
-            continue;
-        }
+        int maxTickets = 5 - currentTickets;
+        cout << "\nCuantos boletos desea comprar? (max " << maxTickets << "): ";
+
+        
+        int numTickets = readIntInRange(
+            1,
+            maxTickets,
+            "Entrada invalida. Por favor, ingrese un numero valido: "
+        );
+
+        
         if (currentUser->purchaseTickets(numTickets)) {
             return numTickets;
         }
@@ -251,19 +262,11 @@ string Sale::askCardNumber() {
     }
 }
 
-void Sale::printInvoice(UserData* currentUser,
-                        Event &event,
-                        int selectedEvent,
-                        Segment** segments,
-                        int selectedSegment,
-                        int numTickets,
-                        float ticketPrice,
-                        float discountPercentage,
-                        float totalCost,
-                        vector<pair<int, char>> &purchasedSeats,
-                        string &cardNumber)
+void Sale::printInvoice(UserData* currentUser,Event &event, int selectedEvent, Segment** segments,int selectedSegment,int numTickets,float ticketPrice,
+ float discountPercentage, float totalCost, vector<pair<int, char>> &purchasedSeats, string &cardNumber)
 {
-    cout << "==================== FACTURA ====================\n";
+   
+    cout << "\n\n==================== FACTURA ====================\n";
     cout << "Usuario: " << currentUser->getName() << endl;
     cout << "Cedula: " << currentUser->getIdNumber() << endl;
     cout << "Evento: " << event.getEvents()[selectedEvent].getName() << endl;
@@ -283,4 +286,23 @@ void Sale::printInvoice(UserData* currentUser,
     cout << "\n";
     cout << "Total pagado: $" << fixed << setprecision(2) << totalCost << "\n";
     cout << "=================================================\n";
+}
+
+int Sale::readIntInRange(int minValue, int maxValue, const std::string &errorPrompt)
+{
+    int value;
+    while (true) {
+        cin >> value;
+        
+        if (!cin.fail() && value >= minValue && value <= maxValue) {
+           
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return value;
+        }
+        
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        
+        cout << errorPrompt;
+    }
 }

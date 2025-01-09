@@ -1,21 +1,28 @@
 #ifndef SALE_H
 #define SALE_H
 
+#include <iostream>
+#include <iomanip>
 #include <map>
 #include <tuple>
 #include <vector>
 #include <string>
-#include <limits>
-#include <cctype>
+#include <limits> 
+
 #include "User.h"
 #include "Event.h"
 #include "Segment.h"
 #include "Seating.h"
 #include "Discount.h"
 
-using namespace std;
-
 class Sale {
+public:
+    void sell(User &user,
+              Event &event,
+              Segment &segment,
+              std::map<std::tuple<int,int>,Seating> &seatingMap,
+              Discount &discount);
+
 private:
     bool checkEventsAvailability(Event &event);
     UserData* getOrRegisterUser(User &user);
@@ -24,10 +31,10 @@ private:
     Seating& ensureSeating(int selectedEvent,
                            int selectedSegment,
                            Segment** segments,
-                           map<tuple<int,int>,Seating> &seatingMap);
+                           std::map<std::tuple<int,int>,Seating> &seatingMap);
     int buyTickets(UserData *currentUser, Seating &seating);
     float applyDiscountIfWanted(Discount &discount);
-    string askCardNumber();
+    std::string askCardNumber();
     void printInvoice(UserData* currentUser,
                       Event &event,
                       int selectedEvent,
@@ -37,16 +44,11 @@ private:
                       float ticketPrice,
                       float discountPercentage,
                       float totalCost,
-                      vector<pair<int, char>> &purchasedSeats,
-                      string &cardNumber);
-public:
-    void sell(User &user,
-              Event &event,
-              Segment &segment,
-              map<tuple<int,int>, Seating> &seatingMap,
-              Discount &discount);
-
-
+                      std::vector<std::pair<int, char>> &purchasedSeats,
+                      std::string &cardNumber);
+    
+    
+    int readIntInRange(int minValue, int maxValue, const std::string &errorPrompt);
 };
 
-#endif
+#endif 

@@ -30,7 +30,6 @@ public:
     void saveEvent(Event &event, Segment &segment);
     void showAbout();
     void manageCodes(Discount &discount);
-    
 
 };
 
