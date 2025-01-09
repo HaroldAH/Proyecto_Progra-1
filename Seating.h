@@ -24,7 +24,7 @@ private:
 
 public:
     Seating();
-    std::map<std::tuple<int, int>, Seating> seatingMap;
+    
     float getCost() const;
     void setCost(float c);
 
@@ -52,7 +52,7 @@ public:
     bool checkSeatStatus();
     void finishTicket();
     bool hasNotBeenUsed(int fieldId);
-    void checkSales(Event &event, Segment &segment);
+    void checkSales(Event &event, Segment &segment, map<tuple<int, int>, Seating> &seatingMap);
     int validateChoice(int &choice, int &size);
 };
 

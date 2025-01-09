@@ -12,6 +12,7 @@ Field::Field() {
 }
 
 void Field::fillField(int const sizeN, int const sizeM) {
+
     char letter;
     seatRow = 0;
     seatColumn = 0;
@@ -43,7 +44,6 @@ void Field::fillField(int const sizeN, int const sizeM) {
         printf("\n\t Porfavor introduzca un asiento valido entre 1 y %d :=> ", sizeM);
     }
 }
-
 
 int Field::getFieldId() {
     return this->fieldId;

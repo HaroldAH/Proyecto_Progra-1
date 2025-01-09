@@ -76,8 +76,13 @@ void Event::saveEvent(Event& event) {
         cin.ignore();
         getline(cin, name);  
 
-        cout << endl << "Ingrese la fecha del evento (por ejemplo: DD/MM/AAAA):" << endl;
-        getline(cin, date);
+        do {
+            cout << endl << "Ingrese la fecha del evento (por ejemplo: DD/MM/AAAA):" << endl;
+            getline(cin, date);
+            if (!isValidDate(date)) {
+                cout << "Fecha invalida. Intente nuevamente." << endl;
+            }
+        } while (!isValidDate(date));
 
         cout << endl << "Ingrese la descripcion del evento " << event.eventCount + 1 << ":" << endl;
         getline(cin, description);
@@ -92,7 +97,24 @@ void Event::saveEvent(Event& event) {
     }
 
     cout << "Se han guardado " << numEvents << " eventos correctamente." << endl << endl;
+    cout << "\nPresione Enter para continuar...";
+    cin.get();
 }
 
+bool Event::isValidDate(string &date) {
+    if (date.length() != 10) return false;
 
+    for (int i = 0; i < 10; i++) {
+        if ((i == 2 || i == 5) && date[i] != '/') return false;
+        if (i != 2 && i != 5 && (date[i] < '0' || date[i] > '9')) return false;
+    }
+
+    int day = (date[0] - '0') * 10 + (date[1] - '0');
+    int month = (date[3] - '0') * 10 + (date[4] - '0');
+
+    if (month < 1 || month > 12) return false;
+    if (day < 1 || day > 31) return false;
+
+    return true;
+}
 

@@ -1,86 +1,94 @@
-#include "discount.h"
+#include "Discount.h"
 #include <iostream>
-#include <cstdlib> 
-#include <ctime> 
-#include <string>
+#include <cstdlib>
+#include <ctime>
+#include <limits>
 
 using namespace std;
 
 Discount::Discount() {
-    discountPercentage = 0;
+    discountPercentage = 0.0f;
     discountCount = 0;
-    codes = NULL;
+    codes = nullptr;
+    used = nullptr;
+    percentages = nullptr;
 }
 
 Discount::Discount(float percentage, int count) {
-    this->discountPercentage = percentage;
-    this->discountCount = count;
-    this->codes = new DiscountCode[count];
-
-    srand(time(0));
-
-    for (int i = 0; i < count; i++) {
-        codes[i].code = generateCode();
-        codes[i].used = false;
-    }
+    discountPercentage = 0.0f;
+    discountCount = 0;
+    codes = nullptr;
+    used = nullptr;
+    percentages = nullptr;
+    configure(percentage, count);
 }
 
 Discount::~Discount() {
     delete[] codes;
+    delete[] used;
+    delete[] percentages;
+    discountCount = 0;
 }
 
 void Discount::configure(float percentage, int count) {
-    if (codes != NULL) {
-        delete[] codes;
-    }
-
-    this->discountPercentage = percentage;
-    this->discountCount = count;
-    this->codes = new DiscountCode[count];
-
     srand(time(0));
-
-    for (int i = 0; i < count; i++) {
-        codes[i].code = generateCode();
-        codes[i].used = false;
+    int oldCount = discountCount;
+    int newCount = oldCount + count;
+    string* newCodes = new string[newCount];
+    bool* newUsed = new bool[newCount];
+    float* newPercentages = new float[newCount];
+    for (int i = 0; i < oldCount; i++) {
+        newCodes[i] = codes[i];
+        newUsed[i] = used[i];
+        newPercentages[i] = percentages[i];
     }
+    for (int i = oldCount; i < newCount; i++) {
+        newCodes[i] = generateCode();
+        newUsed[i] = false;
+        newPercentages[i] = percentage;
+    }
+    if (codes) delete[] codes;
+    if (used) delete[] used;
+    if (percentages) delete[] percentages;
+    codes = newCodes;
+    used = newUsed;
+    percentages = newPercentages;
+    discountCount = newCount;
+    discountPercentage = percentage;
 }
 
 void Discount::configureDiscounts() {
-    
-    float discountPercentage;
-    int discountCount;
-
-    cout << "\n=== Configurar Descuentos ===" << endl;
+    float perc;
+    int countValue;
+    cout << "\n=== Configurar Descuentos ===\n";
     cout << "Ingrese el porcentaje de descuento: ";
-    cin >> discountPercentage;
-
-    cout << "Ingrese la cantidad de descuentos a generar: ";
-    cin >> discountCount;
-
-    configure(discountPercentage, discountCount);  
-
-    showCodes();  
+    cin >> perc;
+    cout << "Ingrese la cantidad de codigos a generar: ";
+    cin >> countValue;
+    configure(perc, countValue);
+    showCodes();
+    cout << "\nRECUERDE EL CODIGO\n";
+    cout << "Presione Enter para continuar...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
 }
 
 string Discount::generateCode() {
-    
-    string code;
-    const char characters[] =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    static const char chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     int length = 5;
+    string code;
     for (int i = 0; i < length; i++) {
-        code += characters[rand() % (sizeof(characters) - 1)];
+        code += chars[rand() % (sizeof(chars) - 1)];
     }
     return code;
 }
 
-bool Discount::verifyCode(const std::string& code) {
-
-    for (int i = 0; i < this->discountCount; i++) {
-        if (codes[i].code == code) {
-            if (!codes[i].used) {
-                codes[i].used = true;
+bool Discount::verifyCode(const string &code) {
+    for (int i = 0; i < discountCount; i++) {
+        if (codes[i] == code) {
+            if (!used[i]) {
+                used[i] = true;
+                discountPercentage = percentages[i];
                 return true;
             }
             break;
@@ -90,13 +98,15 @@ bool Discount::verifyCode(const std::string& code) {
 }
 
 float Discount::getDiscountPercentage() const {
-    return this->discountPercentage;
+    return discountPercentage;
 }
 
 void Discount::showCodes() const {
-    cout << "Generated discount codes:\n";
-    for (int i = 0; i < this->discountCount; i++) {
-        cout << codes[i].code << " - "
-             << (codes[i].used ? "Used" : "Available") << endl;
+    cout << "\n=== LISTA DE CODIGOS ===\n";
+    for (int i = 0; i < discountCount; i++) {
+        cout << codes[i] << " - "
+             << percentages[i] << "% - "
+             << (used[i] ? "Used" : "Available") << "\n";
     }
+    cout << "=========================\n";
 }

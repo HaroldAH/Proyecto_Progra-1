@@ -11,7 +11,7 @@ private:
     string description;      
     int eventCount;              
     Event* events;    
-
+    
 public:
     Event(); 
     ~Event();
@@ -34,6 +34,7 @@ public:
     bool* isEventAvailableForSegments(int index); 
 
     int getValidIntInput();
+    bool isValidDate(string &date);
 };
 
 #endif 

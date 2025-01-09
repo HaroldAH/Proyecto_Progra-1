@@ -139,6 +139,7 @@ void Segment::addSegmentData(Segment& segment) {
     segment.setPrice(price);
 
     cout << "Segmento guardado con exito." << endl << endl;
+    
 }
 
 bool Segment::askToAddSegments(int& eventIndex) {
@@ -202,7 +203,9 @@ void Segment::saveSegments(Segment& segment, int events) {
             addSegmentData(segment.segmentsByEvent[i][j]);  
         }
 
-        cout << "Se han guardado " << numSegments << " segmentos correctamente para el evento " << i + 1 << "." << endl << endl;
+        cout << "Se han guardado " << numSegments << " segmentos correctamente para el evento " << i + 1 << "." << endl;
+        cout << "\nPresione Enter para continuar...";
+        cin.get();
     }
 }
 

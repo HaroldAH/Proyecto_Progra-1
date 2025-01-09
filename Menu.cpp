@@ -15,6 +15,7 @@ void Menu::showMenu()
 {
     while (true)
     {
+        system("cls");
         int option, size = 6;
 
         cout << "\033[31m";
@@ -67,13 +68,13 @@ void Menu::showMenu()
 
         if (option == 3)
         {
-            sellTicket(user);
+            sellTicket(user); 
             continue;
         }
 
         if (option == 4)
         {
-            seating.checkSales(event,segment);
+            seating.checkSales(event, segment, seatingMap);
             continue;
         }
 
@@ -86,6 +87,7 @@ void Menu::showMenu()
         if (option == 6)
         {
             cout << "Saliendo del programa. Gracias!" << endl;
+           cin.get();
             return;
         }
 
@@ -113,18 +115,13 @@ void Menu::configureDiscounts(Discount &discount)
 {
     discount.configureDiscounts();
 
-    cout << "RECUERDE EL CODIGO\n";
-    cout << "\nPresione Enter para continuar...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
 }
 
 void Menu::configureEvent(Event &event, Segment &segment)
 {
-
     while (true)
-    {
-
+    {   
+        system("cls");
         int choice, size = 4;
         cout << "\n+=======================+" << endl;
         cout << "|   CONFIGURAR EVENTOS  |" << endl;
@@ -144,8 +141,7 @@ void Menu::configureEvent(Event &event, Segment &segment)
 
         if (choice == 2)
         {
-            int events = updateSegmentEventCount(event);
-            segment.saveSegments(segment, events);
+            segment.saveSegments(segment, updateSegmentEventCount(event));
             continue;
         }
 
@@ -157,6 +153,7 @@ void Menu::configureEvent(Event &event, Segment &segment)
 
         if (choice == 4)
         {
+            cin.get();
             return;
         }
         cout << endl
@@ -167,7 +164,7 @@ void Menu::configureEvent(Event &event, Segment &segment)
 
 void Menu::listEventAndSegments(Event &event, Segment &segment)
 {
-
+    system("cls");
     if (event.getEventCount() == 0)
     {
         cout << "No hay eventos guardados." << endl;
@@ -209,46 +206,13 @@ void Menu::listEventAndSegments(Event &event, Segment &segment)
         }
 
         cout << "--------------------------" << endl;
+        cin.get();
     }
 }
 
 void Menu::sellTicket(User &user)
 {
-
-    int choice, totalOptions = 3;
-
-    while (true)
-    {
-
-        cout << "\n+=======================+" << endl;
-        cout << "|      VENTA DE BOLETOS |" << endl;
-        cout << "+=======================+" << endl;
-
-        cout << "1. Agregar usuario" << endl;
-        cout << "2. Hacer compra" << endl;
-        cout << "3. Volver al menu principal" << endl;
-
-        validateChoice(choice, totalOptions);
-
-        if (choice == 1)
-        {
-            user.createUser(user);
-            continue;
-        }
-
-        if (choice == 2)
-        {
-            sell();
-            continue;
-        }
-
-        if (choice == 3)
-        {
-            return;
-        }
-
-        cout << "Opcion invalida. Intente nuevamente." << endl;
-    }
+    sale.sell(user, event, segment, seatingMap, discount); 
 }
 
 int Menu::updateSegmentEventCount(Event &event)
@@ -259,13 +223,13 @@ int Menu::updateSegmentEventCount(Event &event)
 
 void Menu::saveEvent(Event &event, Segment &segment)
 {
-
     int events = event.getEventCount();
     event.saveEvent(event);
 }
 
 void Menu::showAbout()
 {
+    system("cls");
     cout << "\n=========================================\n";
     cout << "               ACERCA DE                 \n";
     cout << "=========================================\n";
@@ -277,305 +241,5 @@ void Menu::showAbout()
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
 }
-
-void Menu::sell()
-{
-
-    if (event.getEventCount() == 0)
-    {
-        cout << "No hay eventos disponibles.\n";
-        return;
-    }
-
-    string idNumber;
-    User *currentUser = nullptr;
-
-    while (true)
-    {
-        cout << "Ingrese su numero de cedula: ";
-        cin >> idNumber;
-
-        currentUser = user.searchUserById(idNumber);
-
-        if (currentUser != nullptr)
-        {
-            cout << "Usuario encontrado. Bienvenido, " << currentUser->getName() << ".\n";
-            break;
-        }
-
-        cout << "Usuario no encontrado. Desea registrarse? (S/N): ";
-        char option;
-        cin >> option;
-
-        if (tolower(option) == 's')
-        {
-            user.createUser(user);
-            currentUser = user.searchUserById(idNumber);
-            if (currentUser != nullptr)
-            {
-                cout << "Usuario registrado y encontrado. Bienvenido, " << currentUser->getName() << ".\n";
-                break;
-            }
-            else
-            {
-                cout << "Error al registrar el usuario. Intente nuevamente.\n";
-            }
-        }
-        else
-        {
-            cout << "Regresando al menu principal...\n";
-            return;
-        }
-    }
-
-    cout << "Seleccione un evento:\n";
-    for (int i = 0; i < event.getEventCount(); i++)
-    {
-        cout << i + 1 << ". " << event.getEvents()[i].getName() << "\n";
-    }
-
-    int selectedEvent, totalEvents = event.getEventCount();
-    validateChoice(selectedEvent, totalEvents);
-
-    Segment **segments = segment.getSegmentsByEvent();
-    if (!segments)
-    {
-        cout << "Error: No se pudieron obtener los segmentos.\n";
-        return;
-    }
-
-    int *segmentCounts = segment.getSegmentCount();
-
-    int numSegments = segmentCounts[selectedEvent - 1];
-    delete[] segmentCounts;
-
-    if (numSegments <= 0)
-    {
-        cout << "No hay segmentos disponibles para este evento.\n";
-        return;
-    }
-
-    cout << "\nSegmentos disponibles:\n";
-    for (int i = 0; i < numSegments; i++)
-    {
-        cout << i + 1 << ". " << segments[selectedEvent - 1][i].getName()
-             << " - Precio: $" << fixed << setprecision(2) << segments[selectedEvent - 1][i].getPrice() << "\n";
-    }
-
-    int selectedSegment = validateChoice(selectedSegment, numSegments);
-    auto seatingKey = make_tuple(selectedEvent - 1, selectedSegment - 1);
-
-    if (seatingMap.find(seatingKey) == seatingMap.end())
-    {
-        Seating newSeating;
-        auto &seg = segments[selectedEvent - 1][selectedSegment - 1];
-        newSeating.setNumberOfRows(segment.getRows());
-        newSeating.setNumberOfColumns(segment.getSeats());
-        newSeating.setCost(segment.getPrice());
-        newSeating.initializeRoom();
-        seatingMap[seatingKey] = newSeating;
-    }
-
-    Seating &seating = seatingMap[seatingKey];
-    seating.displaySeats();
-
-    int currentTickets = currentUser->getTicketsPurchased();
-    if (currentTickets >= 5)
-    {
-        cout << "Ya has comprado el numero maximo de 5 boletos.\n";
-        return;
-    }
-
-    int numTickets;
-    while (true)
-    {
-        cout << "\nCuantos boletos desea comprar? ";
-        cin >> numTickets;
-
-        if (cin.fail() || numTickets < 1 || numTickets > (5 - currentTickets))
-        {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Entrada invalida. Por favor, ingrese un numero valido.\n";
-            continue;
-        }
-        if (currentUser->purchaseTickets(numTickets))
-        {
-            break;
-        }
-        cout << "No se pudo completar la compra de boletos. Intente nuevamente.\n";
-    }
-
-    vector<pair<int, char>> purchasedSeats;
-    for (int i = 0; i < numTickets; i++)
-    {
-        int row;
-        char col;
-
-        cout << "Ingrese la columna del asiento (A-" << char('A' + seating.getNumberOfColumns() - 1) << "): ";
-        cin >> col;
-
-        cout << "Ingrese la fila del asiento (1-" << seating.getNumberOfRows() << "): ";
-        cin >> row;
-
-        if (seating.getSeatPurchased()[row - 1][toupper(col) - 'A'])
-        {
-            cout << "Asiento ocupado. Elija otro.\n";
-            i--;
-        }
-        else
-        {
-            seating.getSeatPurchased()[row - 1][toupper(col) - 'A'] = true;
-            purchasedSeats.push_back({row, toupper(col)});
-            cout << "Asiento reservado con exito.\n";
-        }
-    }
-
-    string discountCode;
-    float discountPercentage = 0;
-    cout << "\nTiene un codigo de descuento? (S/N): ";
-    char useDiscount;
-    cin >> useDiscount;
-
-    if (tolower(useDiscount) == 's')
-    {
-        cout << "Ingrese su codigo de descuento: ";
-        cin.ignore();
-        getline(cin, discountCode);
-
-        if (discount.verifyCode(discountCode))
-        {
-            discountPercentage = discount.getDiscountPercentage();
-            cout << "Descuento aplicado: " << discountPercentage << "%\n";
-        }
-        else
-        {
-            cout << "Codigo de descuento invalido o ya utilizado.\n";
-        }
-    }
-
-    float ticketPrice = seating.getCost();
-    float totalCost = ticketPrice * numTickets;
-    if (discountPercentage > 0)
-    {
-        totalCost -= totalCost * (discountPercentage / 100);
-    }
-
-    string cardNumber;
-    while (true)
-    {
-        cout << "\nIngrese el numero de su tarjeta: ";
-        cin >> cardNumber;
-        if (cardNumber.length() >= 12 && cardNumber.find_first_not_of("0123456789") == string::npos)
-        {
-            break;
-        }
-        cout << "Numero de tarjeta invalido. Ingrese solo numeros con al menos 12 digitos.\n";
-    }
-
-    cout << "==================== FACTURA ====================\n";
-    cout << "Usuario: " << currentUser->getName() << endl;
-    cout << "Cedula: " << currentUser->getIdNumber() << endl;
-    cout << "Evento: " << event.getEvents()[selectedEvent - 1].getName() << endl;
-    cout << "Segmento: " << segments[selectedEvent - 1][selectedSegment - 1].getName() << endl;
-    cout << "Tarjeta: ****-****-****-" << cardNumber.substr(cardNumber.length() - 4) << endl;
-    cout << "Boletos: " << numTickets << " x $" << fixed << setprecision(2) << ticketPrice << endl;
-
-    if (discountPercentage > 0)
-    {
-        cout << "Descuento: " << discountPercentage << "%\n";
-    }
-
-    cout << "Asientos comprados: ";
-    for (const auto &seat : purchasedSeats)
-    {
-        cout << "(Fila: " << seat.first << ", Columna: " << seat.second << ") ";
-    }
-    cout << "\n";
-
-    cout << "Total pagado:" << 58 << totalCost << "\n";
-    cout << "=================================================\n";
-
-    cout << "Presione Enter para continuar...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
-}
-
-/*void Menu::checkSales(Event &event)
-{
-
-    if (event.getEventCount() == 0)
-    {
-        cout << "No hay eventos disponibles.\n";
-        return;
-    }
-
-    cout << "\nEventos disponibles:\n";
-    for (int i = 0; i < event.getEventCount(); i++)
-    {
-        cout << i + 1 << ". " << event.getEvents()[i].getName() << "\n";
-    }
-
-    int selectedEvent;
-    cout << "\nSeleccione un evento para ver sus segmentos: ";
-    int size = event.getEventCount();
-    selectedEvent = validateChoice(selectedEvent, size);
-
-    Segment **segments = segment.getSegmentsByEvent();
-    if (segments == nullptr)
-    {
-        cout << "Error: No se pudieron obtener los segmentos del evento.\n";
-        return;
-    }
-
-    int *segmentCounts = new int[event.getEventCount()];
-
-    int numSegments = segmentCounts[selectedEvent - 1];
-    delete[] segmentCounts;
-
-    if (numSegments <= 0)
-    {
-        cout << "No hay segmentos disponibles para este evento.\n";
-        return;
-    }
-
-    cout << "\nSegmentos disponibles para el evento \"" << event.getEvents()[selectedEvent - 1].getName() << "\":\n";
-    for (int i = 0; i < numSegments; i++)
-    {
-        cout << i + 1 << ". " << segments[selectedEvent - 1][i].getName()
-             << " - Precio: " << segments[selectedEvent - 1][i].getPrice() << "\n";
-    }
-
-    int selectedSegment, option = 0;
-    cout << "\nSeleccione un segmento para ver su representacion grafica: ";
-    selectedSegment = validateChoice(option, numSegments);
-
-    auto seatingKey = std::make_tuple(selectedEvent - 1, selectedSegment - 1);
-
-    if (seatingMap.find(seatingKey) == seatingMap.end())
-    {
-        Seating newSeating;
-        int rows = segments[selectedEvent - 1][selectedSegment - 1].getRows();
-        int columns = segments[selectedEvent - 1][selectedSegment - 1].getSeats();
-        float price = segments[selectedEvent - 1][selectedSegment - 1].getPrice();
-
-        newSeating.setNumberOfRows(rows);
-        newSeating.setNumberOfColumns(columns);
-        newSeating.setCost(price);
-        newSeating.initializeRoom();
-
-        seatingMap[seatingKey] = newSeating;
-    }
-
-    Seating &seating = seatingMap[seatingKey];
-    cout << "\nRepresentacion grafica del segmento \"" << segments[selectedEvent - 1][selectedSegment - 1].getName() << "\":\n";
-    seating.displaySeats();
-
-    cout << "Presione Enter para continuar...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
-}*/
-
-
 
 
