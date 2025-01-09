@@ -31,12 +31,15 @@ Discount::~Discount() {
 }
 
 void Discount::configure(float percentage, int count) {
+
     srand(time(0));
+
     int oldCount = discountCount;
     int newCount = oldCount + count;
     string* newCodes = new string[newCount];
     bool* newUsed = new bool[newCount];
     float* newPercentages = new float[newCount];
+
     for (int i = 0; i < oldCount; i++) {
         newCodes[i] = codes[i];
         newUsed[i] = used[i];
@@ -47,9 +50,11 @@ void Discount::configure(float percentage, int count) {
         newUsed[i] = false;
         newPercentages[i] = percentage;
     }
+
     if (codes) delete[] codes;
     if (used) delete[] used;
     if (percentages) delete[] percentages;
+
     codes = newCodes;
     used = newUsed;
     percentages = newPercentages;
@@ -58,6 +63,7 @@ void Discount::configure(float percentage, int count) {
 }
 
 void Discount::configureDiscounts() {
+    
     float perc;
     int countValue;
     cout << "\n=== Configurar Descuentos ===\n";

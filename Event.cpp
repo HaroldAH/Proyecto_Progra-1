@@ -102,6 +102,7 @@ void Event::saveEvent(Event& event) {
 }
 
 bool Event::isValidDate(string &date) {
+    
     if (date.length() != 10) return false;
 
     for (int i = 0; i < 10; i++) {

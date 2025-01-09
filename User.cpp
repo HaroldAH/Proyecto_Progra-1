@@ -19,7 +19,6 @@ void User::expandAndAssignUsers(User &usersObj, int quantity) {
     }
 }
 
-
 void User::createUser(User &usersObj) {
     int quantity = 0;
     std::cout << "¿Cuántos usuarios desea agregar? ";
@@ -55,7 +54,6 @@ void User::createUser(User &usersObj) {
     std::cout << "\nSe han registrado " << quantity << " usuarios correctamente.\n";
 }
 
-
 void User::createUser(User &usersObj, const std::string &idNumber) {
     
     expandAndAssignUsers(usersObj, 1);
@@ -83,7 +81,6 @@ void User::createUser(User &usersObj, const std::string &idNumber) {
               << idNumber << ".\n";
 }
 
-
 UserData* User::searchUserById(std::string &idNumber) {
     for (int i = 0; i < userCount; i++) {
         if (users[i].getIdNumber() == idNumber) {
@@ -92,3 +89,4 @@ UserData* User::searchUserById(std::string &idNumber) {
     }
     return nullptr;
 }
+

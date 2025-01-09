@@ -52,8 +52,6 @@ Segment** Segment::getSegmentsByEvent() {
     return segmentsByEvent;
 }
 
-
-
 int* Segment::getSegmentCount() { return segmentCount; }
 
 void Segment::manageSegments(Segment& segment, int& numEvents) {
@@ -139,7 +137,8 @@ void Segment::addSegmentData(Segment& segment) {
     segment.setPrice(price);
 
     cout << "Segmento guardado con exito." << endl << endl;
-    
+    cout << "\nPresione Enter para continuar...";
+    cin.get();
 }
 
 bool Segment::askToAddSegments(int& eventIndex) {
@@ -202,9 +201,6 @@ void Segment::saveSegments(Segment& segment, int events) {
         for (int j = 0; j < numSegments; j++) {
             addSegmentData(segment.segmentsByEvent[i][j]);  
         }
-
-        cout << "Se han guardado " << numSegments << " segmentos correctamente para el evento " << i + 1 << "." << endl;
-        cout << "\nPresione Enter para continuar...";
         cin.get();
     }
 }

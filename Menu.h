@@ -18,7 +18,7 @@ private:
     User user;
     Discount discount;
     Seating seating; 
-    std::map<std::tuple<int, int>, Seating> seatingMap;
+    map<std::tuple<int, int>, Seating> seatingMap;
 public:
     void showMenu();
     int validateChoice(int &choice, int &size);
@@ -29,6 +29,8 @@ public:
     int updateSegmentEventCount(Event &event);
     void saveEvent(Event &event, Segment &segment);
     void showAbout();
+    void manageCodes(Discount &discount);
+    
 
 };
 

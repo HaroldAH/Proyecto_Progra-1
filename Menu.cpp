@@ -60,9 +60,9 @@ void Menu::showMenu()
             continue;
         }
 
-        if (option == 2)
+       if (option == 2)
         {
-            configureDiscounts(discount);
+            manageCodes(discount);
             continue;
         }
 
@@ -156,9 +156,6 @@ void Menu::configureEvent(Event &event, Segment &segment)
             cin.get();
             return;
         }
-        cout << endl
-             << " Entrada invalida. Intente de nuevo." << endl
-             << endl;
     }
 }
 
@@ -206,7 +203,46 @@ void Menu::listEventAndSegments(Event &event, Segment &segment)
         }
 
         cout << "--------------------------" << endl;
-        cin.get();
+        
+    } 
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    cout << "\nPresione Enter para continuar...";
+    cin.get();
+}
+
+void Menu::manageCodes(Discount &discount)
+{
+    while (true)
+    {
+        system("cls");
+        int choice, size = 3;
+        cout << "\n+=======================+" << endl;
+        cout << "|     GESTION DE CODIGOS|" << endl;
+        cout << "+=======================+" << endl;
+        cout << "1. Generar codigos" << endl;
+        cout << "2. Mostrar registro" << endl;
+        cout << "3. Volver al menu principal" << endl;
+
+        validateChoice(choice, size);
+
+        if (choice == 1)
+        {
+            configureDiscounts(discount);
+            continue;
+        }
+
+        if (choice == 2)
+        {
+            discount.showCodes();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.get();
+            continue;
+        }
+
+        if (choice == 3)
+        {
+            return;
+        }
     }
 }
 
@@ -241,5 +277,3 @@ void Menu::showAbout()
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
 }
-
-
