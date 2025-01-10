@@ -6,6 +6,7 @@
 using namespace std; 
 
 Event::Event() {
+
     name = "";
     date = "";
     description = "";
@@ -87,7 +88,6 @@ void Event::saveEvent(Event& event) {
         cout << endl << "Ingrese la descripcion del evento " << event.eventCount + 1 << ":" << endl;
         getline(cin, description);
 
-
         event.events[event.eventCount].setName(name);  
         event.events[event.eventCount].setDate(date);
         event.events[event.eventCount].setDescription(description);
@@ -109,7 +109,7 @@ bool Event::isValidDate(string &date) {
         if ((i == 2 || i == 5) && date[i] != '/') return false;
         if (i != 2 && i != 5 && (date[i] < '0' || date[i] > '9')) return false;
     }
-    
+
     if (date[6] != '2' || date[7] != '0') return false;
 
     int day = (date[0] - '0') * 10 + (date[1] - '0');

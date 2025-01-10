@@ -45,6 +45,7 @@ float Segment::getPrice() { return price; }
 void Segment::setPrice(float& aPrice) { price = aPrice; }
 
 Segment** Segment::getSegmentsByEvent() {
+
     if (segmentsByEvent == nullptr) {
         std::cout << "No hay segmentos asociados\n";
         return nullptr;
@@ -111,7 +112,6 @@ void Segment::manageSegments(Segment& segment, int& numEvents) {
     segmentCapacity = newCapacity;  
 }
 
-
 void Segment::addSegmentData(Segment& segment) {
 
     string name;
@@ -142,7 +142,6 @@ void Segment::addSegmentData(Segment& segment) {
 }
 
 bool Segment::askToAddSegments(int& eventIndex) {
-
     char addSegments;
 
     while (true) {
@@ -206,6 +205,7 @@ void Segment::saveSegments(Segment& segment, int events) {
 }
 
 int Segment::getValidIntInput() {
+
     int input;
     while (!(cin >> input)) {
         cin.clear();

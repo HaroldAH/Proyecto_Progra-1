@@ -8,13 +8,13 @@
 using namespace std;
 
 Seating::Seating() {
+
     segmentNumber = 0;
     numberOfRows = 0;
     numberOfColumns = 0;
     cost = 0.0f;
     seatPurchased = NULL;
     fields = NULL;
-    // Inicializa la sala (en este caso, con 0 filas/columnas)
     initializeRoom();
 }
 
@@ -132,7 +132,7 @@ bool Seating::isRoomFull() {
     return (cost > 0 && numberOfRows > 0 && numberOfColumns > 0);
 }
 
-float Seating::getCost() const {
+float Seating::getCost() {
     return cost;
 }
 
@@ -153,7 +153,7 @@ void Seating::setCost(float c) {
     cost = c;
 }
 
-int Seating::getSegmentNumber() const {
+int Seating::getSegmentNumber()  {
     return segmentNumber;
 }
 
@@ -161,7 +161,7 @@ void Seating::setSegmentNumber(int segNum) {
     segmentNumber = segNum;
 }
 
-int Seating::getNumberOfRows() const {
+int Seating::getNumberOfRows()  {
     return numberOfRows;
 }
 
@@ -169,7 +169,7 @@ void Seating::setNumberOfRows(int rows) {
     numberOfRows = rows;
 }
 
-int Seating::getNumberOfColumns() const {
+int Seating::getNumberOfColumns() {
     return numberOfColumns;
 }
 
@@ -177,7 +177,7 @@ void Seating::setNumberOfColumns(int cols) {
     numberOfColumns = cols;
 }
 
-bool** Seating::getSeatPurchased() const {
+bool** Seating::getSeatPurchased()  {
     return seatPurchased;
 }
 
@@ -186,6 +186,7 @@ void Seating::setSeatPurchased(bool** seats) {
 }
 
 void Seating::sellField(int row, int column) {
+
     if (row < 0 || row >= numberOfRows || 
         column < 0 || column >= numberOfColumns) {
         cout << "\nError: Coordenadas fuera de rango.\n";

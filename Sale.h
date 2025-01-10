@@ -26,7 +26,7 @@ private:
                            std::map<std::tuple<int,int>,Seating> &seatingMap);
     int buyTickets(UserData *currentUser, Seating &seating);
     float applyDiscountIfWanted(Discount &discount);
-    std::string askCardNumber();
+    string askCardNumber();
     int readIntInRange(int minValue, int maxValue, const std::string &errorPrompt);
     void printInvoice(UserData* currentUser,
                   Event &event,
@@ -44,10 +44,11 @@ private:
 
 
 public:
+
     void sell(User &user,
               Event &event,
               Segment &segment,
-              std::map<std::tuple<int,int>,Seating> &seatingMap,
+              map<std::tuple<int,int>,Seating> &seatingMap,
               Discount &discount);
 };
 

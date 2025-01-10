@@ -25,19 +25,19 @@ private:
 public:
     Seating();
     
-    float getCost() const;
+    float getCost() ;
     void setCost(float c);
 
-    int getSegmentNumber() const;
+    int getSegmentNumber() ;
     void setSegmentNumber(int segNum);
 
-    int getNumberOfRows() const;
+    int getNumberOfRows() ;
     void setNumberOfRows(int rows);
 
-    int getNumberOfColumns() const;
+    int getNumberOfColumns() ;
     void setNumberOfColumns(int cols);
 
-    bool **getSeatPurchased() const;
+    bool **getSeatPurchased() ;
     void setSeatPurchased(bool **seats);
 
     void initializeRoom();

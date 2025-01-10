@@ -79,7 +79,6 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
     delete[] purchasedCols;  
 }
 
-
 bool Sale::checkEventsAvailability(Event &event) {
 
     if (event.getEventCount() == 0) {
@@ -256,7 +255,7 @@ float Sale::applyDiscountIfWanted(Discount &discount) {
 string Sale::askCardNumber() {
 
     while (true) {
-        cout << "\nIngrese el numero de su tarjeta: ";
+        cout << "\nIngrese el numero de su tarjeta (12 digitos): ";
         string cardNumber;
         cin >> cardNumber;
         if (cardNumber.length() >= 12 && 
@@ -264,7 +263,7 @@ string Sale::askCardNumber() {
         {
             return cardNumber;
         }
-        cout << "Numero de tarjeta invalido. Ingrese solo numeros con al menos 12 digitos.\n";
+        cout << "Numero de tarjeta invalido.\n";
     }
 }
 

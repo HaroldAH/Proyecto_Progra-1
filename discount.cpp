@@ -7,6 +7,7 @@
 using namespace std;
 
 Discount::Discount() {
+
     discountPercentage = 0.0f;
     discountCount = 0;
     codes = nullptr;
@@ -25,6 +26,7 @@ Discount::Discount(float percentage, int count) {
 }
 
 Discount::~Discount() {
+    
     delete[] codes;
     delete[] used;
     delete[] percentages;
@@ -77,6 +79,7 @@ void Discount::configureDiscounts() {
 }
 
 string Discount::generateCode() {
+
     static const char chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     int length = 5;
     string code;
@@ -86,7 +89,8 @@ string Discount::generateCode() {
     return code;
 }
 
-bool Discount::verifyCode(const string &code) {
+bool Discount::verifyCode( string &code) {
+
     for (int i = 0; i < discountCount; i++) {
         if (codes[i] == code) {
             if (!used[i]) {
@@ -100,11 +104,12 @@ bool Discount::verifyCode(const string &code) {
     return false;
 }
 
-float Discount::getDiscountPercentage() const {
+float Discount::getDiscountPercentage()  {
     return discountPercentage;
 }
 
-void Discount::showCodes() const {
+void Discount::showCodes() {
+
     cout << "\n=== LISTA DE CODIGOS ===\n";
     for (int i = 0; i < discountCount; i++) {
         cout << codes[i] << " - "
