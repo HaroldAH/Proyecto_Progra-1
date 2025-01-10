@@ -67,6 +67,7 @@ bool User::isValidDate(string &birthDate) {
 }
 
 UserData* User::searchUserById(string &idNumber) {
+    
     for (int i = 0; i < userCount; i++) {
         if (users[i].getIdNumber() == idNumber) {
             return &users[i];

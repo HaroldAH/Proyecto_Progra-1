@@ -205,6 +205,8 @@ int Sale::buyTickets(UserData *currentUser, Seating &seating) {
     int currentTickets = currentUser->getTicketsPurchased();
     if (currentTickets >= 5) {
         cout << "Ya has comprado el numero maximo de 5 boletos.\n";
+        cout << "Presiona Enter para continuar..."<<endl;
+        cin.get(); 
         return 0;
     }
     

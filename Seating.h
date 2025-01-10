@@ -39,7 +39,7 @@ public:
 
     bool **getSeatPurchased() ;
     void setSeatPurchased(bool **seats);
-
+    
     void initializeRoom();
     void displaySeats();
     bool isRoomFull();

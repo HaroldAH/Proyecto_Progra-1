@@ -43,8 +43,16 @@ void Seating::initializeRoom() {
     }
 }
 
+std::string getColumnLabel(int index) {
+    std::string label;
+    while (index >= 0) {
+        label = char('A' + (index % 26)) + label;
+        index = (index / 26) - 1;
+    }
+    return label;
+}
+
 void Seating::displaySeats() {
-    
     char color[] = "\033[37m";
     char topLeft = 201, topRight = 187, bottomLeft = 200, bottomRight = 188;
     char horizontalLine = 205, verticalLine = 186, screenBlock = 178;
@@ -53,81 +61,63 @@ void Seating::displaySeats() {
     cout << "\t\033[32m Verde: Disponible \n";
     cout << "\t\033[31m Rojo: Vendido \n\n";
 
-    
-    cout << "\t\033[37m";
-    for (int k = 65; k < 65 + numberOfColumns; k++) {
-        cout << "   " << char(k) << "   ";
-    }
-    cout << "\n\t" << topLeft;
+    int blockSize = 15; 
+    int rowsPerBlock = 3; 
+    int totalBlocks = (numberOfColumns + blockSize - 1) / blockSize;
 
-    
-    for (int k = 0; k < numberOfColumns * 7; k++) {
-        cout << horizontalLine;
-    }
-    cout << topRight << "\n";
+    for (int block = 0; block < totalBlocks; ++block) {
+        int startColumn = block * blockSize;
+        int endColumn = std::min(startColumn + blockSize, numberOfColumns);
 
-    
-    cout << "\t" << verticalLine;
-    for (int i = 0; i < numberOfColumns * 2; i++) {
-        cout << " ";
-    }
-    for (int p = 0; p < numberOfColumns * 3; p++) {
-        cout << screenBlock;
-    }
-    for (int i = 0; i < numberOfColumns * 2; i++) {
-        cout << " ";
-    }
-    cout << verticalLine << "\n";
+       
+        cout << "\t\033[37m";
+        for (int col = startColumn; col < endColumn; ++col) {
+            cout << "   " << getColumnLabel(col) << "   ";
+        }
+        cout << "\n\t" << topLeft;
 
-   
-    for (int j = 0; j < numberOfRows * 3 + 1; j++) {
-        cout << "\t\033[37m" << verticalLine;
+     
+        for (int col = startColumn; col < endColumn; ++col) {
+            cout << string(7, horizontalLine);
+        }
+        cout << topRight << "\n";
 
-        if (j % 3 == 0) {
-            
-            for (int k = 0; k < numberOfColumns * 7; k++) {
-                cout << " ";
-            }
-        } 
-        else if (j % 3 == 1) {
-            
-            for (int k = 0; k < numberOfColumns; k++) {
-                
-                if (seatPurchased && seatPurchased[(j - 1) / 3][k]) {
-                    
-                    color[3] = '1';
-                } else {
-                    
-                    color[3] = '2';
+      
+        for (int row = 0; row < numberOfRows; ++row) {
+            for (int subRow = 0; subRow < rowsPerBlock; ++subRow) {
+                cout << "\t" << verticalLine;
+
+                for (int col = startColumn; col < endColumn; ++col) {
+                    if (subRow == 0) {
+                        cout << "       ";
+                    } else if (subRow == 1) {
+                        if (seatPurchased && seatPurchased[row][col]) {
+                            color[3] = '1'; 
+                        } else {
+                            color[3] = '2'; 
+                        }
+                        cout << color << "  " << leftPad << centerPad << rightPad << "  ";
+                    } else {
+                        cout << "   " << backPad << "   ";
+                    }
                 }
-                cout << color;  
-                cout << "  " << leftPad << centerPad << rightPad << "  ";
-            }
-        } 
-        else {
-            
-            for (int k = 0; k < numberOfColumns; k++) {
-                cout << "   " << backPad << "   ";
+
+                cout << "\033[37m" << verticalLine;
+                if (subRow == 1) {
+                    cout << "   " << row + 1;
+                }
+                cout << "\n";
             }
         }
 
-        
-        cout << "\033[37m" << verticalLine;
-        
-        if (j % 3 == 1) {
-            cout << "     " << (j - 1) / 3 + 1;
+      
+        cout << "\t" << bottomLeft;
+        for (int col = startColumn; col < endColumn; ++col) {
+            cout << string(7, horizontalLine);
         }
-        cout << "\n";
+        cout << bottomRight << "\n";
     }
-
-    
-    cout << "\t\033[37m" << bottomLeft;
-    for (int p = 0; p < numberOfColumns * 7; p++) {
-        cout << horizontalLine;
-    }
-    cout << bottomRight << "\n";
 }
-
 bool Seating::isRoomFull() {
     return (cost > 0 && numberOfRows > 0 && numberOfColumns > 0);
 }
