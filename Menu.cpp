@@ -162,6 +162,9 @@ void Menu::listEventAndSegments(Event &event, Segment &segment)
     if (event.getEventCount() == 0)
     {
         cout << "No hay eventos guardados." << endl;
+        cout << "Presione Enter para continuar...";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.get(); 
         return;
     }
 

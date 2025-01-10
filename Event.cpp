@@ -37,9 +37,8 @@ int Event::getEventCount(){ return eventCount; };
 int Event::getValidIntInput() 
 {
     int input;
-    while (!(cin >> input)) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    while (!(cin >> input )|| input <= 0) {
+        cin.get();
         cout << "Por favor, ingrese un numero valido." << endl;
     }
     return input;
@@ -47,18 +46,28 @@ int Event::getValidIntInput()
 
 void Event::expandAndAssignEvents(Event& event, int& numEvents) {
     
-    if (event.eventCount + numEvents > 0) {
-        int newCapacity = event.eventCount + numEvents;
-
-        Event* newEvents = new Event[newCapacity];
-        for (int j = 0; j < event.eventCount; j++) {
-            newEvents[j] = event.events[j];  
-        }
-        delete[] event.events;  
-        event.events = newEvents;  
-         
+    if (numEvents <= 0) {
+        cout << "El número de eventos debe ser mayor a cero." << endl;
+        return;
     }
+
+    
+    int newCapacity = event.eventCount + numEvents;
+
+    
+    Event* newEvents = new Event[newCapacity];
+
+   
+    for (int j = 0; j < event.eventCount; j++) {
+        newEvents[j] = event.events[j];
+    }
+
+   
+    delete[] event.events;
+
+    event.events = newEvents;
 }
+
 
 void Event::saveEvent(Event& event) {
 

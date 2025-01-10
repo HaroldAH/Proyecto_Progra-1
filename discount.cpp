@@ -35,6 +35,7 @@ Discount::~Discount() {
 
 void Discount::configure(float percentage, int count) {
 
+    if (count <= 0) return;
     srand(time(0));
 
     int oldCount = discountCount;
@@ -67,14 +68,14 @@ void Discount::configure(float percentage, int count) {
 
 void Discount::configureDiscounts() {
 
-    float perc;
+    float percentage;
     int countValue;
     cout << "\n=== Configurar Descuentos ===\n";
     cout << "Ingrese el porcentaje de descuento: ";
-    cin >> perc;
+    percentage = getValidIntInput();
     cout << "Ingrese la cantidad de codigos a generar: ";
-    cin >> countValue;
-    configure(perc, countValue);
+    countValue = getValidIntInput();
+    configure(percentage, countValue);
     showCodes();
 }
 
@@ -120,4 +121,15 @@ void Discount::showCodes() {
     cout << "\nPresione Enter para continuar...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();  
+}
+
+int Discount::getValidIntInput() {
+
+    int input;
+    while (!(cin >> input) || input <= 0) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Por favor, ingrese un numero valido." << endl;
+    }
+    return input;
 }

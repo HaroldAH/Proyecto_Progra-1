@@ -12,6 +12,7 @@ private:
     string* codes;
     bool* used;
     float* percentages;
+    string generateCode();
 
 public:
     
@@ -30,9 +31,10 @@ public:
     float getDiscountPercentage() ;
 
     void showCodes() ;
+    
+    int getValidIntInput();
+    
+        
+    };
 
-private:
-    string generateCode();
-};
-
-#endif
+    #endif

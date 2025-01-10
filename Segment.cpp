@@ -188,12 +188,6 @@ void Segment::saveSegments(Segment& segment, int events) {
         cout << "Cuantos segmentos desea agregar al evento " << i + 1 << "?" << endl;
         numSegments = getValidIntInput();
 
-      
-        if (numSegments <= 0) {
-            cout << "Numero de segmentos invalido." << endl;
-            continue;
-        }
-
         segment.segmentCount[i] = numSegments;
         segment.segmentsByEvent[i] = new Segment[numSegments];  
 
@@ -207,7 +201,7 @@ void Segment::saveSegments(Segment& segment, int events) {
 int Segment::getValidIntInput() {
 
     int input;
-    while (!(cin >> input)) {
+    while (!(cin >> input) || input <= 0) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Por favor, ingrese un numero valido." << endl;

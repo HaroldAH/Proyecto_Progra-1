@@ -241,6 +241,9 @@ void Seating::checkSales(Event &event, Segment &segment, map<tuple<int, int>, Se
 {
     if (event.getEventCount() == 0) {
         cout << "No hay eventos disponibles.\n";
+        cout << "Presione Enter para continuar...";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.get(); 
         return;
     }
 
