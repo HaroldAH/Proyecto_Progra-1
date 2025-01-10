@@ -5,9 +5,8 @@
 #include <iomanip>
 #include <map>
 #include <tuple>
-#include <vector>
 #include <string>
-#include <limits> 
+#include <limits>
 
 #include "User.h"
 #include "Event.h"
@@ -16,13 +15,6 @@
 #include "Discount.h"
 
 class Sale {
-public:
-    void sell(User &user,
-              Event &event,
-              Segment &segment,
-              std::map<std::tuple<int,int>,Seating> &seatingMap,
-              Discount &discount);
-
 private:
     bool checkEventsAvailability(Event &event);
     UserData* getOrRegisterUser(User &user);
@@ -35,20 +27,28 @@ private:
     int buyTickets(UserData *currentUser, Seating &seating);
     float applyDiscountIfWanted(Discount &discount);
     std::string askCardNumber();
-    void printInvoice(UserData* currentUser,
-                      Event &event,
-                      int selectedEvent,
-                      Segment** segments,
-                      int selectedSegment,
-                      int numTickets,
-                      float ticketPrice,
-                      float discountPercentage,
-                      float totalCost,
-                      std::vector<std::pair<int, char>> &purchasedSeats,
-                      std::string &cardNumber);
-    
-    
     int readIntInRange(int minValue, int maxValue, const std::string &errorPrompt);
+    void printInvoice(UserData* currentUser,
+                  Event &event,
+                  int selectedEvent,
+                  Segment** segments,
+                  int selectedSegment,
+                  int numTickets,
+                  float ticketPrice,
+                  float discountPercentage,
+                  float totalCost,
+                  int* purchasedRows,
+                  char* purchasedCols,
+                  int numPurchasedSeats,
+                  std::string cardNumber);
+
+
+public:
+    void sell(User &user,
+              Event &event,
+              Segment &segment,
+              std::map<std::tuple<int,int>,Seating> &seatingMap,
+              Discount &discount);
 };
 
-#endif 
+#endif

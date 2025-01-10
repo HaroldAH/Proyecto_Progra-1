@@ -10,7 +10,6 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
     if (!currentUser) return;
 
     int selectedEvent = chooseEvent(event);
-    
     if (selectedEvent < 0) return;
 
     int selectedSegment = chooseSegment(segment, selectedEvent);
@@ -22,7 +21,8 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
     int numTickets = buyTickets(currentUser, seating);
     if (numTickets <= 0) return;
 
-    vector<pair<int, char>> purchasedSeats(numTickets);
+    int* purchasedRows = new int[numTickets];  
+    char* purchasedCols = new char[numTickets];  
 
     for (int i = 0; i < numTickets; i++) {
         int row;
@@ -36,7 +36,6 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
              << seating.getNumberOfRows() << "): ";
         cin >> row;
 
-       
         if (row < 1 || row > seating.getNumberOfRows() ||
             toupper(col) < 'A' ||
             toupper(col) >= 'A' + seating.getNumberOfColumns())
@@ -53,7 +52,9 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
         }
 
         seating.getSeatPurchased()[row - 1][toupper(col) - 'A'] = true;
-        purchasedSeats[i] = make_pair(row, toupper(col));
+        purchasedRows[i] = row;
+        purchasedCols[i] = toupper(col);
+
         cout << "Asiento reservado con exito.\n";
     }
 
@@ -67,13 +68,17 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
 
     string cardNumber = askCardNumber();
     printInvoice(currentUser, event, selectedEvent, segments, selectedSegment,
-                 numTickets, ticketPrice, discountPercentage,
-                 totalCost, purchasedSeats, cardNumber);
+             numTickets, ticketPrice, discountPercentage,
+             totalCost, purchasedRows, purchasedCols, numTickets, cardNumber);
 
     cout << "Presione Enter para continuar...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
+
+    delete[] purchasedRows;  
+    delete[] purchasedCols;  
 }
+
 
 bool Sale::checkEventsAvailability(Event &event) {
 
@@ -94,8 +99,7 @@ UserData* Sale::getOrRegisterUser(User &user) {
 
         UserData* currentUser = user.searchUserById(idNumber);
         if (currentUser) {
-            cout << "Usuario encontrado. Bienvenido, "
-                 << currentUser->getName() << ".\n";
+            cout << "Usuario encontrado. Bienvenido, "<< currentUser->getName() << ".\n";
             return currentUser;
         }
 
@@ -264,29 +268,29 @@ string Sale::askCardNumber() {
     }
 }
 
-void Sale::printInvoice(UserData* currentUser,Event &event, int selectedEvent, Segment** segments,int selectedSegment,int numTickets,float ticketPrice,
- float discountPercentage, float totalCost, vector<pair<int, char>> &purchasedSeats, string &cardNumber)
-{
-   
-    cout << "\n\n==================== FACTURA ====================\n";
+void Sale::printInvoice(UserData* currentUser, Event &event, int selectedEvent, Segment** segments, int selectedSegment,
+                        int numTickets, float ticketPrice, float discountPercentage, float totalCost,
+                        int* purchasedRows, char* purchasedCols, int numPurchasedSeats, std::string cardNumber) {
+    cout << "\n\n==================== FACTURA ====================\n\n";
     cout << "Usuario: " << currentUser->getName() << endl;
     cout << "Cedula: " << currentUser->getIdNumber() << endl;
     cout << "Evento: " << event.getEvents()[selectedEvent].getName() << endl;
     cout << "Segmento: " << segments[selectedEvent][selectedSegment].getName() << endl;
     cout << "Tarjeta: ****-****-****-" << cardNumber.substr(cardNumber.length() - 4) << endl;
-    cout << "Boletos: " << numTickets << " x $"<< fixed << setprecision(2) << ticketPrice << endl;
+    cout << "Boletos: " << numTickets << " x $" << fixed << setprecision(2) << ticketPrice << endl;
     if (discountPercentage > 0) {
         cout << "Descuento: " << discountPercentage << "%\n";
     }
     cout << "Asientos comprados: ";
-    for (int i = 0; i < (int)purchasedSeats.size(); i++) {
-        cout << "(Fila: " << purchasedSeats[i].first
-             << ", Columna: " << purchasedSeats[i].second << ") ";
+    for (int i = 0; i < numPurchasedSeats; i++) {
+        cout << "(Fila: " << purchasedRows[i]
+             << ", Columna: " << purchasedCols[i] << ") ";
     }
     cout << "\n";
     cout << "Total pagado: $" << fixed << setprecision(2) << totalCost << "\n";
     cout << "=================================================\n";
 }
+
 
 int Sale::readIntInRange(int minValue, int maxValue, const std::string &errorPrompt)
 {
