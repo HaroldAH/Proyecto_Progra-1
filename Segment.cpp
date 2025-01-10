@@ -55,42 +55,41 @@ Segment** Segment::getSegmentsByEvent() {
 int* Segment::getSegmentCount() { return segmentCount; }
 
 void Segment::manageSegments(Segment& segment, int& numEvents) {
-
     if (numEvents <= 0) {
         cout << "No hay eventos disponibles." << endl;
         return;
     }
 
+    
     if (segment.segmentsByEvent == nullptr) {
-        segment.segmentsByEvent = new Segment*[numEvents];
-        segment.segmentCount = new int[numEvents];
+        segmentCapacity = numEvents;  
 
-        for (int i = 0; i < numEvents; i++) {
+        segment.segmentsByEvent = new Segment*[segmentCapacity];
+        segment.segmentCount = new int[segmentCapacity];
+
+        for (int i = 0; i < segmentCapacity; i++) {
             segment.segmentsByEvent[i] = nullptr;
             segment.segmentCount[i] = 0;
         }
         return;
     }
 
-    
-    int currentCapacity = segmentCapacity; 
+    int currentCapacity = segmentCapacity;
 
     
     if (numEvents <= currentCapacity) {
         return;
     }
 
-    
     int newCapacity = currentCapacity * 2; 
     if (newCapacity < numEvents) {
         newCapacity = numEvents; 
     }
 
-    
     int* newSegmentCount = new int[newCapacity];
     Segment** newSegmentsByEvent = new Segment*[newCapacity];
 
-    
+   
     for (int i = 0; i < currentCapacity; i++) {
         newSegmentCount[i] = segment.segmentCount[i];
         newSegmentsByEvent[i] = segment.segmentsByEvent[i];
@@ -102,15 +101,16 @@ void Segment::manageSegments(Segment& segment, int& numEvents) {
         newSegmentCount[i] = 0;
     }
 
-   
+    
     delete[] segment.segmentsByEvent;
     delete[] segment.segmentCount;
 
     
     segment.segmentsByEvent = newSegmentsByEvent;
     segment.segmentCount = newSegmentCount;
-    segmentCapacity = newCapacity;
+    segmentCapacity = newCapacity;  
 }
+
 
 void Segment::addSegmentData(Segment& segment) {
 

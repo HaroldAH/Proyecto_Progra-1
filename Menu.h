@@ -19,6 +19,7 @@ private:
     Discount discount;
     Seating seating; 
     map<std::tuple<int, int>, Seating> seatingMap;
+    
 public:
     void showMenu();
     int validateChoice(int &choice, int &size);

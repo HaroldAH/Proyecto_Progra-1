@@ -19,8 +19,7 @@ Seating::Seating() {
 }
 
 void Seating::initializeRoom() {
-    // Si existiera memoria previa en seatPurchased, la liberaríamos:
-    // (Opcional si tu clase nunca reasigna rows/columns después del ctor)
+    
     if (seatPurchased) {
         for (int i = 0; i < numberOfRows; i++) {
             delete[] seatPurchased[i];
@@ -29,14 +28,13 @@ void Seating::initializeRoom() {
         seatPurchased = nullptr;
     }
 
-    // Crear la matriz solo si numberOfRows y numberOfColumns > 0
     if (numberOfRows > 0 && numberOfColumns > 0) {
         seatPurchased = new bool*[numberOfRows];
         for (int i = 0; i < numberOfRows; i++) {
             seatPurchased[i] = new bool[numberOfColumns];
         }
 
-        // Inicializar en false (asientos libres)
+        
         for (int i = 0; i < numberOfRows; i++) {
             for (int j = 0; j < numberOfColumns; j++) {
                 seatPurchased[i][j] = false;
@@ -139,6 +137,7 @@ float Seating::getCost() const {
 }
 
 void Seating::displayRoomInfo() {
+    
     cout << "\n\t El numero de la sala es : " << segmentNumber;
     cout << "\n\t El costo de la sala es : $" 
          << fixed << setprecision(2) << cost;
@@ -247,9 +246,7 @@ void Seating::finishTicket() {
     fields[numberOfFields - 1].fillField(numberOfColumns, numberOfRows);
 }
 
-void Seating::checkSales(Event &event,
-                         Segment &segment,
-                         map<tuple<int, int>, Seating> &seatingMap)
+void Seating::checkSales(Event &event, Segment &segment, map<tuple<int, int>, Seating> &seatingMap)
 {
     if (event.getEventCount() == 0) {
         cout << "No hay eventos disponibles.\n";
@@ -294,7 +291,7 @@ void Seating::checkSales(Event &event,
     }
 
     int selectedSegment, option = 0;
-    cout << "\nSeleccione un segmento para ver su representacion grafica: ";
+    cout << "\nSeleccione un segmento: ";
     selectedSegment = validateChoice(option, numSegments);
 
     
@@ -316,7 +313,7 @@ void Seating::checkSales(Event &event,
         tempSeating.setCost(price);
         tempSeating.initializeRoom();
 
-        cout << "\nVista de la sala vacía (sin ventas):\n";
+        cout << "\nVista de la sala vacia (sin ventas):\n";
         tempSeating.displaySeats();
     }
     else {

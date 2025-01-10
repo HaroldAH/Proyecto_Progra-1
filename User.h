@@ -60,7 +60,7 @@ public:
 
     
     void createUser(User &usersObj);
-
+    bool isValidDate(string &date);
     
     void createUser(User &usersObj, const string &idNumber);
 

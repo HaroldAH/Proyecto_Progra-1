@@ -74,10 +74,6 @@ void Discount::configureDiscounts() {
     cin >> countValue;
     configure(perc, countValue);
     showCodes();
-    cout << "\nRECUERDE EL CODIGO\n";
-    cout << "Presione Enter para continuar...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
 }
 
 string Discount::generateCode() {
@@ -113,7 +109,10 @@ void Discount::showCodes() const {
     for (int i = 0; i < discountCount; i++) {
         cout << codes[i] << " - "
              << percentages[i] << "% - "
-             << (used[i] ? "Used" : "Available") << "\n";
+             << (used[i] ? "Usado" : "Disponible") << "\n";
     }
     cout << "=========================\n";
+    cout << "\nPresione Enter para continuar...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();  
 }

@@ -90,9 +90,6 @@ void Menu::showMenu()
            cin.get();
             return;
         }
-
-        cout << "Entrada inválida. Intente de nuevo." << endl
-             << endl;
     }
 }
 
@@ -234,8 +231,6 @@ void Menu::manageCodes(Discount &discount)
         if (choice == 2)
         {
             discount.showCodes();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cin.get();
             continue;
         }
 

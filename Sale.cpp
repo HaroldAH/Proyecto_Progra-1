@@ -112,8 +112,8 @@ UserData* Sale::getOrRegisterUser(User &user) {
 
         currentUser = user.searchUserById(idNumber);
         if (currentUser) {
-            cout << "Usuario registrado."<<endl << "Bienvenido "
-                 << currentUser->getName() << "procederemos con la compra:"<<endl;
+            cout <<endl<< "Usuario registrado."<<endl << "Bienvenido "
+                 << currentUser->getName() << " procederemos con la compra:"<<endl;
             return currentUser;
         }
 
@@ -225,6 +225,7 @@ int Sale::buyTickets(UserData *currentUser, Seating &seating) {
 }
 
 float Sale::applyDiscountIfWanted(Discount &discount) {
+
     cout << "\nTiene un codigo de descuento? (S/N): ";
     char useDiscount;
     cin >> useDiscount;
@@ -249,6 +250,7 @@ float Sale::applyDiscountIfWanted(Discount &discount) {
 }
 
 string Sale::askCardNumber() {
+
     while (true) {
         cout << "\nIngrese el numero de su tarjeta: ";
         string cardNumber;
@@ -271,10 +273,8 @@ void Sale::printInvoice(UserData* currentUser,Event &event, int selectedEvent, S
     cout << "Cedula: " << currentUser->getIdNumber() << endl;
     cout << "Evento: " << event.getEvents()[selectedEvent].getName() << endl;
     cout << "Segmento: " << segments[selectedEvent][selectedSegment].getName() << endl;
-    cout << "Tarjeta: ****-****-****-" 
-         << cardNumber.substr(cardNumber.length() - 4) << endl;
-    cout << "Boletos: " << numTickets << " x $"
-         << fixed << setprecision(2) << ticketPrice << endl;
+    cout << "Tarjeta: ****-****-****-" << cardNumber.substr(cardNumber.length() - 4) << endl;
+    cout << "Boletos: " << numTickets << " x $"<< fixed << setprecision(2) << ticketPrice << endl;
     if (discountPercentage > 0) {
         cout << "Descuento: " << discountPercentage << "%\n";
     }
