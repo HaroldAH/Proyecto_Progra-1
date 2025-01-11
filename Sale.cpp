@@ -77,7 +77,8 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
 
     delete[] purchasedRows;  
     delete[] purchasedCols;  
-}
+} 
+
 
 bool Sale::checkEventsAvailability(Event &event) {
 
@@ -233,29 +234,41 @@ int Sale::buyTickets(UserData *currentUser, Seating &seating) {
 }
 
 float Sale::applyDiscountIfWanted(Discount &discount) {
-
     cout << "\nTiene un codigo de descuento? (S/N): ";
     char useDiscount;
     cin >> useDiscount;
 
     if (tolower(useDiscount) != 's') {
-        return 0.0f; 
+        return 0.0f;
     }
 
-    cout << "Ingrese su codigo de descuento: ";
-    cin.ignore();
-    string discountCode;
-    getline(cin, discountCode);
+    cin.ignore(); 
 
-    if (discount.verifyCode(discountCode)) {
-        float discountPercentage = discount.getDiscountPercentage();
-        cout << "Descuento aplicado: " << discountPercentage << "%\n";
-        return discountPercentage; 
+    while (true) {
+
+        cout << "Ingrese su codigo de descuento: ";
+        string discountCode;
+        getline(cin, discountCode);
+
+        if (discount.verifyCode(discountCode)) {
+            float discountPercentage = discount.getDiscountPercentage();
+            cout << "Descuento aplicado: " << discountPercentage << "%\n";
+            return discountPercentage;
+        }
+
+        cout << "Codigo de descuento invalido o ya utilizado.\n";
+        cout << "Desea intentarlo nuevamente? (S/N): ";
+        cin >> useDiscount;
+        if (tolower(useDiscount) != 's') {
+            break; 
+        }
+        cin.ignore(); 
     }
 
-    cout << "Codigo de descuento invalido o ya utilizado.\n";
-    return 0.0f; 
+    cout << "No se aplico ningun descuento.\n";
+    return 0.0f;
 }
+
 
 string Sale::askCardNumber() {
 
