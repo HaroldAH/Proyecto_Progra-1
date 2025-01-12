@@ -5,7 +5,6 @@
 #include <map>
 #include <tuple>
 #include <limits>
-
 #include "Event.h"
 #include "Segment.h"
 

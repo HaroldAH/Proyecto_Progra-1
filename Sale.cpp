@@ -25,35 +25,54 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
     char* purchasedCols = new char[numTickets];  
 
     for (int i = 0; i < numTickets; i++) {
-        int row;
-        char col;
+        int row = -1;
+        char col = '\0';
 
-        cout << "Ingrese la columna del asiento (A-"
-             << char('A' + seating.getNumberOfColumns() - 1) << "): ";
-        cin >> col;
+        while (true) {
+            cout << "Ingrese la columna del asiento (A-"
+                 << char('A' + seating.getNumberOfColumns() - 1) << "): ";
+            string buffer;
+            cin >> buffer;
 
-        cout << "Ingrese la fila del asiento (1-"
-             << seating.getNumberOfRows() << "): ";
-        cin >> row;
+            if (buffer.size() == 1) {
+                col = toupper(buffer[0]);
+                if (col >= 'A' && col < char('A' + seating.getNumberOfColumns())) {
+                    break;
+                }
+                cout << "Columna fuera de rango. Intente de nuevo.\n";
+                continue;
+            }
 
-        if (row < 1 || row > seating.getNumberOfRows() ||
-            toupper(col) < 'A' ||
-            toupper(col) >= 'A' + seating.getNumberOfColumns())
-        {
-            cout << "Asiento fuera de rango. Elija otro.\n";
-            i--; 
-            continue;
+            cout << "Error: ingrese SOLO una letra (A-"
+                 << char('A' + seating.getNumberOfColumns() - 1) << ").\n";
         }
 
-        if (seating.getSeatPurchased()[row - 1][toupper(col) - 'A']) {
+        while (true) {
+            cout << "Ingrese la fila del asiento (1-"
+                 << seating.getNumberOfRows() << "): ";
+
+            if (cin >> row) {
+                if (row >= 1 && row <= seating.getNumberOfRows()) {
+                    break;
+                }
+                cout << "Fila fuera de rango. Intente de nuevo.\n";
+                continue;
+            }
+
+            cout << "Entrada invalida. Por favor ingrese un numero.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+
+        if (seating.getSeatPurchased()[row - 1][col - 'A']) {
             cout << "Asiento ocupado. Elija otro.\n";
             i--;
             continue;
         }
 
-        seating.getSeatPurchased()[row - 1][toupper(col) - 'A'] = true;
+        seating.getSeatPurchased()[row - 1][col - 'A'] = true;
         purchasedRows[i] = row;
-        purchasedCols[i] = toupper(col);
+        purchasedCols[i] = col;
 
         cout << "Asiento reservado con exito.\n";
     }
@@ -68,8 +87,8 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
 
     string cardNumber = askCardNumber();
     printInvoice(currentUser, event, selectedEvent, segments, selectedSegment,
-             numTickets, ticketPrice, discountPercentage,
-             totalCost, purchasedRows, purchasedCols, numTickets, cardNumber);
+                 numTickets, ticketPrice, discountPercentage,
+                 totalCost, purchasedRows, purchasedCols, numTickets, cardNumber);
 
     cout << "Presione Enter para continuar...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -77,7 +96,7 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
 
     delete[] purchasedRows;  
     delete[] purchasedCols;  
-} 
+}
 
 bool Sale::checkEventsAvailability(Event &event) {
 
@@ -174,7 +193,6 @@ int Sale::chooseSegment(Segment &segment, int selectedEvent) {
              << segments[selectedEvent][i].getPrice()
              << "\n";
     }
-
     
     int chosen = readIntInRange(
         1,
@@ -234,18 +252,18 @@ int Sale::buyTickets(UserData *currentUser, Seating &seating) {
 }
 
 float Sale::applyDiscountIfWanted(Discount &discount) {
+
     cout << "\nTiene un codigo de descuento? (S/N): ";
     char useDiscount;
     cin >> useDiscount;
+    cin.ignore(); 
+    useDiscount = tolower(useDiscount);
 
-    if (tolower(useDiscount) != 's') {
+    if (useDiscount != 's') {
         return 0.0f;
     }
 
-    cin.ignore(); 
-
     while (true) {
-
         cout << "Ingrese su codigo de descuento: ";
         string discountCode;
         getline(cin, discountCode);
@@ -257,18 +275,27 @@ float Sale::applyDiscountIfWanted(Discount &discount) {
         }
 
         cout << "Codigo de descuento invalido o ya utilizado.\n";
-        cout << "Desea intentarlo nuevamente? (S/N): ";
-        cin >> useDiscount;
-        if (tolower(useDiscount) != 's') {
-            break; 
+
+        while (true) {
+            cout << "Desea intentarlo nuevamente? (S/N): ";
+            cin >> useDiscount;
+            cin.ignore();
+            useDiscount = tolower(useDiscount);
+
+            if (useDiscount == 's' || useDiscount == 'n') {
+                break; 
+            }
+            cout << "Opcion no valida. Por favor ingrese S o N.\n";
         }
-        cin.ignore(); 
+
+        if (useDiscount == 'n') {
+            break;
+        }
     }
 
     cout << "No se aplico ningun descuento.\n";
     return 0.0f;
 }
-
 
 string Sale::askCardNumber() {
 

@@ -81,9 +81,9 @@ void Seating::displaySeats() {
         else if (j % 3 == 1) {
             for (int k = 0; k < numberOfColumns; k++) {
                 if (seatPurchased && seatPurchased[(j - 1) / 3][k]) {
-                    color[3] = '1'; // Rojo
+                    color[3] = '1'; 
                 } else {
-                    color[3] = '2'; // Verde
+                    color[3] = '2'; 
                 }
                 cout << color;  
                 cout << "  " << leftPad << centerPad << rightPad << "  ";
@@ -121,8 +121,8 @@ float Seating::getCost() const {
     return cost;
 }
 
-void Seating::setCost(float c) {
-    cost = c;
+void Seating::setCost(float cost) {
+    cost = cost;
 }
 
 int Seating::getSegmentNumber() const {
