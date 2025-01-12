@@ -79,7 +79,6 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
     delete[] purchasedCols;  
 } 
 
-
 bool Sale::checkEventsAvailability(Event &event) {
 
     if (event.getEventCount() == 0) {
@@ -186,8 +185,9 @@ int Sale::chooseSegment(Segment &segment, int selectedEvent) {
     return chosen - 1;
 }
 
-Seating& Sale::ensureSeating(int selectedEvent, int selectedSegment, Segment** segments, map<tuple<int,int>,Seating> &seatingMap) {
-    tuple<int,int> seatingKey = make_tuple(selectedEvent, selectedSegment);
+Seating& Sale::ensureSeating(int selectedEvent, int selectedSegment, Segment** segments, 
+map<tuple<int,int>,Seating> &seatingMap) {
+tuple<int,int> seatingKey = make_tuple(selectedEvent, selectedSegment);
 
     if (seatingMap.find(seatingKey) == seatingMap.end()) {
         Seating newSeating;

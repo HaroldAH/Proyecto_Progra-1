@@ -2,11 +2,8 @@
 #include "Menu.h"
 #include <iostream>
 #include <limits>
-#include <iomanip>
 #include <cstdlib>
 #include <string>
-#include <vector>
-#include <cctype>
 #include "Utilities.h"
 
 using namespace std;

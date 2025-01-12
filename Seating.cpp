@@ -3,18 +3,16 @@
 #include <iomanip>
 #include <cstdio>
 #include <cstring>
-#include <limits>     
-#include <tuple>      
+#include <limits>
+
 using namespace std;
 
 Seating::Seating() {
-
     segmentNumber = 0;
     numberOfRows = 0;
     numberOfColumns = 0;
     cost = 0.0f;
-    seatPurchased = NULL;
-    fields = NULL;
+    seatPurchased = nullptr;
     initializeRoom();
 }
 
@@ -33,23 +31,12 @@ void Seating::initializeRoom() {
         for (int i = 0; i < numberOfRows; i++) {
             seatPurchased[i] = new bool[numberOfColumns];
         }
-
-        
         for (int i = 0; i < numberOfRows; i++) {
             for (int j = 0; j < numberOfColumns; j++) {
                 seatPurchased[i][j] = false;
             }
         }
     }
-}
-
-std::string getColumnLabel(int index) {
-    std::string label;
-    while (index >= 0) {
-        label = char('A' + (index % 26)) + label;
-        index = (index / 26) - 1;
-    }
-    return label;
 }
 
 void Seating::displaySeats() {
@@ -61,89 +48,84 @@ void Seating::displaySeats() {
     cout << "\t\033[32m Verde: Disponible \n";
     cout << "\t\033[31m Rojo: Vendido \n\n";
 
-    int blockSize = 15; 
-    int rowsPerBlock = 3; 
-    int totalBlocks = (numberOfColumns + blockSize - 1) / blockSize;
+    cout << "\t\033[37m";
+    for (int k = 65; k < 65 + numberOfColumns; k++) {
+        cout << "   " << char(k) << "   ";
+    }
+    cout << "\n\t" << topLeft;
 
-    for (int block = 0; block < totalBlocks; ++block) {
-        int startColumn = block * blockSize;
-        int endColumn = std::min(startColumn + blockSize, numberOfColumns);
+    for (int k = 0; k < numberOfColumns * 7; k++) {
+        cout << horizontalLine;
+    }
+    cout << topRight << "\n";
 
-       
-        cout << "\t\033[37m";
-        for (int col = startColumn; col < endColumn; ++col) {
-            cout << "   " << getColumnLabel(col) << "   ";
-        }
-        cout << "\n\t" << topLeft;
+    cout << "\t" << verticalLine;
+    for (int i = 0; i < numberOfColumns * 2; i++) {
+        cout << " ";
+    }
+    for (int p = 0; p < numberOfColumns * 3; p++) {
+        cout << screenBlock;
+    }
+    for (int i = 0; i < numberOfColumns * 2; i++) {
+        cout << " ";
+    }
+    cout << verticalLine << "\n";
 
-     
-        for (int col = startColumn; col < endColumn; ++col) {
-            cout << string(7, horizontalLine);
-        }
-        cout << topRight << "\n";
-
-      
-        for (int row = 0; row < numberOfRows; ++row) {
-            for (int subRow = 0; subRow < rowsPerBlock; ++subRow) {
-                cout << "\t" << verticalLine;
-
-                for (int col = startColumn; col < endColumn; ++col) {
-                    if (subRow == 0) {
-                        cout << "       ";
-                    } else if (subRow == 1) {
-                        if (seatPurchased && seatPurchased[row][col]) {
-                            color[3] = '1'; 
-                        } else {
-                            color[3] = '2'; 
-                        }
-                        cout << color << "  " << leftPad << centerPad << rightPad << "  ";
-                    } else {
-                        cout << "   " << backPad << "   ";
-                    }
+    for (int j = 0; j < numberOfRows * 3 + 1; j++) {
+        cout << "\t\033[37m" << verticalLine;
+        if (j % 3 == 0) {
+            for (int k = 0; k < numberOfColumns * 7; k++) {
+                cout << " ";
+            }
+        } 
+        else if (j % 3 == 1) {
+            for (int k = 0; k < numberOfColumns; k++) {
+                if (seatPurchased && seatPurchased[(j - 1) / 3][k]) {
+                    color[3] = '1'; // Rojo
+                } else {
+                    color[3] = '2'; // Verde
                 }
-
-                cout << "\033[37m" << verticalLine;
-                if (subRow == 1) {
-                    cout << "   " << row + 1;
-                }
-                cout << "\n";
+                cout << color;  
+                cout << "  " << leftPad << centerPad << rightPad << "  ";
+            }
+        } 
+        else {
+            for (int k = 0; k < numberOfColumns; k++) {
+                cout << "   " << backPad << "   ";
             }
         }
-
-      
-        cout << "\t" << bottomLeft;
-        for (int col = startColumn; col < endColumn; ++col) {
-            cout << string(7, horizontalLine);
+        cout << "\033[37m" << verticalLine;
+        
+        if (j % 3 == 1) {
+            cout << "     " << (j - 1) / 3 + 1;
         }
-        cout << bottomRight << "\n";
+        cout << "\n";
     }
+
+    cout << "\t\033[37m" << bottomLeft;
+    for (int p = 0; p < numberOfColumns * 7; p++) {
+        cout << horizontalLine;
+    }
+    cout << bottomRight << "\n";
 }
+
 bool Seating::isRoomFull() {
     return (cost > 0 && numberOfRows > 0 && numberOfColumns > 0);
-}
-
-float Seating::getCost() {
-    return cost;
-}
-
-void Seating::displayRoomInfo() {
-    
-    cout << "\n\t El numero de la sala es : " << segmentNumber;
-    cout << "\n\t El costo de la sala es : $" 
-         << fixed << setprecision(2) << cost;
-    cout << "\n\t El estado actual de la sala es : \n";
-    displaySeats();
 }
 
 bool Seating::isRoomComplete() {
     return isRoomFull();
 }
 
+float Seating::getCost() const {
+    return cost;
+}
+
 void Seating::setCost(float c) {
     cost = c;
 }
 
-int Seating::getSegmentNumber()  {
+int Seating::getSegmentNumber() const {
     return segmentNumber;
 }
 
@@ -151,7 +133,7 @@ void Seating::setSegmentNumber(int segNum) {
     segmentNumber = segNum;
 }
 
-int Seating::getNumberOfRows()  {
+int Seating::getNumberOfRows() const {
     return numberOfRows;
 }
 
@@ -159,7 +141,7 @@ void Seating::setNumberOfRows(int rows) {
     numberOfRows = rows;
 }
 
-int Seating::getNumberOfColumns() {
+int Seating::getNumberOfColumns() const {
     return numberOfColumns;
 }
 
@@ -167,7 +149,7 @@ void Seating::setNumberOfColumns(int cols) {
     numberOfColumns = cols;
 }
 
-bool** Seating::getSeatPurchased()  {
+bool** Seating::getSeatPurchased() const {
     return seatPurchased;
 }
 
@@ -176,74 +158,26 @@ void Seating::setSeatPurchased(bool** seats) {
 }
 
 void Seating::sellField(int row, int column) {
-
     if (row < 0 || row >= numberOfRows || 
         column < 0 || column >= numberOfColumns) {
         cout << "\nError: Coordenadas fuera de rango.\n";
         return;
     }
-
     if (seatPurchased[row][column]) {
         cout << "\nError: El asiento ya esta ocupado.\n";
         return;
     }
-
     seatPurchased[row][column] = true;
     cout << "\nAsiento en fila " << (row + 1) 
          << " y columna " << char('A' + column) 
          << " vendido exitosamente.\n";
 }
 
-bool Seating::hasNotBeenUsed(int fieldId) {
-
-    for (int l = 0; l < numberOfFields; l++) {
-        if (fields[l].getFieldId() == fieldId) {
-            return true;
-        }
-    }
-    return false;
-}
-
-void Seating::removeField(int position) {
-
-    numberOfFields--;
-    Field* aux = new Field[numberOfFields];
-
-    for (int i = 0; i < position; i++) {
-        aux[i] = fields[i];
-    }
-    for (int j = position + 1; j < numberOfFields; j++) {
-        aux[j - 1] = fields[j];
-    }
-
-    delete[] fields;
-    fields = aux;
-}
-
-void Seating::confirmReserve() {
-
-    seatPurchased[ fields[numberOfFields - 1].getSeatColumn() - 1 ]
-                [ fields[numberOfFields - 1].getSeatRow() - 1 ] = true;
-}
-
-bool Seating::checkSeatStatus() {
-
-    return seatPurchased[ fields[numberOfFields - 1].getSeatColumn() - 1 ]
-                        [ fields[numberOfFields - 1].getSeatRow() - 1 ];
-}
-
-void Seating::finishTicket() {
-
-    fields[numberOfFields - 1].fillField(numberOfColumns, numberOfRows);
-}
-
-void Seating::checkSales(Event &event, Segment &segment, map<tuple<int, int>, Seating> &seatingMap)
+void Seating::checkSales(Event &event, Segment &segment,
+                         map<tuple<int, int>, Seating> &seatingMap)
 {
     if (event.getEventCount() == 0) {
         cout << "No hay eventos disponibles.\n";
-        cout << "Presione Enter para continuar...";
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cin.get(); 
         return;
     }
 
@@ -257,14 +191,12 @@ void Seating::checkSales(Event &event, Segment &segment, map<tuple<int, int>, Se
     int size = event.getEventCount();
     selectedEvent = validateChoice(selectedEvent, size);
 
-    
     Segment **segments = segment.getSegmentsByEvent();
     if (segments == nullptr) {
         cout << "Error: No se pudieron obtener los segmentos del evento.\n";
         return;
     }
 
-    
     int *segmentCounts = segment.getSegmentCount();
     if (!segmentCounts) {
         cout << "Error: No se pudo obtener el conteo de segmentos.\n";
@@ -280,23 +212,21 @@ void Seating::checkSales(Event &event, Segment &segment, map<tuple<int, int>, Se
     cout << "\nSegmentos disponibles para el evento \"" 
          << event.getEvents()[selectedEvent - 1].getName() << "\":\n";
     for (int i = 0; i < numSegments; i++) {
-        cout << i + 1 << ". " << segments[selectedEvent - 1][i].getName()
-             << " - Precio: " << segments[selectedEvent - 1][i].getPrice() << "\n";
+        cout << i + 1 << ". "
+             << segments[selectedEvent - 1][i].getName()
+             << " - Precio: "
+             << segments[selectedEvent - 1][i].getPrice() << "\n";
     }
 
     int selectedSegment, option = 0;
     cout << "\nSeleccione un segmento: ";
     selectedSegment = validateChoice(option, numSegments);
 
-    
     auto seatingKey = make_tuple(selectedEvent - 1, selectedSegment - 1);
 
-   
     if (seatingMap.find(seatingKey) == seatingMap.end()) {
-        
         cout << "\nNo se han vendido asientos para este segmento.\n\n";
 
-        
         int rows = segments[selectedEvent - 1][selectedSegment - 1].getRows();
         int columns = segments[selectedEvent - 1][selectedSegment - 1].getSeats();
         float price = segments[selectedEvent - 1][selectedSegment - 1].getPrice();
@@ -311,7 +241,6 @@ void Seating::checkSales(Event &event, Segment &segment, map<tuple<int, int>, Se
         tempSeating.displaySeats();
     }
     else {
-        
         Seating &seating = seatingMap[seatingKey];
         cout << "\nRepresentacion grafica del segmento \""
              << segments[selectedEvent - 1][selectedSegment - 1].getName()
