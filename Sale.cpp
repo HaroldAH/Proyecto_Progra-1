@@ -18,7 +18,7 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
     Segment** segments = segment.getSegmentsByEvent();
     Seating &seating = ensureSeating(selectedEvent, selectedSegment, segments, seatingMap);
 
-    int numTickets = buyTickets(currentUser, seating);
+    int numTickets = buyTickets(currentUser, event, selectedEvent);
     if (numTickets <= 0) return;
 
     int* purchasedRows = new int[numTickets];  
@@ -111,16 +111,19 @@ bool Sale::checkEventsAvailability(Event &event) {
 }
 
 UserData* Sale::getOrRegisterUser(User &user) {
-
     while (true) {
-
         string idNumber;
-        cout << "Ingrese su numero de cedula: ";
+        cout << "Ingrese su numero de cedula (9 digitos): ";
         cin >> idNumber;
+
+        if (idNumber.length() != 9 || idNumber.find_first_not_of("0123456789") != string::npos) {
+            cout << "Cedula invalida. Debe contener exactamente 9 digitos numericos.\n";
+            continue;
+        }
 
         UserData* currentUser = user.searchUserById(idNumber);
         if (currentUser) {
-            cout << "Usuario encontrado. Bienvenido, "<< currentUser->getName() << ".\n";
+            cout << "Usuario encontrado. Bienvenido, " << currentUser->getName() << ".\n";
             return currentUser;
         }
 
@@ -137,14 +140,16 @@ UserData* Sale::getOrRegisterUser(User &user) {
 
         currentUser = user.searchUserById(idNumber);
         if (currentUser) {
-            cout <<endl<< "Usuario registrado."<<endl << "Bienvenido "
-                 << currentUser->getName() << " procederemos con la compra:"<<endl;
+            cout << endl << "Usuario registrado." << endl
+                 << "Bienvenido " << currentUser->getName()
+                 << ", procederemos con la compra:" << endl;
             return currentUser;
         }
 
         cout << "Error al registrar el usuario. Intente nuevamente.\n";
     }
 }
+
 
 int Sale::chooseEvent(Event &event) {
 
@@ -222,29 +227,27 @@ tuple<int,int> seatingKey = make_tuple(selectedEvent, selectedSegment);
     return seating;
 }
 
-int Sale::buyTickets(UserData *currentUser, Seating &seating) {
+int Sale::buyTickets(UserData *currentUser, Event &event, int selectedEvent) {
 
-    int currentTickets = currentUser->getTicketsPurchased();
+    string userId = currentUser->getIdNumber();
+    int currentTickets = event.getEvents()[selectedEvent].getTicketsPurchasedByUser(userId);
+
     if (currentTickets >= 5) {
-        cout << "Ya has comprado el numero maximo de 5 boletos.\n";
-        cout << "Presiona Enter para continuar..."<<endl;
-        cin.get(); 
+        cout <<"Ya has comprado el numero maximo de 5 boletos para este evento.\n";
+        cout <<"\nPresione Enter para continuar...";
+        cin.get();
         return 0;
     }
-    
+
     while (true) {
         int maxTickets = 5 - currentTickets;
-        cout << "\nCuantos boletos desea comprar? (max " << maxTickets << "): ";
+        cout <<"\n ¿Cuantos boletos desea comprar? (max " << maxTickets << "): ";
 
-        
-        int numTickets = readIntInRange(
-            1,
-            maxTickets,
+        int numTickets = readIntInRange( 1, maxTickets,
             "Entrada invalida. Por favor, ingrese un numero valido: "
         );
 
-        
-        if (currentUser->purchaseTickets(numTickets)) {
+        if (event.getEvents()[selectedEvent].purchaseTickets(userId, numTickets)) {
             return numTickets;
         }
         cout << "No se pudo completar la compra de boletos. Intente nuevamente.\n";
@@ -253,8 +256,9 @@ int Sale::buyTickets(UserData *currentUser, Seating &seating) {
 
 float Sale::applyDiscountIfWanted(Discount &discount) {
 
-    cout << "\nTiene un codigo de descuento? (S/N): ";
     char useDiscount;
+
+    cout << "\nTiene un codigo de descuento? (S/N): ";
     cin >> useDiscount;
     cin.ignore(); 
     useDiscount = tolower(useDiscount);
@@ -264,8 +268,9 @@ float Sale::applyDiscountIfWanted(Discount &discount) {
     }
 
     while (true) {
-        cout << "Ingrese su codigo de descuento: ";
+
         string discountCode;
+        cout << "Ingrese su codigo de descuento: ";
         getline(cin, discountCode);
 
         if (discount.verifyCode(discountCode)) {
@@ -298,19 +303,24 @@ float Sale::applyDiscountIfWanted(Discount &discount) {
 }
 
 string Sale::askCardNumber() {
+    string cardNumber;
 
     while (true) {
         cout << "\nIngrese el numero de su tarjeta (12 digitos): ";
-        string cardNumber;
         cin >> cardNumber;
-        if (cardNumber.length() >= 12 && 
-            cardNumber.find_first_not_of("0123456789") == string::npos)
-        {
-            return cardNumber;
+
+        if (cardNumber.length() == 12 && 
+            cardNumber.find_first_not_of("0123456789") == string::npos) {
+            cout << "Numero de tarjeta valido.\n";
+            break;
         }
-        cout << "Numero de tarjeta invalido.\n";
+
+        cout << "Numero de tarjeta invalido. Por favor, ingrese exactamente 12 digitos numericos.\n";
     }
+
+    return cardNumber;
 }
+
 
 void Sale::printInvoice(UserData* currentUser, Event &event, int selectedEvent, Segment** segments, int selectedSegment,
                         int numTickets, float ticketPrice, float discountPercentage, float totalCost,

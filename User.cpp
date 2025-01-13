@@ -1,40 +1,51 @@
 #include "User.h"
 
-void User::expandAndAssignUsers(User &usersObj, int quantity) {
+
+User::User() {
+    users = nullptr;
+    userCount = 0;
+    capacity = 0;
+}
+
+User::~User() {
+    delete[] users;
+}
+
+void User::expandAndAssignUsers(User &users, int quantity) {
     
-    if (usersObj.userCount + quantity > usersObj.capacity) {
+    if (users.userCount + quantity > users.capacity) {
         
-        int newCap = (usersObj.capacity == 0) ? quantity : usersObj.capacity + quantity;
+        int newCap = (users.capacity == 0) ? quantity : users.capacity + quantity;
 
         UserData* newArr = new UserData[newCap];
         
-        for (int i = 0; i < usersObj.userCount; i++) {
-            newArr[i] = usersObj.users[i];
+        for (int i = 0; i < users.userCount; i++) {
+            newArr[i] = users.users[i];
         }
         
-        delete[] usersObj.users;
-        usersObj.users = newArr;
-        usersObj.capacity = newCap;
+        delete[] users.users;
+        users.users = newArr;
+        users.capacity = newCap;
     }
 }
 
-void User::createUser(User &usersObj, const string &idNumber) {
+void User::createUser(User &users, const string &idNumber) {
     
-    expandAndAssignUsers(usersObj, 1);
+    expandAndAssignUsers(users, 1);
 
     
-    usersObj.users[usersObj.userCount].setIdNumber(idNumber);
+    users.users[users.userCount].setIdNumber(idNumber);
 
     
     string name, birthDate;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    cout << "Ingrese el nombre del usuario " << usersObj.userCount + 1 << ": ";
+    cout << "Ingrese el nombre del usuario " << users.userCount + 1 << ": ";
     getline(cin, name);
-    usersObj.users[usersObj.userCount].setName(name);
+    users.users[users.userCount].setName(name);
 
     do {
-        cout << "Ingrese la fecha de nacimiento del usuario "<< usersObj.userCount + 1 << " (DD/MM/AAAA): ";
+        cout << "Ingrese la fecha de nacimiento del usuario "<< users.userCount + 1 << " (DD/MM/AAAA): ";
         getline(cin, birthDate);
             if (!isValidDate(birthDate)) {
                 cout << "Fecha invalida. Intente nuevamente." << endl;
@@ -42,10 +53,10 @@ void User::createUser(User &usersObj, const string &idNumber) {
     } while (!isValidDate(birthDate));
 
     
-    usersObj.users[usersObj.userCount].setBirthDate(birthDate);
+    users.users[users.userCount].setBirthDate(birthDate);
 
     
-    usersObj.userCount++;
+    users.userCount++;
 }
 
 bool User::isValidDate(string &birthDate) {

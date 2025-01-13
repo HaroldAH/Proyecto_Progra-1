@@ -47,7 +47,9 @@ void Segment::setPrice(float& aPrice) { price = aPrice; }
 Segment** Segment::getSegmentsByEvent() {
 
     if (segmentsByEvent == nullptr) {
-        std::cout << "No hay segmentos asociados\n";
+        cout << "No hay segmentos asociados\n";
+        cout << "\nPresione Enter para continuar...";
+        cin.get();
         return nullptr;
     }
     return segmentsByEvent;
@@ -165,7 +167,10 @@ void Segment::saveSegments(Segment& segment, int events) {
     numEvents = events;
 
     if (numEvents == 0) {
-        cout << "No hay eventos disponibles para asignar segmentos." << endl << endl;
+        cout << "No hay eventos disponibles para asignar segmentos." << endl ;
+        cout << "Presione Enter para continuar..."<< endl;
+         cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+        cin.get(); 
         return;
     }
 
@@ -175,6 +180,8 @@ void Segment::saveSegments(Segment& segment, int events) {
 
         if (segment.segmentsByEvent[i] != nullptr && segment.segmentCount[i] > 0) {
             cout << "El evento " << i + 1 << " ya tiene segmentos asignados. No se puede agregar mas segmentos." << endl << endl;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+            cin.get(); 
             continue; 
         }
 
@@ -198,23 +205,28 @@ void Segment::saveSegments(Segment& segment, int events) {
     }
 }
 
-int Segment::getValidIntInput() {
-
+int Segment::getValidIntInput() 
+{
     int input;
-    while (!(cin >> input) || input <= 0) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    while (true) {
+        if (cin >> input && input > 0) {
+            return input; 
+        }
+        cin.clear(); 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
         cout << "Por favor, ingrese un numero valido." << endl;
     }
-    return input;
 }
 
 float Segment::getValidFloatInput() {
+
     float input;
-    while (!(cin >> input)) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    while (true) {
+        if (cin >> input && input > 0) {
+            return input; 
+        }
+        cin.clear(); 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
         cout << "Por favor, ingrese un numero valido." << endl;
     }
-    return input;
 }

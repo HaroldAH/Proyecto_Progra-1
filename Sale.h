@@ -17,17 +17,26 @@
 class Sale {
 private:
     bool checkEventsAvailability(Event &event);
+
     UserData* getOrRegisterUser(User &user);
+
     int chooseEvent(Event &event);
+
     int chooseSegment(Segment &segment, int selectedEvent);
+
     Seating& ensureSeating(int selectedEvent,
                            int selectedSegment,
                            Segment** segments,
                            std::map<std::tuple<int,int>,Seating> &seatingMap);
-    int buyTickets(UserData *currentUser, Seating &seating);
+
+    int buyTickets(UserData *currentUser, Event &event, int selectedEvent);
+
     float applyDiscountIfWanted(Discount &discount);
+
     string askCardNumber();
+
     int readIntInRange(int minValue, int maxValue, const std::string &errorPrompt);
+
     void printInvoice(UserData* currentUser,
                   Event &event,
                   int selectedEvent,

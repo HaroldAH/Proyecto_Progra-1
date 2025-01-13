@@ -2,7 +2,6 @@
 #include "Menu.h"
 #include <iostream>
 #include <limits>
-#include <cstdlib>
 #include <string>
 
 using namespace std;
@@ -100,7 +99,7 @@ int Menu::validateChoice(int &choice, int &size)
         }
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Entrada invalida. Intente de nuevo." << endl;
+        cout << "Entrada invalida." << endl;
     }
 }
 

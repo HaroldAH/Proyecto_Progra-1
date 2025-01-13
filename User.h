@@ -12,7 +12,10 @@ private:
     string name;
     string birthDate;
     int ticketsPurchased = 0;
+    int* purchasesByUser; 
+    string* userIds;     
 
+   
 public:
     
     void setIdNumber(const string &id) { idNumber = id; }
@@ -51,12 +54,11 @@ private:
         }
     }
 
-    
     void expandAndAssignUsers(User &usersObj, int quantity);
 
 public:
-    User() : users(nullptr), userCount(0), capacity(0) {}
-    ~User() { delete[] users; }
+    User();
+    ~User(); 
 
     
     void createUser(User &usersObj);

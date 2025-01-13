@@ -1,6 +1,5 @@
 #include "Seating.h"
 #include <iostream>
-#include <iomanip>
 #include <cstdio>
 #include <cstring>
 #include <limits>
@@ -8,6 +7,7 @@
 using namespace std;
 
 Seating::Seating() {
+
     segmentNumber = 0;
     numberOfRows = 0;
     numberOfColumns = 0;
@@ -40,6 +40,7 @@ void Seating::initializeRoom() {
 }
 
 void Seating::displaySeats() {
+
     char color[] = "\033[37m";
     char topLeft = 201, topRight = 187, bottomLeft = 200, bottomRight = 188;
     char horizontalLine = 205, verticalLine = 186, screenBlock = 178;
@@ -110,10 +111,12 @@ void Seating::displaySeats() {
 }
 
 bool Seating::isRoomFull() {
+
     return (cost > 0 && numberOfRows > 0 && numberOfColumns > 0);
 }
 
 bool Seating::isRoomComplete() {
+    
     return isRoomFull();
 }
 
@@ -121,8 +124,8 @@ float Seating::getCost() const {
     return cost;
 }
 
-void Seating::setCost(float cost) {
-    cost = cost;
+void Seating::setCost(float newCost) {
+    cost = newCost;
 }
 
 int Seating::getSegmentNumber() const {
@@ -150,14 +153,17 @@ void Seating::setNumberOfColumns(int cols) {
 }
 
 bool** Seating::getSeatPurchased() const {
+    
     return seatPurchased;
 }
 
 void Seating::setSeatPurchased(bool** seats) {
+
     seatPurchased = seats;
 }
 
 void Seating::sellField(int row, int column) {
+
     if (row < 0 || row >= numberOfRows || 
         column < 0 || column >= numberOfColumns) {
         cout << "\nError: Coordenadas fuera de rango.\n";
@@ -187,25 +193,28 @@ void Seating::checkSales(Event &event, Segment &segment,
     }
 
     int selectedEvent = 0;
-    cout << "\nSeleccione un evento para ver sus segmentos: ";
     int size = event.getEventCount();
     selectedEvent = validateChoice(selectedEvent, size);
 
     Segment **segments = segment.getSegmentsByEvent();
     if (segments == nullptr) {
-        cout << "Error: No se pudieron obtener los segmentos del evento.\n";
+        cin.get();
         return;
     }
 
     int *segmentCounts = segment.getSegmentCount();
     if (!segmentCounts) {
         cout << "Error: No se pudo obtener el conteo de segmentos.\n";
+        cout << "\nPresione Enter para continuar...";
+        cin.get();
         return;
     }
 
     int numSegments = segmentCounts[selectedEvent - 1];
     if (numSegments <= 0) {
         cout << "No hay segmentos disponibles para este evento.\n";
+        cout << "\nPresione Enter para continuar...";
+        cin.get();
         return;
     }
 
