@@ -45,7 +45,7 @@ void Menu::showMenu()
         cout << "                | 4. Consultar Ventas     |\n";
         cout << "                | 5. Acerca de            |\n";
         cout << "                | 6. Pregunta y Respuestas|\n";
-        cout << "                | 7. salir                |\n";
+        cout << "                | 7. Salir                |\n";
         cout << "                +==========================+\n";
 
         validateChoice(option, size);
@@ -84,13 +84,13 @@ void Menu::showMenu()
         {
             showFaq();
             continue;
-            
-            if (option == 7)
-            {
-                cout << "Saliendo del programa. Gracias!" << endl;
-                cin.get();
-                return;
-            }
+        }
+
+        if (option == 7)
+        {
+            cout << "Saliendo del programa. Gracias!" << endl;
+            cin.get();
+            return;
         }
     }
 }

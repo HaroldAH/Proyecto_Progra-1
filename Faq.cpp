@@ -12,7 +12,7 @@ int Faq::validateChoice(int &choice, int &size) {
             return choice;
         }
         cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');4
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Entrada invalida. Intente de nuevo." << endl;
     }
 }
