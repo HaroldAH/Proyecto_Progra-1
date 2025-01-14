@@ -9,17 +9,20 @@
 #include "User.h"
 #include "Discount.h"
 #include "Seating.h"
+#include "Faq.h"
 
-class Menu {
+class Menu
+{
 private:
-    Sale sale; 
+    Faq faq;
+    Sale sale;
     Event event;
     Segment segment;
     User user;
     Discount discount;
-    Seating seating; 
+    Seating seating;
     map<std::tuple<int, int>, Seating> seatingMap;
-    
+
 public:
     void showMenu();
     int validateChoice(int &choice, int &size);
@@ -31,7 +34,7 @@ public:
     void saveEvent(Event &event, Segment &segment);
     void showAbout();
     void manageCodes(Discount &discount);
-
+    void showFaq();
 };
 
 #endif

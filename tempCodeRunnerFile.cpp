@@ -11,7 +11,7 @@ void Menu::showMenu()
     while (true)
     {
         system("cls");
-        int option, size = 7;
+        int option, size = 6;
 
         cout << "\033[31m";
         cout << "  __| |______________________________________________| |__\n";
@@ -44,8 +44,7 @@ void Menu::showMenu()
         cout << "                | 3. Vender Entrada       |\n";
         cout << "                | 4. Consultar Ventas     |\n";
         cout << "                | 5. Acerca de            |\n";
-        cout << "                | 6. Pregunta y Respuestas|\n";
-        cout << "                | 7. salir                |\n";
+        cout << "                | 6. Salir                |\n";
         cout << "                +==========================+\n";
 
         validateChoice(option, size);
@@ -56,7 +55,7 @@ void Menu::showMenu()
             continue;
         }
 
-        if (option == 2)
+       if (option == 2)
         {
             manageCodes(discount);
             continue;
@@ -64,7 +63,7 @@ void Menu::showMenu()
 
         if (option == 3)
         {
-            sellTicket(user);
+            sellTicket(user); 
             continue;
         }
 
@@ -82,15 +81,14 @@ void Menu::showMenu()
 
         if (option == 6)
         {
+            cout << "Saliendo del programa. Gracias!" << endl;
+           cin.get();
+            return;
+        }
+        if (option == 7)
+        {
             showFaq();
             continue;
-            
-            if (option == 7)
-            {
-                cout << "Saliendo del programa. Gracias!" << endl;
-                cin.get();
-                return;
-            }
         }
     }
 }
@@ -113,12 +111,13 @@ int Menu::validateChoice(int &choice, int &size)
 void Menu::configureDiscounts(Discount &discount)
 {
     discount.configureDiscounts();
+
 }
 
 void Menu::configureEvent(Event &event, Segment &segment)
 {
     while (true)
-    {
+    {   
         system("cls");
         int choice, size = 4;
         cout << "\n+=======================+" << endl;
@@ -165,7 +164,7 @@ void Menu::listEventAndSegments(Event &event, Segment &segment)
         cout << "No hay eventos guardados." << endl;
         cout << "Presione Enter para continuar...";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cin.get();
+        cin.get(); 
         return;
     }
 
@@ -204,7 +203,8 @@ void Menu::listEventAndSegments(Event &event, Segment &segment)
         }
 
         cout << "--------------------------" << endl;
-    }
+        
+    } 
     cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     cout << "\nPresione Enter para continuar...";
     cin.get();
@@ -246,7 +246,7 @@ void Menu::manageCodes(Discount &discount)
 
 void Menu::sellTicket(User &user)
 {
-    sale.sell(user, event, segment, seatingMap, discount);
+    sale.sell(user, event, segment, seatingMap, discount); 
 }
 
 int Menu::updateSegmentEventCount(Event &event)
@@ -274,9 +274,4 @@ void Menu::showAbout()
     cout << "\nPresione Enter para continuar...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
-}
-void Menu::showFaq()
-{
-
-    faq.showFaq();
 }
