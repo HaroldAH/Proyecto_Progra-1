@@ -51,26 +51,27 @@ int Event::getValidIntInput()
     }
 }
 
-void Event::expandAndAssignEvents(Event& event, int& numEvents) {
+void Event::expandAndAssignEvents(Event& event, int numEvents) {
     
     if (numEvents <= 0) {
         cout << "El número de eventos debe ser mayor a cero." << endl;
         return;
     }
 
-    
-    int newCapacity = event.eventCount *= 2;
 
-    
+    int newCapacity = event.eventCount + numEvents;
+
+  
     Event* newEvents = new Event[newCapacity];
 
-   
+  
     for (int j = 0; j < event.eventCount; j++) {
         newEvents[j] = event.events[j];
     }
 
-   
+    
     delete[] event.events;
+
 
     event.events = newEvents;
 }
@@ -118,7 +119,7 @@ int Event::getTicketsPurchasedByUser(const string& userId) {
 void Event::saveEvent(Event& event) {
     int numEvents = 0;
 
-    cout <<"Cuantos eventos desea agregar?" << endl;
+    cout << "Cuantos eventos desea agregar?" << endl;
     numEvents = getValidIntInput();
 
     expandAndAssignEvents(event, numEvents);
@@ -130,29 +131,34 @@ void Event::saveEvent(Event& event) {
         cin.ignore();
         getline(cin, name);
 
-        do {
-            cout << "\nIngrese la fecha del evento (DD/MM/AAAA): ";
-            getline(cin, date);
-            if (!isValidDate(date)) {
-                cout << "Fecha invalida. Intente nuevamente.\n";
-            }
-        } while (!isValidDate(date));
+        cout << "\nIngrese la fecha del evento (DD/MM/AAAA): ";
+        getline(cin, date);
+
+        if (!isValidDate(date)) {
+            cout << "Fecha invalida. Evento no guardado. Intente nuevamente mas tarde.\n";
+            return; 
+        }
 
         cout << "\nIngrese la descripcion del evento " << event.eventCount + 1 << ": ";
         getline(cin, description);
 
+   
         event.events[event.eventCount].setName(name);
         event.events[event.eventCount].setDate(date);
         event.events[event.eventCount].setDescription(description);
 
+     
         event.events[event.eventCount].initializeTracking(100);
 
+     
         event.eventCount++;
         cout << "Evento guardado con exito.\n";
     }
     cout << "\nPresione Enter para continuar...";
     cin.get();
 }
+
+
 
 
 bool Event::isValidDate(string &date) {

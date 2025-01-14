@@ -36,7 +36,7 @@ public:
     int getTicketsPurchasedByUser(const string& userId);  
 
     
-    void expandAndAssignEvents(Event& event, int& numEvents); 
+    void expandAndAssignEvents(Event& event, int numEvents); 
     int getValidIntInput();                                    
     void saveEvent(Event& event);                              
     bool isValidDate(string& date);                            
