@@ -59,7 +59,7 @@ void Event::expandAndAssignEvents(Event& event, int& numEvents) {
     }
 
     
-    int newCapacity = event.eventCount + numEvents;
+    int newCapacity = event.eventCount *= 2;
 
     
     Event* newEvents = new Event[newCapacity];
