@@ -114,14 +114,14 @@ void Segment::manageSegments(Segment& segment, int& numEvents) {
     segmentCapacity = newCapacity;  
 }
 
-void Segment::addSegmentData(Segment& segment) {
+void Segment::addSegmentData(Segment& segment, int index) {
 
     string name;
     int rows, seats;
     float price;
 
-    cout << "Ingrese el nombre del segmento:" << endl;
-    cin.ignore();
+    cout << "Ingrese el nombre del segmento " <<index+1<< "."<<endl;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     getline(cin, name);
 
     cout << "Ingrese el numero de filas:" << endl;
@@ -199,7 +199,7 @@ void Segment::saveSegments(Segment& segment, int events) {
         segment.segmentsByEvent[i] = new Segment[numSegments];  
 
         for (int j = 0; j < numSegments; j++) {
-            addSegmentData(segment.segmentsByEvent[i][j]);  
+            addSegmentData(segment.segmentsByEvent[i][j],j);  
         }
         cin.get();
     }

@@ -38,7 +38,7 @@ public:
     void manageSegments(Segment& segment, int& numEvents);
     void saveSegments(Segment& segment, int events);  
 
-    void addSegmentData(Segment& segment);
+    void addSegmentData(Segment& segment, int index);
     bool askToAddSegments(int& eventIndex);
 
     int getValidIntInput();
