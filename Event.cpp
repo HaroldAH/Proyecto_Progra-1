@@ -117,6 +117,7 @@ int Event::getTicketsPurchasedByUser(const string& userId) {
 }
 
 void Event::saveEvent(Event& event) {
+    
     int numEvents = 0;
 
     cout << "Cuantos eventos desea agregar?" << endl;
@@ -128,16 +129,21 @@ void Event::saveEvent(Event& event) {
         string name, date, description;
 
         cout << "\nIngrese el nombre del evento " << event.eventCount + 1 << ": ";
-        cin.ignore();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         getline(cin, name);
+
+        while (name.empty()) {
+        getline(cin, name);
+        }
 
         cout << "\nIngrese la fecha del evento (DD/MM/AAAA): ";
         getline(cin, date);
 
-        if (!isValidDate(date)) {
-            cout << "Fecha invalida. Evento no guardado. Intente nuevamente mas tarde.\n";
-            return; 
-        }
+        while (!isValidDate(date)) {
+        cout << "Fecha invalida. Intente nuevamente.\n";
+        cout << "\nIngrese la fecha del evento (DD/MM/AAAA): ";
+        getline(cin, date);
+    }
 
         cout << "\nIngrese la descripcion del evento " << event.eventCount + 1 << ": ";
         getline(cin, description);
@@ -157,8 +163,6 @@ void Event::saveEvent(Event& event) {
     cout << "\nPresione Enter para continuar...";
     cin.get();
 }
-
-
 
 
 bool Event::isValidDate(string &date) {

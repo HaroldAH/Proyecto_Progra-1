@@ -160,6 +160,7 @@ void Menu::configureEvent(Event &event, Segment &segment)
 void Menu::listEventAndSegments(Event &event, Segment &segment)
 {
     system("cls");
+
     if (event.getEventCount() == 0)
     {
         cout << "No hay eventos guardados." << endl;
@@ -169,46 +170,51 @@ void Menu::listEventAndSegments(Event &event, Segment &segment)
         return;
     }
 
-    cout << endl
-         << "Lista de eventos y segmentos:" << endl
-         << endl;
+    cout << "\nLista de eventos y segmentos:\n" << endl;
 
     Segment **segmentsByEvent = segment.getSegmentsByEvent();
+    int *segmentCounts = segment.getSegmentCount();
+
+    if (!segmentsByEvent || !segmentCounts)
+    {
+        cout << " No hay segmentos asociados.\n";
+        goto pause;
+    }
 
     for (int i = 0; i < event.getEventCount(); i++)
     {
-        cout << "Evento #" << i + 1 << ":" << endl;
-        cout << "Nombre: " << event.getEvents()[i].getName() << endl;
-        cout << "Fecha: " << event.getEvents()[i].getDate() << endl;
-        cout << "Descripcion: " << event.getEvents()[i].getDescription() << endl;
+        cout << "Evento #" << i + 1 << ":\n";
+        cout << "Nombre: " << event.getEvents()[i].getName() << "\n";
+        cout << "Fecha: " << event.getEvents()[i].getDate() << "\n";
+        cout << "Descripcion: " << event.getEvents()[i].getDescription() << "\n";
+        cout << "Segmentos asociados:\n";
 
-        cout << "Segmentos asociados:" << endl
-             << endl;
-        int *segmentCounts = segment.getSegmentCount();
-
-        if (segmentCounts == nullptr || segmentsByEvent[i] == nullptr || segmentCounts[i] == 0)
+        if (segmentCounts[i] == 0 || !segmentsByEvent[i])
         {
-            cout << "  No hay segmentos asociados para este evento." << endl;
-            cout << "--------------------------" << endl;
+            cout << " No tiene segmentos asignados.\n";
+            cout << "--------------------------\n";
             continue;
         }
-        int numSegments = segmentCounts[i];
 
-        for (int j = 0; j < numSegments; j++)
+        for (int j = 0; j < segmentCounts[i]; j++)
         {
-            cout << "  Segmento #" << j + 1 << ":" << endl;
-            cout << "    Nombre: " << segmentsByEvent[i][j].getName() << endl;
-            cout << "    Filas: " << segmentsByEvent[i][j].getRows() << endl;
-            cout << "    Asientos por fila: " << segmentsByEvent[i][j].getSeats() << endl;
-            cout << "    Precio: " << segmentsByEvent[i][j].getPrice() << endl;
+            cout << "  Segmento #" << j + 1 << ":\n";
+            cout << "    Nombre: " << segmentsByEvent[i][j].getName() << "\n";
+            cout << "    Filas: " << segmentsByEvent[i][j].getRows() << "\n";
+            cout << "    Asientos por fila: " << segmentsByEvent[i][j].getSeats() << "\n";
+            cout << "    Precio: " << segmentsByEvent[i][j].getPrice() << "\n";
         }
 
-        cout << "--------------------------" << endl;
+        cout << "--------------------------\n";
     }
-    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+pause:
     cout << "\nPresione Enter para continuar...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
 }
+
+
 
 void Menu::manageCodes(Discount &discount)
 {
