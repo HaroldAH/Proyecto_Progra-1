@@ -15,7 +15,8 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
     int selectedSegment = chooseSegment(segment, selectedEvent);
     if (selectedSegment < 0) return;
 
-    Segment** segments = segment.getSegmentsByEvent();
+   List<List<Segment>>& segments = segment.getSegmentsByEvent();
+
     Seating &seating = ensureSeating(selectedEvent, selectedSegment, segments, seatingMap);
 
     int numTickets = buyTickets(currentUser, event, selectedEvent);
@@ -64,7 +65,7 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
 
-        if (seating.getSeatPurchased()[row - 1][col - 'A']) {
+        if (seating.getSeatPurchased()[row][col - 'A' + 1]) {
             cout << "Asiento ocupado. Elija otro.\n";
             i--;
             continue;
@@ -87,8 +88,8 @@ void Sale::sell(User &user, Event &event, Segment &segment, map<tuple<int, int>,
 
     string cardNumber = askCardNumber();
     printInvoice(currentUser, event, selectedEvent, segments, selectedSegment,
-                 numTickets, ticketPrice, discountPercentage,
-                 totalCost, purchasedRows, purchasedCols, numTickets, cardNumber);
+             numTickets, ticketPrice, discountPercentage, totalCost,
+             purchasedRows, purchasedCols, numTickets, cardNumber);
 
     cout << "Presione Enter para continuar...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -111,6 +112,7 @@ bool Sale::checkEventsAvailability(Event &event) {
 }
 
 UserData* Sale::getOrRegisterUser(User &user) {
+
     while (true) {
         string idNumber;
         cout << "Ingrese su numero de cedula (9 digitos): ";
@@ -150,71 +152,58 @@ UserData* Sale::getOrRegisterUser(User &user) {
     }
 }
 
-
-int Sale::chooseEvent(Event &event) {
-
+int Sale::chooseEvent(Event &event)
+{
     if (event.getEventCount() == 0) {
         cout << "No hay eventos disponibles.\n";
         return -1;
     }
 
     cout << "Seleccione un evento:\n";
-    for (int i = 0; i < event.getEventCount(); i++) {
-        cout << i + 1 << ". " << event.getEvents()[i].getName() << "\n";
+    for (int i = 1; i <= event.getEventCount(); i++) {
+       
+        cout << i << ". " << event.getEvents().getAt(i).getName() << "\n";
     }
 
-    int selected = readIntInRange(
-        1,                               
-        event.getEventCount(),           
-        "Entrada invalida. Intente nuevamente: "  
-    );
+    int selected = readIntInRange(1, event.getEventCount(), 
+                                  "Entrada invalida. Intente nuevamente: ");
 
-   
-    return selected - 1;
+    
+    return selected;
 }
 
-int Sale::chooseSegment(Segment &segment, int selectedEvent) {
 
-    Segment** segments = segment.getSegmentsByEvent();
-    int* segmentCounts = segment.getSegmentCount();
+int Sale::chooseSegment(Segment &segment, int selectedEvent)
+{
+    List<List<Segment>>& segments = segment.getSegmentsByEvent();
+    List<int>& segmentCounts = segment.getSegmentCount();
 
-    if (!segments || !segmentCounts) {
-        cout << "No hay datos de segmentos\n";
-        return -1;
-    }
-
-    int numSegments = segmentCounts[selectedEvent];
-    if (numSegments <= 0) {
-        cout << "No hay segmentos disponibles para este evento.\n";
-        return -1;
-    }
+    // selectedEvent ya viene 1-based, por lo que accedemos .getAt(selectedEvent)
+    int numSegments = segmentCounts.getAt(selectedEvent);
 
     cout << "\nSegmentos disponibles:\n";
-    for (int i = 0; i < numSegments; i++) {
-        cout << i + 1 << ". "
-             << segments[selectedEvent][i].getName()
+    for (int i = 1; i <= numSegments; i++) {
+        cout << i << ". "
+             << segments.getAt(selectedEvent).getAt(i).getName()
              << " - Precio: $"
-             << fixed << setprecision(2)
-             << segments[selectedEvent][i].getPrice()
-             << "\n";
+             << segments.getAt(selectedEvent).getAt(i).getPrice() << "\n";
     }
-    
-    int chosen = readIntInRange(
-        1,
-        numSegments,
-        "Entrada invalida. Intente nuevamente: "
-    );
 
-    return chosen - 1;
+    int chosen = readIntInRange(1, numSegments,
+                  "Entrada invalida. Intente nuevamente: ");
+
+    // Devuelve "chosen" tal cual (sin -1)
+    return chosen;
 }
 
-Seating& Sale::ensureSeating(int selectedEvent, int selectedSegment, Segment** segments, 
-map<tuple<int,int>,Seating> &seatingMap) {
+
+Seating& Sale::ensureSeating(int selectedEvent, int selectedSegment, List<List<Segment>>& segments, 
+map<std::tuple<int,int>,Seating> &seatingMap) {
 tuple<int,int> seatingKey = make_tuple(selectedEvent, selectedSegment);
 
     if (seatingMap.find(seatingKey) == seatingMap.end()) {
         Seating newSeating;
-        Segment &seg = segments[selectedEvent][selectedSegment];
+        Segment &seg = segments.getAt(selectedEvent).getAt(selectedSegment);
         newSeating.setNumberOfRows(seg.getRows());
         newSeating.setNumberOfColumns(seg.getSeats());
         newSeating.setCost(seg.getPrice());
@@ -230,7 +219,8 @@ tuple<int,int> seatingKey = make_tuple(selectedEvent, selectedSegment);
 int Sale::buyTickets(UserData *currentUser, Event &event, int selectedEvent) {
 
     string userId = currentUser->getIdNumber();
-    int currentTickets = event.getEvents()[selectedEvent].getTicketsPurchasedByUser(userId);
+    int currentTickets = event.getEvents().getAt(selectedEvent).getTicketsPurchasedByUser(userId);
+
 
     if (currentTickets >= 5) {
         cout <<"Ya has comprado el numero maximo de 5 boletos para este evento.\n";
@@ -247,7 +237,7 @@ int Sale::buyTickets(UserData *currentUser, Event &event, int selectedEvent) {
             "Entrada invalida. Por favor, ingrese un numero valido: "
         );
 
-        if (event.getEvents()[selectedEvent].purchaseTickets(userId, numTickets)) {
+        if (event.getEvents().getAt(selectedEvent).purchaseTickets(userId, numTickets)) {
             return numTickets;
         }
         cout << "No se pudo completar la compra de boletos. Intente nuevamente.\n";
@@ -322,14 +312,15 @@ string Sale::askCardNumber() {
 }
 
 
-void Sale::printInvoice(UserData* currentUser, Event &event, int selectedEvent, Segment** segments, int selectedSegment,
+void Sale::printInvoice(UserData* currentUser, Event &event, int selectedEvent, List<List<Segment>>& segments, int selectedSegment,
                         int numTickets, float ticketPrice, float discountPercentage, float totalCost,
-                        int* purchasedRows, char* purchasedCols, int numPurchasedSeats, std::string cardNumber) {
+                        int* purchasedRows, char* purchasedCols, int numPurchasedSeats, std::string cardNumber)
+ {
     cout << "\n\n==================== FACTURA ====================\n\n";
     cout << "Usuario: " << currentUser->getName() << endl;
     cout << "Cedula: " << currentUser->getIdNumber() << endl;
-    cout << "Evento: " << event.getEvents()[selectedEvent].getName() << endl;
-    cout << "Segmento: " << segments[selectedEvent][selectedSegment].getName() << endl;
+    cout << "Evento: " << event.getEvents().getAt(selectedEvent).getName() << endl;
+    cout << "Segmento: " << segments.getAt(selectedEvent).getAt(selectedSegment).getName() << endl;
     cout << "Tarjeta: ****-****-****-" << cardNumber.substr(cardNumber.length() - 4) << endl;
     cout << "Boletos: " << numTickets << " x $" << fixed << setprecision(2) << ticketPrice << endl;
     if (discountPercentage > 0) {
@@ -355,7 +346,7 @@ int Sale::readIntInRange(int minValue, int maxValue, const std::string &errorPro
         if (!cin.fail() && value >= minValue && value <= maxValue) {
            
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            return value;
+            return value ;
         }
         
         cin.clear();

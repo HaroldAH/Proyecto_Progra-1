@@ -7,67 +7,34 @@
 using namespace std;
 
 Discount::Discount() {
-
     discountPercentage = 0.0f;
     discountCount = 0;
-    codes = nullptr;
-    used = nullptr;
-    percentages = nullptr;
 }
 
 Discount::Discount(float percentage, int count) {
-    
     discountPercentage = 0.0f;
     discountCount = 0;
-    codes = nullptr;
-    used = nullptr;
-    percentages = nullptr;
     configure(percentage, count);
 }
 
 Discount::~Discount() {
-    
-    delete[] codes;
-    delete[] used;
-    delete[] percentages;
-    discountCount = 0;
+    // La lista se libera automáticamente con su destructor
 }
 
 void Discount::configure(float percentage, int count) {
-
     if (count <= 0) return;
     srand(time(0));
 
-    int oldCount = discountCount;
-    int newCount = oldCount + count;
-    string* newCodes = new string[newCount];
-    bool* newUsed = new bool[newCount];
-    float* newPercentages = new float[newCount];
-
-    for (int i = 0; i < oldCount; i++) {
-        newCodes[i] = codes[i];
-        newUsed[i] = used[i];
-        newPercentages[i] = percentages[i];
+    for (int i = 0; i < count; i++) {
+        codes.insertAtEnd(generateCode());
+        used.insertAtEnd(false);
+        percentages.insertAtEnd(percentage);
     }
-    for (int i = oldCount; i < newCount; i++) {
-        newCodes[i] = generateCode();
-        newUsed[i] = false;
-        newPercentages[i] = percentage;
-    }
-
-    if (codes) delete[] codes;
-    if (used) delete[] used;
-    if (percentages) delete[] percentages;
-
-    codes = newCodes;
-    used = newUsed;
-    percentages = newPercentages;
-    discountCount = newCount;
+    discountCount += count;
     discountPercentage = percentage;
 }
 
 void Discount::configureDiscounts() {
-
     float percentage;
     int countValue;
     cout << "\n=== Configurar Descuentos ===\n";
@@ -79,8 +46,72 @@ void Discount::configureDiscounts() {
     showCodes();
 }
 
-string Discount::generateCode() {
+void Discount::showDiscountList() {
+    if (codes.getHead() == nullptr) {
+        cout << "No hay codigos de descuento disponibles." << endl;
+        return;
+    }
 
+    cout << "\n=== LISTA DE CODIGOS ===\n";
+
+    List<string>::NodePtr codeNode = codes.getHead();
+    List<float>::NodePtr percentageNode = percentages.getHead();
+    List<bool>::NodePtr usedNode = used.getHead();
+    int index = 1;
+
+    while (codeNode) {
+        cout << index << ". " 
+             << codeNode->data << " - " 
+             << percentageNode->data << "% - " 
+             << (usedNode->data ? "Usado" : "Disponible") << "\n";
+        codeNode = codeNode->next;
+        percentageNode = percentageNode->next;
+        usedNode = usedNode->next;
+        index++;
+    }
+
+    cout << "=========================\n";
+}
+
+
+
+void Discount::deleteDiscount() {
+    if (codes.getHead() == nullptr) {
+        cout << "No hay codigos de descuento disponibles para eliminar." << endl;
+        cout << "Presione Enter para continuar.." << endl;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.get();
+        return;
+    }
+
+    showDiscountList();  // Mostrar lista antes de la eliminación
+
+    cout << "Ingrese el numero del codigo a eliminar (1-" << discountCount << "): ";
+    int num = getValidIntInput();
+
+    if (num < 1 || num > discountCount) {
+        cout << "Numero invalido. Intente de nuevo." << endl;
+        return;
+    }
+
+    // Eliminar elementos de las listas en la posición ingresada
+    codes.deletePosition(num);
+    percentages.deletePosition(num);
+    used.deletePosition(num);
+
+    discountCount--;  // Disminuir el conteo después de la eliminación
+
+    cout << "\nCodigo eliminado exitosamente.\n";
+
+    showDiscountList();  // Mostrar lista después de la eliminación
+
+    cout << "\nPresione Enter para continuar...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
+}
+
+
+string Discount::generateCode() {
     static const char chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     int length = 5;
     string code;
@@ -90,41 +121,54 @@ string Discount::generateCode() {
     return code;
 }
 
-bool Discount::verifyCode( string &code) {
+bool Discount::verifyCode(string &code) {
+    List<string>::NodePtr codeNode = codes.getHead();
+    List<bool>::NodePtr usedNode = used.getHead();
+    List<float>::NodePtr percentageNode = percentages.getHead();
 
-    for (int i = 0; i < discountCount; i++) {
-        if (codes[i] == code) {
-            if (!used[i]) {
-                used[i] = true;
-                discountPercentage = percentages[i];
+    while (codeNode) {
+        if (codeNode->data == code) {
+            if (!usedNode->data) {
+                usedNode->data = true;
+                discountPercentage = percentageNode->data;
                 return true;
             }
             break;
         }
+        codeNode = codeNode->next;
+        usedNode = usedNode->next;
+        percentageNode = percentageNode->next;
     }
     return false;
 }
 
-float Discount::getDiscountPercentage()  {
+float Discount::getDiscountPercentage() {
     return discountPercentage;
 }
 
 void Discount::showCodes() {
-
     cout << "\n=== LISTA DE CODIGOS ===\n";
-    for (int i = 0; i < discountCount; i++) {
-        cout << codes[i] << " - "
-             << percentages[i] << "% - "
-             << (used[i] ? "Usado" : "Disponible") << "\n";
+
+    List<string>::NodePtr codeNode = codes.getHead();
+    List<bool>::NodePtr usedNode = used.getHead();
+    List<float>::NodePtr percentageNode = percentages.getHead();
+
+    while (codeNode) {
+        cout << codeNode->data << " - "
+             << percentageNode->data << "% - "
+             << (usedNode->data ? "Usado" : "Disponible") << "\n";
+        codeNode = codeNode->next;
+        usedNode = usedNode->next;
+        percentageNode = percentageNode->next;
     }
+
     cout << "=========================\n";
     cout << "\nPresione Enter para continuar...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();  
+    cin.get();
 }
 
 int Discount::getValidIntInput() {
-
     int input;
     while (!(cin >> input) || input <= 0) {
         cin.clear();

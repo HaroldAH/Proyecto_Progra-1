@@ -2,6 +2,8 @@
 #define SEGMENT_H
 
 #include <string>
+#include "List.h"
+
 using namespace std;
 
 class Segment {
@@ -13,8 +15,8 @@ private:
     int segmentCapacity;  
     int numEvents; 
     int index;
-    int* segmentCount; 
-    Segment** segmentsByEvent; 
+    List<int> segmentCount; 
+    List<List<Segment>> segmentsByEvent; 
 
 public:
     Segment();  
@@ -32,8 +34,8 @@ public:
     float getPrice();
     void setPrice(float& aPrice);
 
-    int* getSegmentCount();
-    void expandSegments(Segment& segment, int& numEvents);
+    List<int>& getSegmentCount();
+    List<List<Segment>>& getSegmentsByEvent();
 
     void manageSegments(Segment& segment, int& numEvents);
     void saveSegments(Segment& segment, int events);  
@@ -43,9 +45,6 @@ public:
 
     int getValidIntInput();
     float getValidFloatInput();
-    
-    Segment** getSegmentsByEvent();
-
 };
 
 #endif

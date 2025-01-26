@@ -6,37 +6,31 @@
 using namespace std; 
 
 Event::Event() {
-
     name = "";
     date = "";
     description = "";
-    eventCount = 0;     
-    events = nullptr; 
-    purchasesByUser = nullptr; 
-    userIds=nullptr;
+    eventCount = 0;
 }
 
 Event::~Event() {
-    delete[] events;
-    delete[] purchasesByUser;
-    delete[] userIds;  
+    // La lista se liberará automáticamente con su destructor
 }
 
-string Event::getName()  { return name;}
+string Event::getName()  { return name; }
 
-void Event::setName( string& aName) {name = aName;}
+void Event::setName(string& aName) { name = aName; }
 
-string Event::getDate()  { return date;}
+string Event::getDate()  { return date; }
 
-void Event::setDate(string& aDate) { date = aDate;}
+void Event::setDate(string& aDate) { date = aDate; }
 
-string Event::getDescription() { return description;}
+string Event::getDescription() { return description; }
 
-void Event::setDescription(string& aDescription) { description = aDescription;}
+void Event::setDescription(string& aDescription) { description = aDescription; }
 
-Event* Event::getEvents() { return events; }
+List<Event>& Event::getEvents() { return events; }
 
-int Event::getEventCount(){ return eventCount; };
+int Event::getEventCount() { return eventCount; }
 
 int Event::getValidIntInput() 
 {
@@ -51,113 +45,95 @@ int Event::getValidIntInput()
     }
 }
 
-void Event::expandAndAssignEvents(Event& event, int numEvents) {
-    
+void Event::assignEvents(Event& event, int numEvents) {
     if (numEvents <= 0) {
         cout << "El número de eventos debe ser mayor a cero." << endl;
         return;
     }
 
-
-    int newCapacity = event.eventCount + numEvents;
-
-  
-    Event* newEvents = new Event[newCapacity];
-
-  
-    for (int j = 0; j < event.eventCount; j++) {
-        newEvents[j] = event.events[j];
+    for (int i = 1; i <= numEvents; i++) {
+        event.events.insertAtEnd(Event());
     }
 
-    
-    delete[] event.events;
-
-
-    event.events = newEvents;
+    event.eventCount += numEvents;
 }
 
 void Event::initializeTracking(int maxUsers) {
-
-    purchasesByUser = new int[maxUsers];
-    userIds = new string[maxUsers];
     for (int i = 0; i < maxUsers; i++) {
-        purchasesByUser[i] = 0;
-        userIds[i] = "";
+        purchasesByUser.insertAtEnd(0);
+        userIds.insertAtEnd("");
     }
 }
 
 bool Event::purchaseTickets(const string& userId, int numTickets) {
+    List<int>::NodePtr purchaseNode = purchasesByUser.getHead();
+List<string>::NodePtr userNode = userIds.getHead();
 
-    for (int i = 0; i < 100; i++) {
-        if (userIds[i] == userId) {
-            if (purchasesByUser[i] + numTickets > 5) {
+    while (userNode) {
+        if (userNode->data == userId) {
+            if (purchaseNode->data + numTickets > 5) {
                 cout << "No puedes comprar más de 5 boletos para este evento.\n";
                 return false;
             }
-            purchasesByUser[i] += numTickets;
+            purchaseNode->data += numTickets;
             return true;
         }
-        if (userIds[i] == "") {
-            userIds[i] = userId;
-            purchasesByUser[i] = numTickets;
+        if (userNode->data == "") {
+            userNode->data = userId;
+            purchaseNode->data = numTickets;
             return true;
         }
+        userNode = userNode->next;
+        purchaseNode = purchaseNode->next;
     }
+
     cout << "No se pudo registrar la compra. Máximo de usuarios alcanzado.\n";
     return false;
 }
 
 int Event::getTicketsPurchasedByUser(const string& userId) {
-    for (int i = 0; i < 100; i++) {
-        if (userIds[i] == userId) {
-            return purchasesByUser[i];
+    List<int>::NodePtr purchaseNode = purchasesByUser.getHead();
+List<string>::NodePtr userNode = userIds.getHead();
+
+    while (userNode) {
+        if (userNode->data == userId) {
+            return purchaseNode->data;
         }
+        userNode = userNode->next;
+        purchaseNode = purchaseNode->next;
     }
     return 0;
 }
 
-void Event::saveEvent(Event& event) {
-    
+void Event::saveEvent(Event& event)
+{
     int numEvents = 0;
-
     cout << "Cuantos eventos desea agregar?" << endl;
     numEvents = getValidIntInput();
 
-    expandAndAssignEvents(event, numEvents);
+    assignEvents(event, numEvents); 
 
-    for (int i = 0; i < numEvents; i++) {
+    List<Event>::NodePtr currentEvent = event.events.getHead();
+
+    for (int i = 1; i <= numEvents; i++) {
         string name, date, description;
 
-        cout << "\nIngrese el nombre del evento " << event.eventCount + 1 << ": ";
+        
+        cout << "\nIngrese el nombre del evento " << i << ": ";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         getline(cin, name);
-
-        while (name.empty()) {
-        getline(cin, name);
-        }
-
-        cout << "\nIngrese la fecha del evento (DD/MM/AAAA): ";
-        getline(cin, date);
-
-        while (!isValidDate(date)) {
-        cout << "Fecha invalida. Intente nuevamente.\n";
-        cout << "\nIngrese la fecha del evento (DD/MM/AAAA): ";
-        getline(cin, date);
-    }
-
-        cout << "\nIngrese la descripcion del evento " << event.eventCount + 1 << ": ";
+        cout << "\nIngrese la fecha del evento (DD/MM/YYYY)" << i << ": ";
+        getline(cin, description);
+        cout << "\nIngrese la descripcion del evento " << i << ": ";
         getline(cin, description);
 
-   
-        event.events[event.eventCount].setName(name);
-        event.events[event.eventCount].setDate(date);
-        event.events[event.eventCount].setDescription(description);
+        currentEvent->data.setName(name);
+        currentEvent->data.setDate(date);
+        currentEvent->data.setDescription(description);
+        currentEvent->data.initializeTracking(100);
 
-     
-        event.events[event.eventCount].initializeTracking(100);
-
-     
-        event.eventCount++;
+        currentEvent = currentEvent->next;
+       
         cout << "Evento guardado con exito.\n";
     }
     cout << "\nPresione Enter para continuar...";
@@ -166,7 +142,6 @@ void Event::saveEvent(Event& event) {
 
 
 bool Event::isValidDate(string &date) {
-    
     if (date.length() != 10) return false;
 
     for (int i = 0; i < 10; i++) {
@@ -184,4 +159,3 @@ bool Event::isValidDate(string &date) {
 
     return true;
 }
-

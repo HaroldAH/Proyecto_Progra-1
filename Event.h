@@ -2,21 +2,23 @@
 #define EVENT_H
 
 #include <string>
+#include "List.h"
+
 using namespace std;
 
 class Event {
 private:
-    string name;               
-    string date;              
-    string description;        
-    int eventCount;            
-    Event* events;             
-    int* purchasesByUser;      
-    string* userIds;           
+    string name;                
+    string date;                
+    string description;         
+    int eventCount;             
+    List<Event> events;         
+    List<int> purchasesByUser;  
+    List<string> userIds;       
 
 public:
-    Event();                   
-    ~Event();                  
+    Event();                    
+    ~Event();                   
 
     string getName();
     void setName(string& aName);
@@ -27,16 +29,14 @@ public:
     string getDescription();
     void setDescription(string& aDescription);
 
-    Event* getEvents();
+    List<Event>& getEvents();
     int getEventCount();
 
-    
-    void initializeTracking(int maxUsers);               
+    void initializeTracking(int maxUsers);                
     bool purchaseTickets(const string& userId, int numTickets); 
     int getTicketsPurchasedByUser(const string& userId);  
 
-    
-    void expandAndAssignEvents(Event& event, int numEvents); 
+    void assignEvents(Event& event, int numEvents); 
     int getValidIntInput();                                    
     void saveEvent(Event& event);                              
     bool isValidDate(string& date);                            

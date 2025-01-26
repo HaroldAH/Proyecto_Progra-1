@@ -35,6 +35,8 @@ public:
     void showAbout();
     void manageCodes(Discount &discount);
     void showFaq();
+    void deleteDiscount();
+
 };
 
 #endif

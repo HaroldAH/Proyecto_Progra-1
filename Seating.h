@@ -23,6 +23,7 @@ private:
 
 public:
     Seating();
+    ~Seating();
     
     float getCost() const;
     void setCost(float c);

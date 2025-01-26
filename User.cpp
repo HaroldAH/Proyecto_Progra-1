@@ -1,66 +1,50 @@
 #include "User.h"
 
-
 User::User() {
-    users = nullptr;
     userCount = 0;
-    capacity = 0;
 }
 
 User::~User() {
-    delete[] users;
+    // La lista se destruye automáticamente
 }
 
-void User::expandAndAssignUsers(User &users, int quantity) {
-    
-    if (users.userCount + quantity > users.capacity) {
-        
-        int newCap = (users.capacity == 0) ? quantity : users.capacity + quantity;
-
-        UserData* newArr = new UserData[newCap];
-        
-        for (int i = 0; i < users.userCount; i++) {
-            newArr[i] = users.users[i];
-        }
-        
-        delete[] users.users;
-        users.users = newArr;
-        users.capacity = newCap;
+void User::expandAndAssignUsers(User &usersObj, int quantity) {
+    for (int i = 0; i < quantity; i++) {
+        usersObj.users.insertAtEnd(UserData());
     }
 }
 
-void User::createUser(User &users, const string &idNumber) {
-    
-    expandAndAssignUsers(users, 1);
+void User::createUser(User &usersObj, const string &idNumber) {
+    expandAndAssignUsers(usersObj, 1);
 
+    List<UserData>::NodePtr userNode = usersObj.users.getHead();
+    while (userNode->next) {
+        userNode = userNode->next;
+    }
     
-    users.users[users.userCount].setIdNumber(idNumber);
+    userNode->data.setIdNumber(idNumber);
 
-    
     string name, birthDate;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    cout << "Ingrese el nombre del usuario " << users.userCount + 1 << ": ";
+    cout << "Ingrese el nombre del usuario " << userCount + 1 << ": ";
     getline(cin, name);
-    users.users[users.userCount].setName(name);
+    userNode->data.setName(name);
 
     do {
-        cout << "Ingrese la fecha de nacimiento del usuario "<< users.userCount + 1 << " (DD/MM/AAAA): ";
+        cout << "Ingrese la fecha de nacimiento del usuario "<< userCount + 1 << " (DD/MM/AAAA): ";
         getline(cin, birthDate);
-            if (!isValidDate(birthDate)) {
-                cout << "Fecha invalida. Intente nuevamente." << endl;
-            }
+        if (!isValidDate(birthDate)) {
+            cout << "Fecha invalida. Intente nuevamente." << endl;
+        }
     } while (!isValidDate(birthDate));
 
+    userNode->data.setBirthDate(birthDate);
     
-    users.users[users.userCount].setBirthDate(birthDate);
-
-    
-    users.userCount++;
+    userCount++;
 }
 
 bool User::isValidDate(string &birthDate) {
-    
     if (birthDate.length() != 10) return false;
 
     for (int i = 0; i < 10; i++) {
@@ -78,11 +62,29 @@ bool User::isValidDate(string &birthDate) {
 }
 
 UserData* User::searchUserById(string &idNumber) {
-    
-    for (int i = 0; i < userCount; i++) {
-        if (users[i].getIdNumber() == idNumber) {
-            return &users[i];
+    List<UserData>::NodePtr userNode = users.getHead();
+
+    while (userNode) {
+        if (userNode->data.getIdNumber() == idNumber) {
+            return &(userNode->data);
         }
+        userNode = userNode->next;
     }
     return nullptr;
+}
+
+List<UserData>& User::getUsers() {
+    return users;
+}
+
+int User::getValidIntInput() {
+    int val;
+    while (true) {
+        if (cin >> val) {
+            return val;
+        }
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Entrada invalida. Intente nuevamente: ";
+    }
 }

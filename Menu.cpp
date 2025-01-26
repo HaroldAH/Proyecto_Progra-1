@@ -172,48 +172,45 @@ void Menu::listEventAndSegments(Event &event, Segment &segment)
 
     cout << "\nLista de eventos y segmentos:\n" << endl;
 
-    Segment **segmentsByEvent = segment.getSegmentsByEvent();
-    int *segmentCounts = segment.getSegmentCount();
+    List<List<Segment>>& segmentsByEvent = segment.getSegmentsByEvent();
+    List<int>& segmentCounts = segment.getSegmentCount();
 
-    if (!segmentsByEvent || !segmentCounts)
+    for (int i = 1; i <= event.getEventCount(); i++)
     {
-        cout << " No hay segmentos asociados.\n";
-        goto pause;
-    }
+        cout << "Evento #" << i << ":\n";  
+        cout << "Nombre: " << event.getEvents().getAt(i).getName() << "\n";
+        cout << "Fecha: " << event.getEvents().getAt(i).getDate() << "\n";
+        cout << "Descripcion: " << event.getEvents().getAt(i).getDescription() << "\n";
 
-    for (int i = 0; i < event.getEventCount(); i++)
-    {
-        cout << "Evento #" << i + 1 << ":\n";
-        cout << "Nombre: " << event.getEvents()[i].getName() << "\n";
-        cout << "Fecha: " << event.getEvents()[i].getDate() << "\n";
-        cout << "Descripcion: " << event.getEvents()[i].getDescription() << "\n";
         cout << "Segmentos asociados:\n";
 
-        if (segmentCounts[i] == 0 || !segmentsByEvent[i])
+        if (segmentCounts.getAt(i) == 0 || segmentsByEvent.getAt(i).getHead() == nullptr)
         {
             cout << " No tiene segmentos asignados.\n";
             cout << "--------------------------\n";
             continue;
         }
 
-        for (int j = 0; j < segmentCounts[i]; j++)
+        for (int j = 1; j <= segmentCounts.getAt(i); j++)
         {
-            cout << "  Segmento #" << j + 1 << ":\n";
-            cout << "    Nombre: " << segmentsByEvent[i][j].getName() << "\n";
-            cout << "    Filas: " << segmentsByEvent[i][j].getRows() << "\n";
-            cout << "    Asientos por fila: " << segmentsByEvent[i][j].getSeats() << "\n";
-            cout << "    Precio: " << segmentsByEvent[i][j].getPrice() << "\n";
+            cout << "  Segmento #" << j << ":\n";
+            cout << "    Nombre: " 
+                 << segmentsByEvent.getAt(i).getAt(j).getName() << "\n";
+            cout << "    Filas: " 
+                 << segmentsByEvent.getAt(i).getAt(j).getRows() << "\n";
+            cout << "    Asientos por fila: " 
+                 << segmentsByEvent.getAt(i).getAt(j).getSeats() << "\n";
+            cout << "    Precio: " 
+                 << segmentsByEvent.getAt(i).getAt(j).getPrice() << "\n";
         }
 
         cout << "--------------------------\n";
     }
 
-pause:
     cout << "\nPresione Enter para continuar...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
 }
-
 
 
 void Menu::manageCodes(Discount &discount)
@@ -221,13 +218,14 @@ void Menu::manageCodes(Discount &discount)
     while (true)
     {
         system("cls");
-        int choice, size = 3;
+        int choice, size = 4;
         cout << "\n+=======================+" << endl;
         cout << "|     GESTION DE CODIGOS|" << endl;
         cout << "+=======================+" << endl;
         cout << "1. Generar codigos" << endl;
         cout << "2. Mostrar registro" << endl;
-        cout << "3. Volver al menu principal" << endl;
+        cout << "3. Eliminar un codigo" << endl;  // Nueva opción para eliminar descuentos
+        cout << "4. Volver al menu principal" << endl;
 
         validateChoice(choice, size);
 
@@ -245,10 +243,17 @@ void Menu::manageCodes(Discount &discount)
 
         if (choice == 3)
         {
+            discount.deleteDiscount();
+            continue;
+        }
+
+        if (choice == 4)
+        {
             return;
         }
     }
 }
+
 
 void Menu::sellTicket(User &user)
 {

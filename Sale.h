@@ -24,10 +24,7 @@ private:
 
     int chooseSegment(Segment &segment, int selectedEvent);
 
-    Seating& ensureSeating(int selectedEvent,
-                           int selectedSegment,
-                           Segment** segments,
-                           std::map<std::tuple<int,int>,Seating> &seatingMap);
+    Seating& ensureSeating(int selectedEvent, int selectedSegment, List<List<Segment>>& segments, std::map<std::tuple<int, int>, Seating>& seatingMap);
 
     int buyTickets(UserData *currentUser, Event &event, int selectedEvent);
 
@@ -37,19 +34,13 @@ private:
 
     int readIntInRange(int minValue, int maxValue, const std::string &errorPrompt);
 
-    void printInvoice(UserData* currentUser,
-                  Event &event,
-                  int selectedEvent,
-                  Segment** segments,
-                  int selectedSegment,
-                  int numTickets,
-                  float ticketPrice,
-                  float discountPercentage,
-                  float totalCost,
-                  int* purchasedRows,
-                  char* purchasedCols,
-                  int numPurchasedSeats,
-                  std::string cardNumber);
+    void printInvoice(UserData* currentUser, Event &event, int selectedEvent,
+                  List<List<Segment>> &segments, int selectedSegment,
+                  int numTickets, float ticketPrice, float discountPercentage,
+                  float totalCost, int* purchasedRows, char* purchasedCols,
+                  int numPurchasedSeats, std::string cardNumber);
+
+
 
 
 public:

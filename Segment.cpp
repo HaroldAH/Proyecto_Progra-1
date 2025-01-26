@@ -11,26 +11,16 @@ Segment::Segment() {
     price = 0;
     segmentCapacity = 2;
     numEvents = 0;
-    int index = 0;
-    segmentCount = nullptr;
-    segmentsByEvent = nullptr;
+    index = 0;
 }
 
 Segment::~Segment() {
-    if (segmentsByEvent != nullptr) {
-        for (int i = 0; i < numEvents; i++) {
-            if (segmentsByEvent[i] != nullptr) {
-                delete[] segmentsByEvent[i];
-            }
-        }
-        delete[] segmentsByEvent;
-        delete[] segmentCount;
-    }
+    // La lista se libera automáticamente con su destructor
 }
 
 string Segment::getName() { return segmentName; }
 
-void Segment::setName(string& aSegmentName){ segmentName = aSegmentName;}
+void Segment::setName(string& aSegmentName){ segmentName = aSegmentName; }
 
 int Segment::getRows() { return rows; }
 
@@ -44,18 +34,9 @@ float Segment::getPrice() { return price; }
 
 void Segment::setPrice(float& aPrice) { price = aPrice; }
 
-Segment** Segment::getSegmentsByEvent() {
+List<int>& Segment::getSegmentCount() { return segmentCount; }
 
-    if (segmentsByEvent == nullptr) {
-        cout << "No hay segmentos asociados\n";
-        cout << "\nPresione Enter para continuar...";
-        cin.get();
-        return nullptr;
-    }
-    return segmentsByEvent;
-}
-
-int* Segment::getSegmentCount() { return segmentCount; }
+List<List<Segment>>& Segment::getSegmentsByEvent() { return segmentsByEvent; }
 
 void Segment::manageSegments(Segment& segment, int& numEvents) {
     if (numEvents <= 0) {
@@ -63,64 +44,36 @@ void Segment::manageSegments(Segment& segment, int& numEvents) {
         return;
     }
 
-    
-    if (segment.segmentsByEvent == nullptr) {
+    if (segmentsByEvent.getHead() == nullptr) {
         segmentCapacity = numEvents;  
 
-        segment.segmentsByEvent = new Segment*[segmentCapacity];
-        segment.segmentCount = new int[segmentCapacity];
-
         for (int i = 0; i < segmentCapacity; i++) {
-            segment.segmentsByEvent[i] = nullptr;
-            segment.segmentCount[i] = 0;
+            segmentsByEvent.insertAtEnd(List<Segment>());
+            segmentCount.insertAtEnd(0);
         }
         return;
     }
 
     int currentCapacity = segmentCapacity;
 
-    
     if (numEvents <= currentCapacity) {
         return;
     }
 
-    int newCapacity = currentCapacity * 2; 
-    if (newCapacity < numEvents) {
-        newCapacity = numEvents; 
+    for (int i = currentCapacity; i < numEvents; i++) {
+        segmentsByEvent.insertAtEnd(List<Segment>());
+        segmentCount.insertAtEnd(0);
     }
 
-    int* newSegmentCount = new int[newCapacity];
-    Segment** newSegmentsByEvent = new Segment*[newCapacity];
-
-   
-    for (int i = 0; i < currentCapacity; i++) {
-        newSegmentCount[i] = segment.segmentCount[i];
-        newSegmentsByEvent[i] = segment.segmentsByEvent[i];
-    }
-
-    
-    for (int i = currentCapacity; i < newCapacity; i++) {
-        newSegmentsByEvent[i] = nullptr;
-        newSegmentCount[i] = 0;
-    }
-
-    
-    delete[] segment.segmentsByEvent;
-    delete[] segment.segmentCount;
-
-    
-    segment.segmentsByEvent = newSegmentsByEvent;
-    segment.segmentCount = newSegmentCount;
-    segmentCapacity = newCapacity;  
+    segmentCapacity = numEvents;  
 }
 
 void Segment::addSegmentData(Segment& segment, int index) {
-
     string name;
     int rows, seats;
     float price;
 
-    cout << "Ingrese el nombre del segmento " <<index+1<< "."<<endl;
+    cout << "Ingrese el nombre del segmento " << index  << "." << endl;
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     getline(cin, name);
 
@@ -147,8 +100,7 @@ bool Segment::askToAddSegments(int& eventIndex) {
     char addSegments;
 
     while (true) {
-
-        cout << endl << "Desea agregar segmentos al evento " << eventIndex + 1 << "? (S/N): ";
+        cout << endl << "Desea agregar segmentos al evento " << eventIndex << "? (S/N): ";
         cin >> addSegments;
 
         if (addSegments == 'S' || addSegments == 's') {
@@ -162,24 +114,26 @@ bool Segment::askToAddSegments(int& eventIndex) {
     }
 }
 
-void Segment::saveSegments(Segment& segment, int events) {
-
+void Segment::saveSegments(Segment& segment, int events)
+{
     numEvents = events;
 
     if (numEvents == 0) {
         cout << "No hay eventos disponibles para asignar segmentos." << endl ;
         cout << "Presione Enter para continuar..."<< endl;
-         cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
         cin.get(); 
         return;
     }
 
     manageSegments(segment, numEvents);
 
-    for (int i = 0; i < numEvents; i++) {
+    List<List<Segment>>::NodePtr eventNode = segmentsByEvent.getHead();
+    List<int>::NodePtr countNode = segmentCount.getHead();
 
-        if (segment.segmentsByEvent[i] != nullptr && segment.segmentCount[i] > 0) {
-            cout << "El evento " << i + 1 << " ya tiene segmentos asignados. No se puede agregar mas segmentos." << endl << endl;
+    for (int i = 1; i <= numEvents; i++) {
+        if (countNode->data > 0) {
+            cout << "El evento " << i << " ya tiene segmentos asignados." << endl << endl;
             cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
             cin.get(); 
             continue; 
@@ -188,25 +142,29 @@ void Segment::saveSegments(Segment& segment, int events) {
         bool shouldAddSegments = askToAddSegments(i);
 
         if (!shouldAddSegments) {
-            continue;  
+            continue;
         }
 
         int numSegments = 0;
-        cout << "Cuantos segmentos desea agregar al evento " << i + 1 << "?" << endl;
+        
+        cout << "Cuantos segmentos desea agregar al evento " << i << "?" << endl;
         numSegments = getValidIntInput();
 
-        segment.segmentCount[i] = numSegments;
-        segment.segmentsByEvent[i] = new Segment[numSegments];  
+        countNode->data = numSegments;
 
-        for (int j = 0; j < numSegments; j++) {
-            addSegmentData(segment.segmentsByEvent[i][j],j);  
+        for (int j = 1; j <= numSegments; j++) {
+            Segment newSegment;
+            addSegmentData(newSegment, j);
+            eventNode->data.insertAtEnd(newSegment);
         }
-        cin.get();
+
+        eventNode = eventNode->next;
+        countNode = countNode->next;
     }
 }
 
-int Segment::getValidIntInput() 
-{
+
+int Segment::getValidIntInput() {
     int input;
     while (true) {
         if (cin >> input && input > 0) {
@@ -219,7 +177,6 @@ int Segment::getValidIntInput()
 }
 
 float Segment::getValidFloatInput() {
-
     float input;
     while (true) {
         if (cin >> input && input > 0) {
