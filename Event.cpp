@@ -46,6 +46,7 @@ int Event::getValidIntInput()
 }
 
 void Event::assignEvents(Event& event, int numEvents) {
+
     if (numEvents <= 0) {
         cout << "El número de eventos debe ser mayor a cero." << endl;
         return;
@@ -59,6 +60,7 @@ void Event::assignEvents(Event& event, int numEvents) {
 }
 
 void Event::initializeTracking(int maxUsers) {
+
     for (int i = 0; i < maxUsers; i++) {
         purchasesByUser.insertAtEnd(0);
         userIds.insertAtEnd("");
@@ -66,7 +68,7 @@ void Event::initializeTracking(int maxUsers) {
 }
 
 bool Event::purchaseTickets(const string& userId, int numTickets) {
-    List<int>::NodePtr purchaseNode = purchasesByUser.getHead();
+List<int>::NodePtr purchaseNode = purchasesByUser.getHead();
 List<string>::NodePtr userNode = userIds.getHead();
 
     while (userNode) {
@@ -92,8 +94,9 @@ List<string>::NodePtr userNode = userIds.getHead();
 }
 
 int Event::getTicketsPurchasedByUser(const string& userId) {
+
     List<int>::NodePtr purchaseNode = purchasesByUser.getHead();
-List<string>::NodePtr userNode = userIds.getHead();
+    List<string>::NodePtr userNode = userIds.getHead();
 
     while (userNode) {
         if (userNode->data == userId) {
@@ -111,37 +114,55 @@ void Event::saveEvent(Event& event)
     cout << "Cuantos eventos desea agregar?" << endl;
     numEvents = getValidIntInput();
 
+    // Asignas los 'n' eventos vacíos (o reservados) en tu lista
     assignEvents(event, numEvents); 
 
+    // Apunta al primer nodo de la lista
     List<Event>::NodePtr currentEvent = event.events.getHead();
 
     for (int i = 1; i <= numEvents; i++) {
         string name, date, description;
 
-        
         cout << "\nIngrese el nombre del evento " << i << ": ";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         getline(cin, name);
-        cout << "\nIngrese la fecha del evento (DD/MM/YYYY)" << i << ": ";
-        getline(cin, description);
+
+        // Bucle para validar la fecha hasta que sea correcta
+        bool validDate = false;
+        while (!validDate) {
+            cout << "\nIngrese la fecha del evento " << i << " (DD/MM/YYYY): ";
+            getline(cin, date);
+
+            if (!isValidDate(date)) {
+                cout << "La fecha ingresada no es valida. Por favor intente nuevamente.\n";
+            } else {
+                validDate = true;
+            }
+        }
+
         cout << "\nIngrese la descripcion del evento " << i << ": ";
         getline(cin, description);
 
+        // Almacena los datos en el nodo actual
         currentEvent->data.setName(name);
         currentEvent->data.setDate(date);
         currentEvent->data.setDescription(description);
         currentEvent->data.initializeTracking(100);
 
+        // Avanza al siguiente evento en la lista
         currentEvent = currentEvent->next;
-       
+
         cout << "Evento guardado con exito.\n";
     }
+
     cout << "\nPresione Enter para continuar...";
     cin.get();
 }
 
 
+
 bool Event::isValidDate(string &date) {
+
     if (date.length() != 10) return false;
 
     for (int i = 0; i < 10; i++) {

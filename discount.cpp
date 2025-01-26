@@ -73,9 +73,18 @@ void Discount::showDiscountList() {
     cout << "=========================\n";
 }
 
-
+string Discount::generateCode() {
+    static const char chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    int length = 5;
+    string code;
+    for (int i = 0; i < length; i++) {
+        code += chars[rand() % (sizeof(chars) - 1)];
+    }
+    return code;
+}
 
 void Discount::deleteDiscount() {
+    
     if (codes.getHead() == nullptr) {
         cout << "No hay codigos de descuento disponibles para eliminar." << endl;
         cout << "Presione Enter para continuar.." << endl;
@@ -84,13 +93,28 @@ void Discount::deleteDiscount() {
         return;
     }
 
-    showDiscountList();  // Mostrar lista antes de la eliminación
+    showDiscountList();  // Mostrar la lista antes de la eliminación
 
     cout << "Ingrese el numero del codigo a eliminar (1-" << discountCount << "): ";
     int num = getValidIntInput();
 
     if (num < 1 || num > discountCount) {
         cout << "Numero invalido. Intente de nuevo." << endl;
+        return;
+    }
+
+    // Buscar el estado del código seleccionado
+    List<bool>::NodePtr usedNode = used.getHead();
+    for (int i = 1; i < num; i++) {
+        usedNode = usedNode->next;
+    }
+
+    // Si el código ya ha sido usado, impedir la eliminación
+    if (usedNode->data) {
+        cout << "El codigo seleccionado ya ha sido usado y no puede eliminarse." << endl;
+        cout << "Presione Enter para continuar..." << endl;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.get();
         return;
     }
 
@@ -102,24 +126,14 @@ void Discount::deleteDiscount() {
     discountCount--;  // Disminuir el conteo después de la eliminación
 
     cout << "\nCodigo eliminado exitosamente.\n";
-
-    showDiscountList();  // Mostrar lista después de la eliminación
+    
+    showDiscountList();  // Mostrar la lista después de la eliminación
 
     cout << "\nPresione Enter para continuar...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
 }
 
-
-string Discount::generateCode() {
-    static const char chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    int length = 5;
-    string code;
-    for (int i = 0; i < length; i++) {
-        code += chars[rand() % (sizeof(chars) - 1)];
-    }
-    return code;
-}
 
 bool Discount::verifyCode(string &code) {
     List<string>::NodePtr codeNode = codes.getHead();
