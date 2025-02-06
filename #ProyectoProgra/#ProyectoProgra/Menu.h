@@ -14,6 +14,7 @@
 #include "Seating.h"
 #include "Faq.h"
 #include "EventReport.h"
+#include <limits>
 
 class Menu
 {
@@ -28,6 +29,7 @@ private:
     map<std::tuple<int, int>, Seating> seatingMap;
     Seating& operator=(const Seating& other); 
 	sf::RenderWindow *window;
+    
 
 
 public:
@@ -47,6 +49,10 @@ public:
     void cancelPurchase();
     void updateReport();
     void executeOption(int option);
+
+    void showDiscountMenuSFML(Discount& discount);
+
+    
 };
 
 #endif

@@ -50,9 +50,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="discount.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Event.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -75,6 +72,9 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="User.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="discount.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

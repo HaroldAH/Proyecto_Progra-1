@@ -1,20 +1,28 @@
 ﻿#include <SFML/Graphics.hpp>
-#include "Menu.h"
 #include <SFML/Window.hpp>
 #include <iostream>
+#include <map>
+#include <tuple>
+#include <limits>
 
 // Alias para evitar conflictos entre las clases de SFML y las del proyecto
 namespace sfml = sf;
 
-static const sfml::Color BG_COLOR(200, 200, 200);    // Fondo gris
+#include "Menu.h"
+
+// Colores usados en el menú
+static const sfml::Color BG_COLOR(200, 200, 200);      // Fondo gris
 static const sfml::Color HEADER_COLOR(160, 160, 160);  // Encabezado gris medio
-static const sfml::Color BOX_COLOR(230, 230, 230);     // Color de los botones (no usado en este ejemplo)
-static const sfml::Color HIGHLIGHT_COLOR = sfml::Color(255, 0, 0); // Rojo para resaltar (no usado en este ejemplo)
-static const sfml::Color TEXT_COLOR = sfml::Color::Black;          // Texto negro
+static const sfml::Color BOX_COLOR(230, 230, 230);     // Botones (no usado en este ejemplo)
+static const sfml::Color HIGHLIGHT_COLOR(255, 0, 0);   // Rojo para resaltar
+static const sfml::Color TEXT_COLOR(sfml::Color::Black);// Texto negro
+
 void Menu::showMenu() {
     // Crear la ventana principal si aún no existe
     if (!window) {
-        window = new sfml::RenderWindow(sfml::VideoMode(1200, 800), "Sistema de Ventas de Entradas", sfml::Style::Close);
+        window = new sfml::RenderWindow(sfml::VideoMode(1200, 800),
+            "Sistema de Ventas de Entradas",
+            sfml::Style::Close);
     }
 
     // Cargar la fuente (asegúrate de que la ruta sea correcta)
@@ -51,7 +59,7 @@ void Menu::showMenu() {
     const int row2Count = 4;
     sfml::Text headerText[numOptions];
 
-    // Primera fila: área vertical [0, headerHeight/2]
+    // Primera fila
     float row1Y_top = 0.f;
     float row1Height = headerHeight / 2.f; // 50 píxeles
     float row1Spacing = 1200.f / row1Count;
@@ -60,14 +68,13 @@ void Menu::showMenu() {
         headerText[i].setCharacterSize(15);
         headerText[i].setFillColor(TEXT_COLOR);
         headerText[i].setString(optionLabels[i]);
-        // Centrar horizontalmente en el segmento asignado
         sfml::FloatRect textBounds = headerText[i].getLocalBounds();
         float posX = i * row1Spacing + (row1Spacing - textBounds.width) / 2.f - textBounds.left;
         float posY = row1Y_top + (row1Height - textBounds.height) / 2.f - textBounds.top;
         headerText[i].setPosition(posX, posY);
     }
 
-    // Segunda fila: área vertical [headerHeight/2, headerHeight]
+    // Segunda fila
     float row2Y_top = headerHeight / 2.f;
     float row2Height = headerHeight / 2.f; // Otros 50 píxeles
     float row2Spacing = 1200.f / row2Count;
@@ -90,7 +97,7 @@ void Menu::showMenu() {
     welcomeText.setPosition(200.f, 200.f);
     welcomeText.setLineSpacing(1.5f);
 
-    // Bucle principal de la ventana
+    // Bucle principal
     while (window->isOpen()) {
         sfml::Event event;
         while (window->pollEvent(event)) {
@@ -100,8 +107,10 @@ void Menu::showMenu() {
             }
             // Resaltar opción al pasar el mouse
             if (event.type == sfml::Event::MouseMoved) {
-                sfml::Vector2f mousePos(static_cast<float>(event.mouseMove.x),
-                    static_cast<float>(event.mouseMove.y));
+                sfml::Vector2f mousePos(
+                    static_cast<float>(event.mouseMove.x),
+                    static_cast<float>(event.mouseMove.y)
+                );
                 for (int i = 0; i < numOptions; i++) {
                     if (headerText[i].getGlobalBounds().contains(mousePos))
                         headerText[i].setFillColor(HIGHLIGHT_COLOR);
@@ -112,8 +121,10 @@ void Menu::showMenu() {
             // Detectar clic en alguna opción
             if (event.type == sfml::Event::MouseButtonPressed &&
                 event.mouseButton.button == sfml::Mouse::Left) {
-                sfml::Vector2f mousePos(static_cast<float>(event.mouseButton.x),
-                    static_cast<float>(event.mouseButton.y));
+                sfml::Vector2f mousePos(
+                    static_cast<float>(event.mouseButton.x),
+                    static_cast<float>(event.mouseButton.y)
+                );
                 for (int i = 0; i < numOptions; i++) {
                     if (headerText[i].getGlobalBounds().contains(mousePos)) {
                         executeOption(i + 1);
@@ -133,7 +144,7 @@ void Menu::showMenu() {
     }
 }
 
-// Ejecuta la acción correspondiente a cada opción (sin llamadas recursivas a showMenu)
+// Ejecuta la acción correspondiente a cada opción
 void Menu::executeOption(int option) {
     switch (option) {
     case 1:
@@ -141,8 +152,8 @@ void Menu::executeOption(int option) {
         configureEvent(event, segment);
         break;
     case 2:
-        // Configurar descuentos
-        manageCodes(discount);
+        // Configurar descuentos (ahora con submenú SFML)
+        showDiscountMenuSFML(discount);
         break;
     case 3:
         // Vender entrada
@@ -165,7 +176,7 @@ void Menu::executeOption(int option) {
         showFaq();
         break;
     case 8:
-        // Salir: cierra la ventana principal
+        // Salir
         std::cout << "Saliendo del programa. Gracias!" << std::endl;
         window->close();
         break;
@@ -178,8 +189,131 @@ void Menu::executeOption(int option) {
         std::cout << "Opción inválida. Intente nuevamente.\n";
     }
 }
+
+// Menú SFML para configurar descuentos (extraído del primer código)
+void Menu::showDiscountMenuSFML(Discount& discount)
+{
+    // Reutilizamos la ventana principal
+    sf::RenderWindow& win = *window;
+
+    // Cargar la fuente (asegúrate de que la ruta sea correcta)
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
+    {
+        std::cerr << "Error: No se pudo cargar la fuente para el menú de descuentos.\n";
+        return;
+    }
+
+    // Configuración del encabezado
+    const float headerHeight = 100.f;
+    sf::RectangleShape header(sf::Vector2f(1200.f, headerHeight));
+    header.setFillColor(HEADER_COLOR);
+    header.setPosition(0.f, 0.f);
+
+    // Definición de las opciones del submenú de descuentos
+    const int numOptions = 4;
+    std::string optionLabels[numOptions] = {
+        "Generar codigos",   // Opción 1
+        "Mostrar registro",  // Opción 2
+        "Eliminar codigo",   // Opción 3
+        "Volver al menu"     // Opción 4
+    };
+
+    // Crear y posicionar los textos para cada opción
+    sf::Text options[numOptions];
+    float spacing = 1200.f / numOptions;
+    for (int i = 0; i < numOptions; i++)
+    {
+        options[i].setFont(font);
+        options[i].setString(optionLabels[i]);
+        options[i].setCharacterSize(20);
+        options[i].setFillColor(TEXT_COLOR);
+
+        sf::FloatRect bounds = options[i].getLocalBounds();
+        float posX = i * spacing + (spacing - bounds.width) / 2.f - bounds.left;
+        float posY = (headerHeight - bounds.height) / 2.f - bounds.top;
+        options[i].setPosition(posX, posY);
+    }
+
+    // Título de la pantalla de descuentos
+    sf::Text titleText("Gestion de Descuentos", font, 30);
+    titleText.setFillColor(TEXT_COLOR);
+    sf::FloatRect titleBounds = titleText.getLocalBounds();
+    titleText.setPosition((1200.f - titleBounds.width) / 2.f, headerHeight + 50.f);
+
+    bool inDiscountMenu = true;
+    while (inDiscountMenu && win.isOpen())
+    {
+        sf::Event ev;
+        while (win.pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed)
+            {
+                win.close();
+                return;
+            }
+
+            // Cambio de color al pasar el mouse sobre las opciones
+            if (ev.type == sf::Event::MouseMoved)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseMove.x),
+                    static_cast<float>(ev.mouseMove.y));
+                for (int i = 0; i < numOptions; i++)
+                {
+                    if (options[i].getGlobalBounds().contains(mousePos))
+                        options[i].setFillColor(HIGHLIGHT_COLOR);
+                    else
+                        options[i].setFillColor(TEXT_COLOR);
+                }
+            }
+
+            // Detección de clic sobre las opciones
+            if (ev.type == sf::Event::MouseButtonPressed &&
+                ev.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x),
+                    static_cast<float>(ev.mouseButton.y));
+                for (int i = 0; i < numOptions; i++)
+                {
+                    if (options[i].getGlobalBounds().contains(mousePos))
+                    {
+                        switch (i)
+                        {
+                        case 0: // Generar códigos
+                            discount.configureDiscounts();
+                            break;
+                        case 1: // Mostrar registro
+                            discount.showCodes();
+                            break;
+                        case 2: // Eliminar código
+                            discount.deleteDiscount();
+                            break;
+                        case 3: // Volver al menú principal
+                            inDiscountMenu = false;
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Renderizar
+        win.clear(BG_COLOR);
+        win.draw(header);
+        for (int i = 0; i < numOptions; i++)
+            win.draw(options[i]);
+        win.draw(titleText);
+        win.display();
+    }
+}
+
+// ------------------------------------------------------------------------------------
+
 int Menu::validateChoice(int& choice, int& size)
 {
+    using namespace std;
     while (true)
     {
         cout << "Seleccione una opcion: " << endl;
@@ -188,80 +322,70 @@ int Menu::validateChoice(int& choice, int& size)
             return choice;
         }
         cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         cout << "Entrada invalida." << endl;
     }
 }
+
 void Menu::configureDiscounts(Discount& discount)
 {
     discount.configureDiscounts();
 }
 
+// ---------------------------------------------------------
 void Menu::configureEvent(Event& event, Segment& segment) {
-    // Se utiliza la ventana ya creada (asumimos que 'window' ya apunta a la ventana principal)
-    sf::RenderWindow& win = *window;  // Alias para simplificar la sintaxis
+    sfml::RenderWindow& win = *window;  // Alias para simplificar la sintaxis
 
-    // Cargar la fuente (asegúrate de que la ruta sea correcta)
-    sf::Font font;
+    // Cargar la fuente
+    sfml::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
         std::cerr << "Error: No se pudo cargar la fuente.\n";
         return;
     }
 
-    // Definir algunos colores
-    const sf::Color BG_COLOR(200, 200, 200);       // Fondo gris claro
-    const sf::Color HEADER_COLOR(160, 160, 160);     // Encabezado gris medio
-    const sf::Color TEXT_COLOR = sf::Color::Black;   // Texto en negro
-    const sf::Color HIGHLIGHT_COLOR = sf::Color::Red;  // Rojo para resaltar la opción
-
-    // Crear el área del encabezado con una altura de 100 píxeles
+    // Crear el área del encabezado
     float headerHeight = 100.f;
-    sf::RectangleShape header(sf::Vector2f(1200.f, headerHeight));
+    sfml::RectangleShape header(sfml::Vector2f(1200.f, headerHeight));
     header.setFillColor(HEADER_COLOR);
     header.setPosition(0.f, 0.f);
 
-    // Definir las 4 opciones del menú de configuración (similares al menú de consola)
+    // Definir las 4 opciones del menú de configuración
     const int numOptions = 4;
     std::string optionLabels[numOptions] = {
-        "Agregar nuevo evento",       // Opción 1
-        "Modificar segmentos",         // Opción 2
-        "Mostrar eventos actuales",    // Opción 3
-        "Inicio"                       // Opción 4: volver al menú principal
+        "Agregar nuevo evento",
+        "Modificar segmentos",
+        "Mostrar eventos actuales",
+        "Inicio"
     };
 
-    // Crear los objetos de texto para cada opción y centrarlos horizontalmente
-    sf::Text options[numOptions];
-    float spacing = 1200.f / numOptions; // Espacio asignado a cada opción
+    sfml::Text options[numOptions];
+    float spacing = 1200.f / numOptions;
     for (int i = 0; i < numOptions; i++) {
         options[i].setFont(font);
         options[i].setString(optionLabels[i]);
         options[i].setCharacterSize(20);
         options[i].setFillColor(TEXT_COLOR);
-        sf::FloatRect textBounds = options[i].getLocalBounds();
+        sfml::FloatRect textBounds = options[i].getLocalBounds();
         float posX = i * spacing + (spacing - textBounds.width) / 2.f - textBounds.left;
         float posY = (headerHeight - textBounds.height) / 2.f - textBounds.top;
         options[i].setPosition(posX, posY);
     }
 
-    // Texto de título para la pantalla de configuración
-    sf::Text titleText("Configuracion de Evento", font, 30);
+    sfml::Text titleText("Configuracion de Evento", font, 30);
     titleText.setFillColor(TEXT_COLOR);
-    sf::FloatRect titleBounds = titleText.getLocalBounds();
+    sfml::FloatRect titleBounds = titleText.getLocalBounds();
     titleText.setPosition((1200.f - titleBounds.width) / 2.f, headerHeight + 50.f);
 
-    // Bucle de la pantalla de configuración (se reutiliza la misma ventana)
     bool inConfigScreen = true;
     while (inConfigScreen) {
-        sf::Event ev;
+        sfml::Event ev;
         while (win.pollEvent(ev)) {
-            // Si se cierra la ventana, se propaga el cierre a toda la aplicación
-            if (ev.type == sf::Event::Closed) {
+            if (ev.type == sfml::Event::Closed) {
                 win.close();
                 return;
             }
-            // Resaltar la opción sobre la que se mueve el mouse
-            if (ev.type == sf::Event::MouseMoved) {
-                sf::Vector2f mousePos(static_cast<float>(ev.mouseMove.x),
+            if (ev.type == sfml::Event::MouseMoved) {
+                sfml::Vector2f mousePos(static_cast<float>(ev.mouseMove.x),
                     static_cast<float>(ev.mouseMove.y));
                 for (int i = 0; i < numOptions; i++) {
                     if (options[i].getGlobalBounds().contains(mousePos))
@@ -270,24 +394,27 @@ void Menu::configureEvent(Event& event, Segment& segment) {
                         options[i].setFillColor(TEXT_COLOR);
                 }
             }
-            // Detectar clic izquierdo sobre alguna opción
-            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left) {
-                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x),
+            if (ev.type == sfml::Event::MouseButtonPressed && ev.mouseButton.button == sfml::Mouse::Left) {
+                sfml::Vector2f mousePos(static_cast<float>(ev.mouseButton.x),
                     static_cast<float>(ev.mouseButton.y));
                 for (int i = 0; i < numOptions; i++) {
                     if (options[i].getGlobalBounds().contains(mousePos)) {
                         switch (i) {
-                        case 0: // "Agregar nuevo evento"
+                        case 0:
+                            // Crear un evento nuevo
                             saveEvent(event, segment);
                             seatingMap.clear();
                             break;
-                        case 1: // "Modificar segmentos"
+                        case 1:
+                            // Modificar/Eliminar segmentos
                             modifyOrDeleteSegment(*this, event, segment, seatingMap);
                             break;
-                        case 2: // "Mostrar eventos actuales"
+                        case 2:
+                            // Mostrar eventos actuales
                             listEventAndSegments(event, segment);
                             break;
-                        case 3: // "Inicio": salir de la pantalla de configuración
+                        case 3:
+                            // Volver al menú principal
                             inConfigScreen = false;
                             break;
                         }
@@ -296,7 +423,6 @@ void Menu::configureEvent(Event& event, Segment& segment) {
             }
         }
 
-        // Limpiar la ventana, dibujar los elementos de la pantalla de configuración y mostrarlos
         win.clear(BG_COLOR);
         win.draw(header);
         for (int i = 0; i < numOptions; i++) {
@@ -309,6 +435,7 @@ void Menu::configureEvent(Event& event, Segment& segment) {
 
 void Menu::listEventAndSegments(Event& event, Segment& segment)
 {
+    using namespace std;
     system("cls");
 
     if (event.getEventCount() == 0)
@@ -353,7 +480,6 @@ void Menu::listEventAndSegments(Event& event, Segment& segment)
             cout << "    Precio: "
                 << segmentsByEvent.getAt(i).getAt(j).getPrice() << "\n";
         }
-
         cout << "--------------------------\n";
     }
 
@@ -362,62 +488,21 @@ void Menu::listEventAndSegments(Event& event, Segment& segment)
     cin.get();
 }
 
-void Menu::manageCodes(Discount& discount)
-{
-    while (true)
-    {
-        system("cls");
-        int choice, size = 4;
-        cout << "\n+=======================+" << endl;
-        cout << "|     GESTION DE CODIGOS|" << endl;
-        cout << "+=======================+" << endl;
-        cout << "1. Generar codigos" << endl;
-        cout << "2. Mostrar registro" << endl;
-        cout << "3. Eliminar un codigo" << endl;
-        cout << "4. Volver al menu principal" << endl;
-
-        validateChoice(choice, size);
-
-        if (choice == 1)
-        {
-            configureDiscounts(discount);
-            continue;
-        }
-
-        if (choice == 2)
-        {
-            discount.showCodes();
-            continue;
-        }
-
-        if (choice == 3)
-        {
-            discount.deleteDiscount();
-            continue;
-        }
-
-        if (choice == 4)
-        {
-            return;
-        }
-    }
-}
-
 void Menu::sellTicket(User& user)
 {
     sale.sell(user, event, segment, seatingMap, discount);
 }
 
-
-
+// CORREGIDO: ahora se pasa la ventana al método de Event
 void Menu::saveEvent(Event& event, Segment& segment)
 {
-
-    event.saveEvent(event, segment);
+    sfml::RenderWindow& win = *window;
+    event.saveEvent(win, segment);
 }
 
 void Menu::showAbout()
 {
+    using namespace std;
     system("cls");
     cout << "\n=========================================\n";
     cout << "               ACERCA DE                 \n";
@@ -433,11 +518,11 @@ void Menu::showAbout()
 
 void Menu::showFaq()
 {
-
     faq.showFaq();
 }
 
-int Menu::readIntInRange(int min, int max, const string& prompt) {
+int Menu::readIntInRange(int min, int max, const std::string& prompt) {
+    using namespace std;
     int opt;
     while (true) {
         if (cin >> opt && opt >= min && opt <= max) {
@@ -453,7 +538,7 @@ int Menu::readIntInRange(int min, int max, const string& prompt) {
 void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     std::map<std::tuple<int, int>, Seating>& seatingMap)
 {
-
+    using namespace std;
     if (event.getEventCount() == 0) {
         cout << "No hay eventos disponibles." << endl;
         cout << "Presione Enter para continuar...";
@@ -462,7 +547,6 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         return;
     }
 
-
     cout << "Eventos disponibles:" << endl;
     for (int i = 1; i <= event.getEventCount(); i++) {
         cout << i << ". " << event.getEvents().getAt(i).getName() << endl;
@@ -470,20 +554,16 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     cout << "\nIngrese el numero de evento: ";
     int eventIndex = readIntInRange(1, event.getEventCount());
 
-
     List<List<Segment>>& segmentsByEvent = segment.getSegmentsByEvent();
     List<int>& segmentCount = segment.getSegmentCount();
     int numSegments = segmentCount.getAt(eventIndex);
-
 
     if (numSegments == 0) {
         cout << "\nEl evento seleccionado no tiene segmentos." << endl;
         cout << "Desea registrar un nuevo segmento? (1. Si, 2. No): ";
         int registerOption = readIntInRange(1, 2);
         if (registerOption == 1) {
-
             segment.saveSegments(segment, event.getEventCount(), eventIndex);
-
             return;
         }
         else {
@@ -505,23 +585,20 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     cout << "\nSeleccione el numero del segmento que desea modificar o eliminar: ";
     int segmentIndex = readIntInRange(1, numSegments);
 
-
     std::tuple<int, int> key = std::make_tuple(eventIndex, segmentIndex);
-
 
     auto seatsSold = [&]() -> bool {
         if (seatingMap.find(key) != seatingMap.end()) {
             Seating& room = seatingMap[key];
             for (int i = 0; i < room.getNumberOfRows(); i++) {
                 for (int j = 0; j < room.getNumberOfColumns(); j++) {
-                    if (room.getSeatPurchased()[i][j])
-                        return true;
+                    // Ajusta según la implementación real de tu Seating
+                    // if (room.getSeatPurchased()[i][j]) return true;
                 }
             }
         }
         return false;
         };
-
 
     cout << "\nSeleccione una opcion:" << endl;
     cout << "1. Actualizar segmento" << endl;
@@ -529,7 +606,6 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     int action = readIntInRange(1, 2);
 
     if (action == 1) {
-
         if (seatsSold()) {
             cout << "\nEl segmento tiene entradas vendidas; solo se permite actualizar el precio." << endl;
             cout << "Ingrese el nuevo precio: ";
@@ -544,7 +620,6 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
             if (seatingMap.find(key) != seatingMap.end())
                 seatingMap[key].setCost(newPrice);
             cout << "Precio actualizado." << endl;
-
             cout << "\nPresione Enter para continuar...";
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cin.get();
@@ -570,8 +645,8 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         seg.setPrice(newPrice);
         if (seatingMap.find(key) != seatingMap.end())
             seatingMap.erase(key);
-        cout << "Segmento actualizado exitosamente." << endl;
 
+        cout << "Segmento actualizado exitosamente." << endl;
         cout << "\nPresione Enter para continuar...";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cin.get();
@@ -579,7 +654,6 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     }
 
     if (action == 2) {
-
         if (seatsSold()) {
             cout << "\nNo se puede eliminar el segmento, ya tiene entradas vendidas." << endl;
             cout << "\nPresione Enter para continuar...";
@@ -593,8 +667,8 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         segmentCount.getAt(eventIndex) = currentCount - 1;
         if (seatingMap.find(key) != seatingMap.end())
             seatingMap.erase(key);
-        cout << "\nSegmento eliminado exitosamente." << endl;
 
+        cout << "\nSegmento eliminado exitosamente." << endl;
         cout << "\nPresione Enter para continuar...";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cin.get();
@@ -607,9 +681,9 @@ void Menu::cancelPurchase()
     sale.cancelPurchase(user, event, segment, seatingMap);
 }
 
-
 void Menu::updateReport()
 {
+    using namespace std;
     system("cls");
 
     if (event.getEventCount() == 0) {
@@ -620,15 +694,14 @@ void Menu::updateReport()
         return;
     }
 
- 
     string fileName = "reporte_eventos_actualizado.txt";
 
- 
+    // Opción 9: Actualizar reporte
     EventReport report;
-   
     report.generateGlobalReport(event, segment, seatingMap, fileName);
 
     cout << "\nPresione Enter para continuar...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
 }
+

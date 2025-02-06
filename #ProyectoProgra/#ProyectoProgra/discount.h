@@ -1,6 +1,7 @@
 #ifndef DISCOUNT_H
 #define DISCOUNT_H
 
+#include <SFML/Graphics.hpp>
 #include <string>
 #include "List.h"
 
@@ -29,6 +30,7 @@ public:
     int getValidIntInput();
     void deleteDiscount();
     void showDiscountList();
+
 
 };
 
