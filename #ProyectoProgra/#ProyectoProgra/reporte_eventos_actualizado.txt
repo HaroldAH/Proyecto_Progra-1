@@ -1,0 +1,19 @@
+================== REPORTE DE EVENTOS ==================
+Actualizado el: 05/02/2025 22:41:37
+
+================== REPORTE DEL EVENTO #1 ==================
+Nombre del Evento: 1
+
+-------------------- SEGMENTO #1 --------------------
+  Nombre del Segmento   : 1
+  Precio por asiento    : $1.00
+  Filas                 : 1    |    Asientos por fila: 1
+  No se ha configurado la sala para este segmento.
+
+================== RESUMEN DEL EVENTO ==================
+  Total de asientos disponibles: 0
+  Total de asientos vendidos   : 0
+  Ganancias generadas          : $0.00
+========================================================
+
+=======================================================

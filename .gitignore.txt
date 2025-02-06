@@ -1,0 +1,39 @@
+# Archivos de Visual Studio
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+*.VC.db
+*.cache
+*.opendb
+
+# Archivos de compilación y temporales
+*.obj
+*.exe
+*.ilk
+*.pdb
+*.log
+*.tlog/
+*.ipch/
+*.iobj/
+*.idb
+*.res
+*.manifest
+*.pch
+*.sdf
+*.ncb
+
+# Directorios generados por la compilación
+x64/
+x86/
+Debug/
+Release/
+bin/
+build/
+
+# Archivos de CMake (si usas CMake)
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake

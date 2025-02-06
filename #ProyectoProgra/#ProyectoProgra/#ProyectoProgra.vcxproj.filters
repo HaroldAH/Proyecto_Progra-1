@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Archivos de encabezado">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Archivos de encabezado\Archivos de recursos">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Archivos de encabezado\Archivos de recursos\Archivos de origen">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Discount.cpp">
+      <Filter>Archivos de encabezado\Archivos de recursos\Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>Archivos de encabezado\Archivos de recursos\Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="EventReport.cpp">
+      <Filter>Archivos de encabezado\Archivos de recursos\Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="Faq.cpp">
+      <Filter>Archivos de encabezado\Archivos de recursos\Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Archivos de encabezado\Archivos de recursos\Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="Sale.cpp">
+      <Filter>Archivos de encabezado\Archivos de recursos\Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="seating.cpp">
+      <Filter>Archivos de encabezado\Archivos de recursos\Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="Segment.cpp">
+      <Filter>Archivos de encabezado\Archivos de recursos\Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>Archivos de encabezado\Archivos de recursos\Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="Source.cpp">
+      <Filter>Archivos de encabezado\Archivos de recursos</Filter>
+    </ClCompile>
+    <ClCompile Include="List.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="discount.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="EventReport.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Faq.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Sale.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="seating.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Segment.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="User.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
