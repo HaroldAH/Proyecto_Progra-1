@@ -19,9 +19,8 @@ static const sfml::Color TEXT_COLOR(sfml::Color::Black);// Texto negro
 void Menu::showMenu() {
     // Crear la ventana principal si aún no existe
     if (!window) {
-        window = new sfml::RenderWindow(sfml::VideoMode(1200, 800),
-            "Sistema de Ventas de Entradas",
-            sfml::Style::Close);
+        window = new sfml::RenderWindow(sfml::VideoMode(1200, 800), "Sistema de Ventas de Entradas", sfml::Style::Close);
+        window->setKeyRepeatEnabled(true);  // Habilita la repetición de teclas
     }
 
     // Cargar la fuente (asegúrate de que la ruta sea correcta)

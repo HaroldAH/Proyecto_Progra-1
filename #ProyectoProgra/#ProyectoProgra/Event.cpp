@@ -12,11 +12,15 @@
 using namespace std;
 namespace sfml = sf;  // Para usar sfml:: en vez de sf::
 
+// Colores para la interfaz
 static const sfml::Color BG_COLOR_EV(200, 200, 200);
 static const sfml::Color HEADER_COLOR_EV(160, 160, 160);
 static const sfml::Color TEXT_COLOR_EV = sfml::Color::Black;
 static const sfml::Color HIGHLIGHT_COLOR_EV = sfml::Color::Red;
 
+// ---------------------------------------------------------------------------
+//                          IMPLEMENTACIÓN DE Event
+// ---------------------------------------------------------------------------
 Event::Event() {
     name = "";
     date = "";
@@ -42,6 +46,8 @@ void Event::initializeTracking(int maxUsers) {
     }
 }
 
+// ---------------------------------------------------------------------------
+// Lógica de compra/cancelación (como antes)
 bool Event::purchaseTickets(const string& userId, int numTickets) {
     List<int>::NodePtr purchaseNode = purchasesByUser.getHead();
     List<string>::NodePtr userNode = userIds.getHead();
@@ -63,13 +69,11 @@ bool Event::purchaseTickets(const string& userId, int numTickets) {
         userNode = userNode->next;
         purchaseNode = purchaseNode->next;
     }
-
     cout << "No se pudo registrar la compra. Máximo de usuarios alcanzado.\n";
     return false;
 }
 
 int Event::getTicketsPurchasedByUser(const string& userId) {
-
     List<int>::NodePtr purchaseNode = purchasesByUser.getHead();
     List<string>::NodePtr userNode = userIds.getHead();
 
@@ -83,12 +87,15 @@ int Event::getTicketsPurchasedByUser(const string& userId) {
     return 0;
 }
 
-
 bool Event::cancelTickets(const string& userId, int numTickets) {
-    (void)userId; (void)numTickets;
+    (void)userId;
+    (void)numTickets;
+    // Aquí tu lógica si la requieres...
     return true;
 }
 
+// ---------------------------------------------------------------------------
+//  Asigna 'numEvents' al objeto 'evt' (ejemplo muy sencillo)
 void Event::assignEvents(Event& evt, int numEvents) {
     if (numEvents <= 0) {
         cout << "El número de eventos debe ser mayor a cero." << endl;
@@ -113,16 +120,22 @@ int Event::getValidIntInput() {
 }
 
 bool Event::isValidDate(string& date) {
+    // EXACTAMENTE LA MISMA validación que ya tenías
     if (date.length() != 10) return false;
+
     for (int i = 0; i < 10; i++) {
         if ((i == 2 || i == 5) && date[i] != '/') return false;
         if (i != 2 && i != 5 && (date[i] < '0' || date[i] > '9')) return false;
     }
+    // Validar que empiece con "20" en año, por ejemplo
     if (date[6] != '2' || date[7] != '0') return false;
+
     int day = (date[0] - '0') * 10 + (date[1] - '0');
     int month = (date[3] - '0') * 10 + (date[4] - '0');
+
     if (month < 1 || month > 12) return false;
     if (day < 1 || day > 31) return false;
+
     return true;
 }
 
@@ -141,8 +154,9 @@ string Event::getValidStringInput(const string& prompt) {
 // ----------------------------------------------------------------------
 // Método que recibe una ventana SFML para pedir datos (nombre, fecha, etc.)
 // y luego llama a "segment.saveSegments(...)" al final.
+// * Incluye verificación para rechazar una fecha inválida. *
 void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
-    // Cargar fuente
+    // Cargar la fuente
     sfml::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
         std::cerr << "Error: No se pudo cargar la fuente.\n";
@@ -155,6 +169,7 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
     header.setFillColor(HEADER_COLOR_EV);
     header.setPosition(0.f, 0.f);
 
+    // Opciones de ejemplo en el header
     const int numOptions = 4;
     std::string optionLabels[numOptions] = {
         "Agregar nuevo evento",
@@ -175,7 +190,7 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
         options[i].setPosition(posX, posY);
     }
 
-    // Campos para formulario
+    // Título del formulario
     sfml::Text title("Nuevo Evento", font, 28);
     title.setFillColor(TEXT_COLOR_EV);
     sfml::FloatRect titleBounds = title.getLocalBounds();
@@ -185,7 +200,7 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
     float offsetY = headerHeight + 50.f;
     title.setPosition(offsetX + (formWidth - titleBounds.width) / 2.f, offsetY);
 
-    // Etiquetas/cajas para nombre, fecha, descripción
+    // Etiquetas/cajas para NOMBRE
     sfml::Text labelName("Nombre del Evento:", font, 20);
     labelName.setFillColor(TEXT_COLOR_EV);
     labelName.setPosition(offsetX + 10.f, offsetY + 60.f);
@@ -198,7 +213,7 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
     inputName.setFillColor(TEXT_COLOR_EV);
     inputName.setPosition(offsetX + 15.f, offsetY + 90.f);
 
-    // Fecha
+    // Etiquetas/cajas para FECHA
     sfml::Text labelDate("Fecha (DD/MM/YYYY):", font, 20);
     labelDate.setFillColor(TEXT_COLOR_EV);
     labelDate.setPosition(offsetX + 10.f, offsetY + 140.f);
@@ -211,25 +226,31 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
     inputDate.setFillColor(TEXT_COLOR_EV);
     inputDate.setPosition(offsetX + 15.f, offsetY + 170.f);
 
-    // Descripción
+    // Mensaje de error de fecha en rojo (por defecto vacío)
+    sfml::Text dateErrorText("", font, 16);
+    dateErrorText.setFillColor(sfml::Color::Red);
+    // Ubicarlo debajo de la caja de fecha
+    dateErrorText.setPosition(offsetX + 15.f, offsetY + 210.f);
+
+    // Etiquetas/cajas para DESCRIPCIÓN
     sfml::Text labelDesc("Descripcion:", font, 20);
     labelDesc.setFillColor(TEXT_COLOR_EV);
-    labelDesc.setPosition(offsetX + 10.f, offsetY + 220.f);
+    labelDesc.setPosition(offsetX + 10.f, offsetY + 240.f);
 
     sfml::RectangleShape boxDesc(sfml::Vector2f(formWidth - 20.f, 80.f));
     boxDesc.setFillColor(sfml::Color::White);
-    boxDesc.setPosition(offsetX + 10.f, offsetY + 245.f);
+    boxDesc.setPosition(offsetX + 10.f, offsetY + 265.f);
 
     sfml::Text inputDesc("", font, 20);
     inputDesc.setFillColor(TEXT_COLOR_EV);
-    inputDesc.setPosition(offsetX + 15.f, offsetY + 250.f);
+    inputDesc.setPosition(offsetX + 15.f, offsetY + 270.f);
 
     // Mensaje de instrucciones
     sfml::Text instruction("Presione Enter para guardar (Tab para cambiar campo)", font, 18);
     instruction.setFillColor(sfml::Color::Blue);
     instruction.setPosition(offsetX + 10.f, offsetY + formHeight - 40.f);
 
-    // Variables para almacenar la entrada
+    // Variables para almacenar la entrada real
     int activeField = 0; // 0 = nombre, 1 = fecha, 2 = descripción
     std::string strName, strDate, strDesc;
 
@@ -239,17 +260,30 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
         while (win.pollEvent(ev)) {
             if (ev.type == sfml::Event::Closed) {
                 win.close();
-                return;
+                return;  // Cierra la aplicación
             }
             if (ev.type == sfml::Event::KeyPressed) {
+                // Cambiar de campo con Tab
                 if (ev.key.code == sfml::Keyboard::Tab) {
                     activeField = (activeField + 1) % 3;
                 }
+                // Intentar guardar con Enter (solo si ningún campo está vacío)
                 else if (ev.key.code == sfml::Keyboard::Enter) {
-                    if (!strName.empty() && !strDate.empty() && !strDesc.empty())
-                        inForm = false;
+                    if (!strName.empty() && !strDate.empty() && !strDesc.empty()) {
+                        // Verificar que la fecha tenga un formato válido
+                        if (!isValidDate(strDate)) {
+                            // Fecha inválida -> mostrar error y permanecer en el formulario
+                            dateErrorText.setString("ERROR: Fecha invalida. Use DD/MM/YYYY");
+                        }
+                        else {
+                            // Fecha válida -> limpiar el mensaje de error y salir del formulario
+                            dateErrorText.setString("");
+                            inForm = false;
+                        }
+                    }
                 }
                 else if (ev.key.code == sfml::Keyboard::Backspace) {
+                    // Borrar carácter en el campo activo (en KeyPressed se procesa el Backspace)
                     if (activeField == 0 && !strName.empty()) {
                         strName.pop_back();
                         inputName.setString(strName);
@@ -265,10 +299,12 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
                 }
             }
             if (ev.type == sfml::Event::TextEntered) {
+                // Ignorar caracteres de control como Backspace (valor 8), Tab (9), Enter y nueva línea
                 if (ev.text.unicode < 128 &&
                     ev.text.unicode != '\r' &&
                     ev.text.unicode != '\n' &&
-                    ev.text.unicode != 9) {
+                    ev.text.unicode != 9 &&
+                    ev.text.unicode != 8) {
                     char c = static_cast<char>(ev.text.unicode);
                     if (activeField == 0) {
                         strName.push_back(c);
@@ -277,6 +313,8 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
                     else if (activeField == 1) {
                         strDate.push_back(c);
                         inputDate.setString(strDate);
+                        // Si el usuario vuelve a escribir, limpiamos el mensaje de error
+                        dateErrorText.setString("");
                     }
                     else if (activeField == 2) {
                         strDesc.push_back(c);
@@ -286,23 +324,35 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
             }
         }
 
+        // Renderizar la interfaz
         win.clear(BG_COLOR_EV);
-        // Header
+
+        // Dibujar el header
         win.draw(header);
         for (int i = 0; i < numOptions; i++) {
             win.draw(options[i]);
         }
-        // Formulario
+        // Dibujar el formulario
         win.draw(title);
+
+        // Sección de Nombre
         win.draw(labelName);
         win.draw(boxName);
         win.draw(inputName);
+
+        // Sección de Fecha
         win.draw(labelDate);
         win.draw(boxDate);
         win.draw(inputDate);
+        // Dibujar mensaje de error de fecha, si lo hay
+        win.draw(dateErrorText);
+
+        // Sección de Descripción
         win.draw(labelDesc);
         win.draw(boxDesc);
         win.draw(inputDesc);
+
+        // Dibujar las instrucciones
         win.draw(instruction);
 
         // Dibujar un borde de "resalte" en el campo activo
@@ -327,16 +377,29 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
         win.display();
     }
 
-    // Al salir del formulario, asignamos los datos
-    this->setName(strName);
-    this->setDate(strDate);
-    this->setDescription(strDesc);
-    this->initializeTracking(100);
+    // Al salir del formulario, si se llenaron correctamente los campos:
+    if (!strName.empty() && !strDate.empty() && !strDesc.empty() && isValidDate(strDate)) {
+        // Asignar los datos al objeto Event actual
+        this->setName(strName);
+        this->setDate(strDate);
+        this->setDescription(strDesc);
+        this->initializeTracking(100);
 
-    // OJO: si quieres guardar este evento en tu lista 'events':
-    // this->events.insertAtEnd(*this);
-    // this->eventCount++;
+        // Guardar este evento en la lista interna de eventos
+        this->events.insertAtEnd(*this);
+        this->eventCount++;
 
-    // Guardar segmentos para el nuevo evento:
-    segment.saveSegments(segment, this->getEventCount(), this->getEventCount());
+        // Guardar segmentos para el nuevo evento:
+        // Se utiliza el valor actualizado de eventCount como índice del evento (1-based)
+        segment.saveSegments(segment, this->getEventCount(), this->getEventCount());
+    }
+    else {
+        // Si la ventana se cierra o no se completan los campos, mostramos un mensaje de error en consola
+        if (!isValidDate(strDate)) {
+            std::cerr << "CODIGO ERROR: El usuario cerro la ventana o no corrigio la fecha invalida.\n";
+        }
+        else {
+            std::cerr << "CODIGO ERROR: El usuario cerro la ventana o dejo campos vacios.\n";
+        }
+    }
 }
