@@ -30,6 +30,8 @@ public:
     int getValidIntInput();
     void deleteDiscount();
     void showDiscountList();
+    string getCodesString();
+    bool deleteDiscountAtIndex(int index);
 
 
 };

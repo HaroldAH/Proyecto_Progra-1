@@ -191,3 +191,49 @@ int Discount::getValidIntInput() {
     }
     return input;
 }
+
+string Discount::getCodesString() {
+    std::string result;
+    List<std::string>::NodePtr codeNode = codes.getHead();
+    List<float>::NodePtr percentageNode = percentages.getHead();
+    List<bool>::NodePtr usedNode = used.getHead();
+    int index = 1;
+    while (codeNode) {
+        result += std::to_string(index) + ". " +
+            codeNode->data + " - " +
+            std::to_string(static_cast<int>(percentageNode->data)) + "% - " +
+            (usedNode->data ? "Usado" : "Disponible") + "\n";
+        codeNode = codeNode->next;
+        percentageNode = percentageNode->next;
+        usedNode = usedNode->next;
+        index++;
+    }
+    return result;
+}
+
+
+bool Discount::deleteDiscountAtIndex(int index) {
+    // Verificar que exista al menos un código
+    if (codes.getHead() == nullptr) {
+        return false;
+    }
+    // Verificar que el índice sea válido
+    if (index < 1 || index > discountCount) {
+        return false;
+    }
+    // Recorrer la lista de "used" para determinar si el código ya fue usado
+    List<bool>::NodePtr usedNode = used.getHead();
+    for (int i = 1; i < index; i++) {
+        usedNode = usedNode->next;
+    }
+    if (usedNode->data) {
+        // Si el código ya fue usado, no se puede eliminar
+        return false;
+    }
+    // Eliminar los elementos en la posición indicada
+    codes.deletePosition(index);
+    percentages.deletePosition(index);
+    used.deletePosition(index);
+    discountCount--;
+    return true;
+}

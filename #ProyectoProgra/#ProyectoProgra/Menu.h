@@ -49,9 +49,11 @@ public:
     void cancelPurchase();
     void updateReport();
     void executeOption(int option);
-
+    void generateCodesSFML(Discount& discount);
+    void showDiscountCodes(Discount& discount);
     void showDiscountMenuSFML(Discount& discount);
-
+    void showDiscountCodesSFML(Discount& discount);
+    void deleteDiscountSFML(Discount& discount);
     
 };
 

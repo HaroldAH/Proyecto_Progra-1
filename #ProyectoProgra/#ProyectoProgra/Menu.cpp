@@ -280,7 +280,7 @@ void Menu::showDiscountMenuSFML(Discount& discount)
                         switch (i)
                         {
                         case 0: // Generar códigos
-                            discount.configureDiscounts();
+                            generateCodesSFML(discount);
                             break;
                         case 1: // Mostrar registro
                             discount.showCodes();
@@ -703,5 +703,537 @@ void Menu::updateReport()
     cout << "\nPresione Enter para continuar...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
+}
+
+void Menu::generateCodesSFML(Discount& discount)
+{
+    // Referencia a la ventana principal
+    sf::RenderWindow& win = *window;
+    win.setTitle("Generar Códigos de Descuento");
+
+    // Cargar la fuente
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
+    {
+        std::cerr << "Error: No se pudo cargar la fuente para 'Generar Códigos'.\n";
+        return;
+    }
+
+    // Dimensiones y encabezado
+    const float windowWidth = 1200.f, windowHeight = 800.f;
+    const float headerHeight = 100.f;
+    sf::RectangleShape header(sf::Vector2f(windowWidth, headerHeight));
+    header.setFillColor(HEADER_COLOR);
+    header.setPosition(0.f, 0.f);
+
+    // Submenú con 4 opciones
+    const int numOptions = 4;
+    std::string optionLabels[numOptions] = {
+        "Agregar descuento",       // Opción 0
+        "Mostrar codigos actuales",// Opción 1
+        "Eliminar codigo",         // Opción 2
+        "Volver al menu principal" // Opción 3
+    };
+
+    sf::Text options[numOptions];
+    float spacing = windowWidth / float(numOptions);
+    for (int i = 0; i < numOptions; i++)
+    {
+        options[i].setFont(font);
+        options[i].setString(optionLabels[i]);
+        options[i].setCharacterSize(20);
+        options[i].setFillColor(TEXT_COLOR);
+
+        sf::FloatRect bounds = options[i].getLocalBounds();
+        float posX = i * spacing + (spacing - bounds.width) / 2.f - bounds.left;
+        float posY = (headerHeight - bounds.height) / 2.f - bounds.top;
+        options[i].setPosition(posX, posY);
+    }
+
+    // Título principal
+    sf::Text titleText("Generar Códigos de Descuento", font, 30);
+    titleText.setFillColor(TEXT_COLOR);
+    sf::FloatRect titleBounds = titleText.getLocalBounds();
+    titleText.setPosition((windowWidth - titleBounds.width) / 2.f, headerHeight + 50.f);
+
+    // Configuración de campos de texto (input boxes)
+    sf::Text labelPercentage("Porcentaje de descuento:", font, 20);
+    labelPercentage.setFillColor(TEXT_COLOR);
+    labelPercentage.setPosition(300.f, 250.f);
+
+    sf::Text labelCount("Cantidad de codigos:", font, 20);
+    labelCount.setFillColor(TEXT_COLOR);
+    labelCount.setPosition(300.f, 350.f);
+
+    // Cadenas de entrada
+    std::string percentageString;
+    std::string countString;
+
+    // Textos que muestran la entrada del usuario
+    sf::Text percentageInputText("", font, 20);
+    percentageInputText.setFillColor(TEXT_COLOR);
+    percentageInputText.setPosition(300.f, 280.f);
+
+    sf::Text countInputText("", font, 20);
+    countInputText.setFillColor(TEXT_COLOR);
+    countInputText.setPosition(300.f, 380.f);
+
+    // Rectángulos para los campos de entrada
+    sf::RectangleShape percentageBox(sf::Vector2f(300.f, 30.f));
+    percentageBox.setFillColor(sf::Color::White);
+    percentageBox.setOutlineColor(sf::Color::Black);
+    percentageBox.setOutlineThickness(1.f);
+    percentageBox.setPosition(300.f, 280.f);
+
+    sf::RectangleShape countBox(sf::Vector2f(300.f, 30.f));
+    countBox.setFillColor(sf::Color::White);
+    countBox.setOutlineColor(sf::Color::Black);
+    countBox.setOutlineThickness(1.f);
+    countBox.setPosition(300.f, 380.f);
+
+    // Variables para controlar el foco de los inputs
+    bool percentageActive = false;
+    bool countActive = false;
+
+    // Mensaje de error para validación
+    sf::Text errorMessage("", font, 20);
+    errorMessage.setFillColor(sf::Color::Red);
+    errorMessage.setPosition(300.f, 450.f);
+
+    // Botón "Generar"
+    sf::RectangleShape generateButton(sf::Vector2f(120.f, 40.f));
+    generateButton.setFillColor(sf::Color(0, 180, 0)); // Verde
+    generateButton.setPosition(300.f, 500.f);
+
+    sf::Text generateButtonText("Generar", font, 20);
+    generateButtonText.setFillColor(sf::Color::White);
+    {
+        sf::FloatRect btnTextBounds = generateButtonText.getLocalBounds();
+        float btnPosX = generateButton.getPosition().x + (generateButton.getSize().x - btnTextBounds.width) / 2.f - btnTextBounds.left;
+        float btnPosY = generateButton.getPosition().y + (generateButton.getSize().y - btnTextBounds.height) / 2.f - btnTextBounds.top;
+        generateButtonText.setPosition(btnPosX, btnPosY);
+    }
+
+    // Área para mostrar los códigos generados
+    sf::Text codesText("", font, 18);
+    codesText.setFillColor(TEXT_COLOR);
+    codesText.setPosition(650.f, 250.f);
+
+    bool inGenerateScreen = true;
+    while (inGenerateScreen && win.isOpen())
+    {
+        sf::Event ev;
+        while (win.pollEvent(ev))
+        {
+            // Cerrar la ventana
+            if (ev.type == sf::Event::Closed)
+            {
+                win.close();
+                return;
+            }
+
+            // Cambio de color en el submenú al pasar el mouse
+            if (ev.type == sf::Event::MouseMoved)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseMove.x), static_cast<float>(ev.mouseMove.y));
+                for (int i = 0; i < numOptions; i++)
+                {
+                    if (options[i].getGlobalBounds().contains(mousePos))
+                        options[i].setFillColor(HIGHLIGHT_COLOR);
+                    else
+                        options[i].setFillColor(TEXT_COLOR);
+                }
+            }
+
+            // Procesar clics
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                // Opciones del submenú
+                for (int i = 0; i < numOptions; i++)
+                {
+                    if (options[i].getGlobalBounds().contains(mousePos))
+                    {
+                        switch (i)
+                        {
+                        case 0:
+                            // Ya estamos en la pantalla de "Agregar descuento"
+                            break;
+                        case 1:
+                            // Mostrar códigos (se mantienen en consola o bien se podría actualizar codesText)
+                            showDiscountCodesSFML(discount);
+                            break;
+                        case 2:
+                            deleteDiscountSFML(discount);
+                            break;
+                        case 3:
+                            inGenerateScreen = false;
+                            break;
+                        }
+                    }
+                }
+
+                // Seleccionar campo de entrada según clic
+                if (percentageBox.getGlobalBounds().contains(mousePos))
+                {
+                    percentageActive = true;
+                    countActive = false;
+                }
+                else if (countBox.getGlobalBounds().contains(mousePos))
+                {
+                    percentageActive = false;
+                    countActive = true;
+                }
+                // Si se clickea el botón "Generar"
+                else if (generateButton.getGlobalBounds().contains(mousePos))
+                {
+                    errorMessage.setString("");
+                    float percentageValue = 0.f;
+                    if (!percentageString.empty())
+                    {
+                        try {
+                            percentageValue = std::stof(percentageString);
+                        }
+                        catch (...) {
+                            errorMessage.setString("Porcentaje invalido.");
+                        }
+                    }
+                    else
+                        errorMessage.setString("Ingrese un porcentaje.");
+
+                    int countValue = 0;
+                    if (errorMessage.getString().isEmpty())
+                    {
+                        if (!countString.empty())
+                        {
+                            try {
+                                countValue = std::stoi(countString);
+                                if (countValue <= 0)
+                                    errorMessage.setString("Cantidad debe ser mayor a 0.");
+                            }
+                            catch (...)
+                            {
+                                errorMessage.setString("Cantidad invalida.");
+                            }
+                        }
+                        else
+                            errorMessage.setString("Ingrese cantidad.");
+                    }
+
+                    // Si no hay errores de validación, se generan los códigos
+                    if (errorMessage.getString().isEmpty())
+                    {
+                        discount.configure(percentageValue, countValue);
+                        // Actualizar el área de texto con los códigos generados
+                        codesText.setString(discount.getCodesString());
+                        // (Opcional) Limpiar los campos de entrada:
+                        percentageString.clear();
+                        countString.clear();
+                    }
+                }
+                else
+                {
+                    // Si se clickea fuera de las cajas, se desactivan ambas
+                    percentageActive = false;
+                    countActive = false;
+                }
+            }
+
+            // Captura de teclado para los inputs
+            if (ev.type == sf::Event::TextEntered)
+            {
+                // Backspace
+                if (ev.text.unicode == 8)
+                {
+                    if (percentageActive && !percentageString.empty())
+                        percentageString.pop_back();
+                    else if (countActive && !countString.empty())
+                        countString.pop_back();
+                }
+                // Caracteres imprimibles
+                else if (ev.text.unicode >= 32 && ev.text.unicode < 127)
+                {
+                    char c = static_cast<char>(ev.text.unicode);
+                    if (percentageActive)
+                    {
+                        // Permitir dígitos y el punto decimal
+                        if ((c >= '0' && c <= '9') || c == '.')
+                            percentageString.push_back(c);
+                    }
+                    else if (countActive)
+                    {
+                        // Permitir solo dígitos
+                        if (c >= '0' && c <= '9')
+                            countString.push_back(c);
+                    }
+                }
+            }
+        }
+
+        // Actualizar textos de entrada
+        percentageInputText.setString(percentageString);
+        countInputText.setString(countString);
+
+        // Resaltar cajas activas
+        percentageBox.setOutlineColor(percentageActive ? sf::Color::Blue : sf::Color::Black);
+        countBox.setOutlineColor(countActive ? sf::Color::Blue : sf::Color::Black);
+
+        // Renderizar
+        win.clear(BG_COLOR);
+        win.draw(header);
+        for (int i = 0; i < numOptions; i++)
+            win.draw(options[i]);
+        win.draw(titleText);
+        win.draw(labelPercentage);
+        win.draw(labelCount);
+        win.draw(percentageBox);
+        win.draw(countBox);
+        win.draw(percentageInputText);
+        win.draw(countInputText);
+        win.draw(errorMessage);
+        win.draw(generateButton);
+        win.draw(generateButtonText);
+        win.draw(codesText);
+        win.display();
+    }
+}
+
+
+void Menu::showDiscountCodesSFML(Discount& discount)
+{
+    // Reutilizamos la ventana principal ya creada en Menu
+    sf::RenderWindow& win = *window;
+    win.setTitle("Registro de Codigos de Descuento");
+
+    // Cargar la fuente (asegúrate de que la ruta sea correcta)
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
+    {
+        std::cerr << "Error: No se pudo cargar la fuente.\n";
+        return;
+    }
+
+    // Obtenemos la cadena con los códigos (usando getCodesString() que ya implementaste)
+    std::string codesStr = discount.getCodesString();
+
+    // Creamos un objeto sf::Text para mostrar la información
+    sf::Text codesText(codesStr, font, 20);
+    codesText.setFillColor(sf::Color::Black);
+    // Posiciona el texto donde desees (ajusta según tu interfaz)
+    codesText.setPosition(50.f, 150.f);
+
+    // Opcional: un botón para volver al menú anterior
+    sf::RectangleShape backButton(sf::Vector2f(120.f, 40.f));
+    backButton.setFillColor(sf::Color(150, 150, 150));
+    backButton.setPosition(50.f, 50.f);
+
+    sf::Text backText("Volver", font, 20);
+    backText.setFillColor(sf::Color::White);
+    {
+        sf::FloatRect btnBounds = backText.getLocalBounds();
+        float btnX = backButton.getPosition().x + (backButton.getSize().x - btnBounds.width) / 2.f - btnBounds.left;
+        float btnY = backButton.getPosition().y + (backButton.getSize().y - btnBounds.height) / 2.f - btnBounds.top;
+        backText.setPosition(btnX, btnY);
+    }
+
+    bool inShowScreen = true;
+    while (inShowScreen && win.isOpen())
+    {
+        sf::Event ev;
+        while (win.pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed)
+            {
+                win.close();
+                return;
+            }
+            // Si se hace clic en el botón "Volver", salimos de esta pantalla
+            if (ev.type == sf::Event::MouseButtonPressed &&
+                ev.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                if (backButton.getGlobalBounds().contains(mousePos))
+                {
+                    inShowScreen = false;
+                }
+            }
+        }
+
+        win.clear(sf::Color(200, 200, 200)); // Color de fondo
+        // Dibuja el botón para volver
+        win.draw(backButton);
+        win.draw(backText);
+        // Dibuja los códigos
+        win.draw(codesText);
+        win.display();
+    }
+}
+
+void Menu::deleteDiscountSFML(Discount& discount)
+{
+    // Usamos la ventana principal ya creada
+    sf::RenderWindow& win = *window;
+    win.setTitle("Eliminar Código de Descuento");
+
+    // Cargar la fuente
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
+    {
+        std::cerr << "Error: No se pudo cargar la fuente.\n";
+        return;
+    }
+
+    // --- Texto de instrucción ---
+    sf::Text promptText("Digite el número del código a eliminar:", font, 20);
+    promptText.setFillColor(sf::Color::Black);
+    promptText.setPosition(50.f, 30.f);
+
+    // --- Área donde se muestran los códigos ---
+    std::string codesStr = discount.getCodesString();
+    sf::Text codesText(codesStr, font, 18);
+    codesText.setFillColor(sf::Color::Black);
+    codesText.setPosition(50.f, 150.f);
+
+    // --- Cuadro de texto para ingresar el número ---
+    sf::RectangleShape inputBox(sf::Vector2f(200.f, 30.f));
+    inputBox.setFillColor(sf::Color::White);
+    inputBox.setOutlineColor(sf::Color::Black);
+    inputBox.setOutlineThickness(1.f);
+    inputBox.setPosition(50.f, 100.f);
+
+    sf::Text inputText("", font, 20);
+    inputText.setFillColor(sf::Color::Black);
+    inputText.setPosition(55.f, 105.f);
+
+    std::string indexString; // Aquí se acumulará el número ingresado
+
+    // --- Mensaje de error (por número inválido o error en la eliminación) ---
+    sf::Text errorMessage("", font, 18);
+    errorMessage.setFillColor(sf::Color::Red);
+    errorMessage.setPosition(50.f, 70.f);
+
+    // --- Botón "Eliminar" ---
+    sf::RectangleShape deleteButton(sf::Vector2f(120.f, 40.f));
+    deleteButton.setFillColor(sf::Color(200, 0, 0)); // Rojo
+    deleteButton.setPosition(300.f, 100.f);
+
+    sf::Text deleteButtonText("Eliminar", font, 20);
+    deleteButtonText.setFillColor(sf::Color::White);
+    {
+        sf::FloatRect btnTextBounds = deleteButtonText.getLocalBounds();
+        float btnPosX = deleteButton.getPosition().x + (deleteButton.getSize().x - btnTextBounds.width) / 2.f - btnTextBounds.left;
+        float btnPosY = deleteButton.getPosition().y + (deleteButton.getSize().y - btnTextBounds.height) / 2.f - btnTextBounds.top;
+        deleteButtonText.setPosition(btnPosX, btnPosY);
+    }
+
+    // --- Botón "Volver" ---
+    sf::RectangleShape backButton(sf::Vector2f(120.f, 40.f));
+    backButton.setFillColor(sf::Color(150, 150, 150));
+    backButton.setPosition(450.f, 100.f);
+
+    sf::Text backButtonText("Volver", font, 20);
+    backButtonText.setFillColor(sf::Color::White);
+    {
+        sf::FloatRect btnTextBounds = backButtonText.getLocalBounds();
+        float btnPosX = backButton.getPosition().x + (backButton.getSize().x - btnTextBounds.width) / 2.f - btnTextBounds.left;
+        float btnPosY = backButton.getPosition().y + (backButton.getSize().y - btnTextBounds.height) / 2.f - btnTextBounds.top;
+        backButtonText.setPosition(btnPosX, btnPosY);
+    }
+
+    bool inDeleteScreen = true;
+    bool inputActive = false;
+
+    // Bucle principal de la pantalla de eliminación
+    while (inDeleteScreen && win.isOpen())
+    {
+        sf::Event ev;
+        while (win.pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed)
+            {
+                win.close();
+                return;
+            }
+
+            // Activar o desactivar el input al hacer clic
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                if (inputBox.getGlobalBounds().contains(mousePos))
+                {
+                    inputActive = true;
+                }
+                else
+                {
+                    inputActive = false;
+                }
+
+                // Botón "Eliminar"
+                if (deleteButton.getGlobalBounds().contains(mousePos))
+                {
+                    errorMessage.setString("");
+                    int index;
+                    try {
+                        index = std::stoi(indexString);
+                    }
+                    catch (...) {
+                        errorMessage.setString("Ingrese un número válido.");
+                        continue;
+                    }
+                    // Intentar eliminar el código en la posición indicada
+                    if (discount.deleteDiscountAtIndex(index))
+                    {
+                        // Actualizar la visualización de códigos
+                        codesText.setString(discount.getCodesString());
+                        indexString.clear();
+                        inputText.setString("");
+                    }
+                    else
+                    {
+                        errorMessage.setString("No se pudo eliminar el código.");
+                    }
+                }
+                // Botón "Volver"
+                if (backButton.getGlobalBounds().contains(mousePos))
+                {
+                    inDeleteScreen = false;
+                }
+            }
+
+            // Captura de entrada en el cuadro de texto (solo dígitos)
+            if (ev.type == sf::Event::TextEntered)
+            {
+                if (inputActive)
+                {
+                    if (ev.text.unicode == 8)  // Backspace
+                    {
+                        if (!indexString.empty())
+                        {
+                            indexString.pop_back();
+                        }
+                    }
+                    else if (ev.text.unicode >= 48 && ev.text.unicode <= 57)
+                    {
+                        char c = static_cast<char>(ev.text.unicode);
+                        indexString.push_back(c);
+                    }
+                    inputText.setString(indexString);
+                }
+            }
+        }
+
+        win.clear(BG_COLOR);
+        // Dibujar todos los elementos
+        win.draw(promptText);
+        win.draw(codesText);
+        win.draw(inputBox);
+        win.draw(inputText);
+        win.draw(errorMessage);
+        win.draw(deleteButton);
+        win.draw(deleteButtonText);
+        win.draw(backButton);
+        win.draw(backButtonText);
+        win.display();
+    }
 }
 
