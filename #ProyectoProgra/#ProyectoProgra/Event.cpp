@@ -155,223 +155,320 @@ string Event::getValidStringInput(const string& prompt) {
 // Método que recibe una ventana SFML para pedir datos (nombre, fecha, etc.)
 // y luego llama a "segment.saveSegments(...)" al final.
 // * Incluye verificación para rechazar una fecha inválida. *
-void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
-    // Cargar la fuente
+void Event::saveEvent(sfml::RenderWindow& win, Segment& segment)
+{
+    // Cambiamos el título de la ventana durante la configuración del evento
+    win.setTitle("Agregar Nuevo Evento");
+
+    // Cargar fuente
     sfml::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
         std::cerr << "Error: No se pudo cargar la fuente.\n";
         return;
     }
 
-    // Definir un "header" de 100 px
-    float headerHeight = 100.f;
-    sfml::RectangleShape header(sfml::Vector2f(win.getSize().x, headerHeight));
-    header.setFillColor(HEADER_COLOR_EV);
+    // Dimensiones y colores
+    const float headerHeight = 100.f;
+    sfml::Color bgColor(200, 200, 200);
+    sfml::Color headerColor(160, 160, 160);
+    sfml::Color textColor = sfml::Color::Black;
+    sfml::Color highlightColor = sfml::Color::Red;
+
+    // 1. Encabezado (barra superior)
+    sfml::RectangleShape header(sfml::Vector2f(1200.f, headerHeight));
+    header.setFillColor(headerColor);
     header.setPosition(0.f, 0.f);
 
-    // Opciones de ejemplo en el header
-    const int numOptions = 4;
-    std::string optionLabels[numOptions] = {
-        "Agregar nuevo evento",
-        "Modificar segmentos",
-        "Mostrar eventos actuales",
-        "Inicio"
-    };
-    sfml::Text options[numOptions];
-    float spacing = static_cast<float>(win.getSize().x) / numOptions;
-    for (int i = 0; i < numOptions; i++) {
-        options[i].setFont(font);
-        options[i].setString(optionLabels[i]);
-        options[i].setCharacterSize(20);
-        options[i].setFillColor(TEXT_COLOR_EV);
-        sfml::FloatRect textBounds = options[i].getLocalBounds();
-        float posX = i * spacing + (spacing - textBounds.width) / 2.f - textBounds.left;
-        float posY = (headerHeight - textBounds.height) / 2.f - textBounds.top;
-        options[i].setPosition(posX, posY);
+    // (Opcional) Texto de ejemplo en el header: "Agregar nuevo evento"
+    sfml::Text headerTitle("Agregar nuevo evento", font, 25);
+    headerTitle.setFillColor(textColor);
+    {
+        sfml::FloatRect bounds = headerTitle.getLocalBounds();
+        float posX = 20.f;
+        float posY = (headerHeight - bounds.height) / 2.f - bounds.top;
+        headerTitle.setPosition(posX, posY);
     }
 
-    // Título del formulario
-    sfml::Text title("Nuevo Evento", font, 28);
-    title.setFillColor(TEXT_COLOR_EV);
-    sfml::FloatRect titleBounds = title.getLocalBounds();
-    float formWidth = win.getSize().x - 100.f;
-    float formHeight = win.getSize().y - headerHeight - 100.f;
-    float offsetX = (win.getSize().x - formWidth) / 2.f;
-    float offsetY = headerHeight + 50.f;
-    title.setPosition(offsetX + (formWidth - titleBounds.width) / 2.f, offsetY);
+    // 2. Etiquetas y cajas de texto para: NOMBRE, FECHA, DESCRIPCIÓN
+    // --------------------------------------------------------------
+    // Preparar posiciones base
+    float formStartX = 50.f;
+    float formStartY = headerHeight + 50.f; // Debajo del header
 
-    // Etiquetas/cajas para NOMBRE
+    // Etiqueta: Nombre
     sfml::Text labelName("Nombre del Evento:", font, 20);
-    labelName.setFillColor(TEXT_COLOR_EV);
-    labelName.setPosition(offsetX + 10.f, offsetY + 60.f);
+    labelName.setFillColor(textColor);
+    labelName.setPosition(formStartX, formStartY);
 
-    sfml::RectangleShape boxName(sfml::Vector2f(formWidth - 20.f, 40.f));
+    // Caja de texto para Nombre
+    sfml::RectangleShape boxName(sfml::Vector2f(400.f, 30.f));
     boxName.setFillColor(sfml::Color::White);
-    boxName.setPosition(offsetX + 10.f, offsetY + 85.f);
+    boxName.setOutlineColor(sfml::Color::Black);
+    boxName.setOutlineThickness(1.f);
+    boxName.setPosition(formStartX, formStartY + 30.f);
 
+    // Texto que muestra lo que escribe el usuario (Nombre)
     sfml::Text inputName("", font, 20);
-    inputName.setFillColor(TEXT_COLOR_EV);
-    inputName.setPosition(offsetX + 15.f, offsetY + 90.f);
+    inputName.setFillColor(textColor);
+    inputName.setPosition(boxName.getPosition().x + 5.f, boxName.getPosition().y + 2.f);
 
-    // Etiquetas/cajas para FECHA
+    // Etiqueta: Fecha
     sfml::Text labelDate("Fecha (DD/MM/YYYY):", font, 20);
-    labelDate.setFillColor(TEXT_COLOR_EV);
-    labelDate.setPosition(offsetX + 10.f, offsetY + 140.f);
+    labelDate.setFillColor(textColor);
+    labelDate.setPosition(formStartX, formStartY + 80.f);
 
-    sfml::RectangleShape boxDate(sfml::Vector2f(formWidth - 20.f, 40.f));
+    // Caja de texto para Fecha
+    sfml::RectangleShape boxDate(sfml::Vector2f(400.f, 30.f));
     boxDate.setFillColor(sfml::Color::White);
-    boxDate.setPosition(offsetX + 10.f, offsetY + 165.f);
+    boxDate.setOutlineColor(sfml::Color::Black);
+    boxDate.setOutlineThickness(1.f);
+    boxDate.setPosition(formStartX, formStartY + 80.f + 30.f);
 
+    // Texto que muestra lo que escribe el usuario (Fecha)
     sfml::Text inputDate("", font, 20);
-    inputDate.setFillColor(TEXT_COLOR_EV);
-    inputDate.setPosition(offsetX + 15.f, offsetY + 170.f);
+    inputDate.setFillColor(textColor);
+    inputDate.setPosition(boxDate.getPosition().x + 5.f, boxDate.getPosition().y + 2.f);
 
-    // Mensaje de error de fecha (inicialmente vacío)
-    sfml::Text dateErrorText("", font, 16);
+    // Mensaje de error sobre la fecha
+    sfml::Text dateErrorText("", font, 18);
     dateErrorText.setFillColor(sfml::Color::Red);
-    dateErrorText.setPosition(offsetX + 15.f, offsetY + 210.f);
+    dateErrorText.setPosition(formStartX, boxDate.getPosition().y + 40.f);
 
-    // Etiquetas/cajas para DESCRIPCIÓN
-    sfml::Text labelDesc("Descripcion:", font, 20);
-    labelDesc.setFillColor(TEXT_COLOR_EV);
-    labelDesc.setPosition(offsetX + 10.f, offsetY + 240.f);
+    // Etiqueta: Descripción
+    sfml::Text labelDesc("Descripción:", font, 20);
+    labelDesc.setFillColor(textColor);
+    labelDesc.setPosition(formStartX, formStartY + 160.f);
 
-    sfml::RectangleShape boxDesc(sfml::Vector2f(formWidth - 20.f, 80.f));
+    // Caja de texto para Descripción (un poco más grande)
+    sfml::RectangleShape boxDesc(sfml::Vector2f(400.f, 60.f));
     boxDesc.setFillColor(sfml::Color::White);
-    boxDesc.setPosition(offsetX + 10.f, offsetY + 265.f);
+    boxDesc.setOutlineColor(sfml::Color::Black);
+    boxDesc.setOutlineThickness(1.f);
+    boxDesc.setPosition(formStartX, formStartY + 160.f + 30.f);
 
+    // Texto que muestra lo que escribe el usuario (Descripción)
     sfml::Text inputDesc("", font, 20);
-    inputDesc.setFillColor(TEXT_COLOR_EV);
-    inputDesc.setPosition(offsetX + 15.f, offsetY + 270.f);
+    inputDesc.setFillColor(textColor);
+    inputDesc.setPosition(boxDesc.getPosition().x + 5.f, boxDesc.getPosition().y + 2.f);
 
-    // Instrucciones
-    sfml::Text instruction("Presione Enter para guardar (Tab para cambiar campo)", font, 18);
-    instruction.setFillColor(sfml::Color::Blue);
-    instruction.setPosition(offsetX + 10.f, offsetY + formHeight - 40.f);
+    // 3. Botones: "Guardar" y "Volver"
+    // --------------------------------
+    // Botón Guardar
+    sfml::RectangleShape saveButton(sfml::Vector2f(120.f, 40.f));
+    saveButton.setFillColor(sfml::Color(0, 180, 0)); // Verde
+    saveButton.setPosition(formStartX, formStartY + 260.f);
 
-    // Variables para almacenar la entrada
-    int activeField = 0; // 0 = nombre, 1 = fecha, 2 = descripción
-    std::string strName, strDate, strDesc;
+    sfml::Text saveButtonText("Guardar", font, 20);
+    saveButtonText.setFillColor(sfml::Color::White);
+    {
+        sfml::FloatRect btnBounds = saveButtonText.getLocalBounds();
+        float btnX = saveButton.getPosition().x + (saveButton.getSize().x - btnBounds.width) / 2.f - btnBounds.left;
+        float btnY = saveButton.getPosition().y + (saveButton.getSize().y - btnBounds.height) / 2.f - btnBounds.top;
+        saveButtonText.setPosition(btnX, btnY);
+    }
 
-    bool inForm = true;
-    while (inForm && win.isOpen()) {
+    // Botón Volver
+    sfml::RectangleShape backButton(sfml::Vector2f(120.f, 40.f));
+    backButton.setFillColor(sfml::Color(150, 150, 150)); // Gris
+    backButton.setPosition(formStartX + 140.f, formStartY + 260.f);
+
+    sfml::Text backButtonText("Volver", font, 20);
+    backButtonText.setFillColor(sfml::Color::White);
+    {
+        sfml::FloatRect btnBounds = backButtonText.getLocalBounds();
+        float btnX = backButton.getPosition().x + (backButton.getSize().x - btnBounds.width) / 2.f - btnBounds.left;
+        float btnY = backButton.getPosition().y + (backButton.getSize().y - btnBounds.height) / 2.f - btnBounds.top;
+        backButtonText.setPosition(btnX, btnY);
+    }
+
+    // 4. Variables de estado
+    // ----------------------
+    // Cadenas donde almacenamos los textos ingresados
+    std::string strName;
+    std::string strDate;
+    std::string strDesc;
+
+    // Para controlar cuál caja tiene "foco" (0 = ninguna, 1 = Nombre, 2 = Fecha, 3 = Desc)
+    int activeField = 0;
+
+    // Control del bucle
+    bool inEventForm = true;
+
+    // 5. Bucle principal de la pantalla "saveEvent"
+    // ---------------------------------------------
+    while (inEventForm && win.isOpen())
+    {
         sfml::Event ev;
-        while (win.pollEvent(ev)) {
-            if (ev.type == sfml::Event::Closed) {
-                // Salir del formulario sin cerrar la ventana principal
-                inForm = false;
-                break;
+        while (win.pollEvent(ev))
+        {
+            if (ev.type == sfml::Event::Closed)
+            {
+                // Cierra la ventana si el usuario así lo decide
+                win.close();
+                return;
             }
-            if (ev.type == sfml::Event::KeyPressed) {
-                if (ev.key.code == sfml::Keyboard::Tab) {
-                    activeField = (activeField + 1) % 3;
+
+            // Clic del mouse: detectar si pulsamos cajas de texto o botones
+            if (ev.type == sfml::Event::MouseButtonPressed && ev.mouseButton.button == sfml::Mouse::Left)
+            {
+                sfml::Vector2f mousePos(static_cast<float>(ev.mouseButton.x),
+                    static_cast<float>(ev.mouseButton.y));
+
+                // ¿Clic en caja "Nombre"?
+                if (boxName.getGlobalBounds().contains(mousePos))
+                {
+                    activeField = 1; // Nombre
                 }
-                else if (ev.key.code == sfml::Keyboard::Enter) {
-                    if (!strName.empty() && !strDate.empty() && !strDesc.empty()) {
-                        if (!isValidDate(strDate)) {
-                            dateErrorText.setString("ERROR: Fecha invalida. Use DD/MM/YYYY");
+                // ¿Clic en caja "Fecha"?
+                else if (boxDate.getGlobalBounds().contains(mousePos))
+                {
+                    activeField = 2; // Fecha
+                }
+                // ¿Clic en caja "Descripción"?
+                else if (boxDesc.getGlobalBounds().contains(mousePos))
+                {
+                    activeField = 3; // Descripción
+                }
+                else
+                {
+                    // Si no se hizo clic en ninguna caja, se resetea a 0 (sin foco)
+                    activeField = 0;
+                }
+
+                // ¿Clic en el botón Guardar?
+                if (saveButton.getGlobalBounds().contains(mousePos))
+                {
+                    // Validar que todos los campos tengan algo
+                    if (strName.empty() || strDate.empty() || strDesc.empty())
+                    {
+                        dateErrorText.setString("Por favor complete todos los campos.");
+                    }
+                    else
+                    {
+                        // Validar fecha
+                        if (!isValidDate(strDate))
+                        {
+                            dateErrorText.setString("ERROR: Fecha invalida. Use DD/MM/YYYY (año >= 20xx)");
                         }
-                        else {
+                        else
+                        {
                             dateErrorText.setString("");
-                            inForm = false;
+
+                            // Asignamos los datos al objeto actual
+                            this->setName(strName);
+                            this->setDate(strDate);
+                            this->setDescription(strDesc);
+
+                            // Inicializar el tracking de compras (puedes ajustar el número de usuarios)
+                            this->initializeTracking(100);
+
+                            // Se guarda en la lista de eventos
+                            this->events.insertAtEnd(*this);
+                            this->eventCount++;
+
+                            // Llamar a la función que guarda segmentos para el evento que acabamos de crear
+                            // El nuevo evento es siempre el 'getEventCount()'-ésimo
+                            segment.saveSegments(win, segment, this->getEventCount(), this->getEventCount());
+
+                            // Terminamos este formulario
+                            inEventForm = false;
                         }
                     }
                 }
-                else if (ev.key.code == sfml::Keyboard::Backspace) {
-                    if (activeField == 0 && !strName.empty()) {
-                        strName.pop_back();
-                        inputName.setString(strName);
-                    }
-                    else if (activeField == 1 && !strDate.empty()) {
-                        strDate.pop_back();
-                        inputDate.setString(strDate);
-                    }
-                    else if (activeField == 2 && !strDesc.empty()) {
-                        strDesc.pop_back();
-                        inputDesc.setString(strDesc);
-                    }
+
+                // ¿Clic en el botón Volver?
+                if (backButton.getGlobalBounds().contains(mousePos))
+                {
+                    // Simplemente salimos sin guardar nada adicional
+                    inEventForm = false;
                 }
             }
-            if (ev.type == sfml::Event::TextEntered) {
-                if (ev.text.unicode < 128 &&
-                    ev.text.unicode != '\r' &&
-                    ev.text.unicode != '\n' &&
-                    ev.text.unicode != 9 &&
-                    ev.text.unicode != 8) {
+
+            // Manejo de teclado para escribir en la caja activa
+            if (ev.type == sfml::Event::TextEntered)
+            {
+                // Solo caracteres "imprimibles" (evitamos los de control, excepto Backspace)
+                if (ev.text.unicode >= 32 && ev.text.unicode < 127)
+                {
                     char c = static_cast<char>(ev.text.unicode);
-                    if (activeField == 0) {
+
+                    if (activeField == 1) // Nombre
+                    {
                         strName.push_back(c);
                         inputName.setString(strName);
                     }
-                    else if (activeField == 1) {
+                    else if (activeField == 2) // Fecha
+                    {
                         strDate.push_back(c);
                         inputDate.setString(strDate);
-                        dateErrorText.setString("");
+                        dateErrorText.setString(""); // limpiamos al escribir
                     }
-                    else if (activeField == 2) {
+                    else if (activeField == 3) // Descripción
+                    {
                         strDesc.push_back(c);
                         inputDesc.setString(strDesc);
                     }
                 }
             }
-        }
 
-        win.clear(BG_COLOR_EV);
+            // Manejo especial de Backspace
+            if (ev.type == sfml::Event::KeyPressed && ev.key.code == sfml::Keyboard::Backspace)
+            {
+                if (activeField == 1 && !strName.empty())
+                {
+                    strName.pop_back();
+                    inputName.setString(strName);
+                }
+                else if (activeField == 2 && !strDate.empty())
+                {
+                    strDate.pop_back();
+                    inputDate.setString(strDate);
+                }
+                else if (activeField == 3 && !strDesc.empty())
+                {
+                    strDesc.pop_back();
+                    inputDesc.setString(strDesc);
+                }
+            }
+        } // Fin pollEvent
+
+        // (Opcional) Resaltar la caja seleccionada
+        boxName.setOutlineColor(activeField == 1 ? highlightColor : sfml::Color::Black);
+        boxDate.setOutlineColor(activeField == 2 ? highlightColor : sfml::Color::Black);
+        boxDesc.setOutlineColor(activeField == 3 ? highlightColor : sfml::Color::Black);
+
+        // Renderizar
+        win.clear(bgColor);
+
+        // Dibujamos el header y su título
         win.draw(header);
-        for (int i = 0; i < numOptions; i++) {
-            win.draw(options[i]);
-        }
-        win.draw(title);
+        win.draw(headerTitle);
+
+        // Etiquetas y cajas
         win.draw(labelName);
         win.draw(boxName);
         win.draw(inputName);
+
         win.draw(labelDate);
         win.draw(boxDate);
         win.draw(inputDate);
+
         win.draw(dateErrorText);
+
         win.draw(labelDesc);
         win.draw(boxDesc);
         win.draw(inputDesc);
-        win.draw(instruction);
 
-        sfml::RectangleShape activeBorder;
-        activeBorder.setFillColor(sfml::Color::Transparent);
-        activeBorder.setOutlineThickness(2.f);
-        activeBorder.setOutlineColor(HIGHLIGHT_COLOR_EV);
-        if (activeField == 0) {
-            activeBorder.setSize(boxName.getSize());
-            activeBorder.setPosition(boxName.getPosition());
-        }
-        else if (activeField == 1) {
-            activeBorder.setSize(boxDate.getSize());
-            activeBorder.setPosition(boxDate.getPosition());
-        }
-        else if (activeField == 2) {
-            activeBorder.setSize(boxDesc.getSize());
-            activeBorder.setPosition(boxDesc.getPosition());
-        }
-        win.draw(activeBorder);
+        // Botones
+        win.draw(saveButton);
+        win.draw(saveButtonText);
+        win.draw(backButton);
+        win.draw(backButtonText);
+
+        // Mostrar en pantalla
         win.display();
-    } // fin del loop del formulario
-
-    // Al salir del formulario, si se completaron los campos correctamente:
-    if (!strName.empty() && !strDate.empty() && !strDesc.empty() && isValidDate(strDate)) {
-        this->setName(strName);
-        this->setDate(strDate);
-        this->setDescription(strDesc);
-        this->initializeTracking(100);
-        this->events.insertAtEnd(*this);
-        this->eventCount++;
-
-        // Llamada para guardar segmentos, usando el valor actualizado de eventCount (1-based)
-        segment.saveSegments(win, segment, this->getEventCount(), this->getEventCount());
-
-
     }
-    else {
-        if (!isValidDate(strDate))
-            std::cerr << "CODIGO ERROR: El usuario cerro la ventana o no corrigio la fecha invalida.\n";
-        else
-            std::cerr << "CODIGO ERROR: El usuario cerro la ventana o dejo campos vacios.\n";
-    }
+
+    // Restablecemos el título de la ventana al salir
+    win.setTitle("Sistema de Ventas de Entradas");
 }

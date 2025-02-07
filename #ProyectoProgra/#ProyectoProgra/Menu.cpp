@@ -432,58 +432,136 @@ void Menu::configureEvent(Event& event, Segment& segment) {
 
 void Menu::listEventAndSegments(Event& event, Segment& segment)
 {
-    using namespace std;
-    system("cls");
+    // Usamos la ventana principal
+    sf::RenderWindow& win = *window;
+    win.setTitle("Lista de Eventos y Segmentos");
 
-    if (event.getEventCount() == 0)
+    // Cargar la fuente
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
     {
-        cout << "No hay eventos guardados." << endl;
-        cout << "Presione Enter para continuar...";
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cin.get();
+        std::cerr << "Error: No se pudo cargar la fuente en listEventAndSegments.\n";
         return;
     }
 
-    cout << "\nLista de eventos y segmentos:\n" << endl;
+    // Encabezado de 100 píxeles (sin const)
+    float headerHeight = 100.f;
+    sf::RectangleShape header(sf::Vector2f(1200.f, headerHeight));
+    header.setFillColor(HEADER_COLOR);
+    header.setPosition(0.f, 0.f);
 
-    List<List<Segment>>& segmentsByEvent = segment.getSegmentsByEvent();
-    List<int>& segmentCounts = segment.getSegmentCount();
-
-    for (int i = 1; i <= event.getEventCount(); i++)
+    // Título en el encabezado
+    sf::Text headerTitle("Eventos y Segmentos", font, 25);
+    headerTitle.setFillColor(TEXT_COLOR);
     {
-        cout << "Evento #" << i << ":\n";
-        cout << "Nombre: " << event.getEvents().getAt(i).getName() << "\n";
-        cout << "Fecha: " << event.getEvents().getAt(i).getDate() << "\n";
-        cout << "Descripcion: " << event.getEvents().getAt(i).getDescription() << "\n";
-
-        cout << "Segmentos asociados:\n";
-
-        if (segmentCounts.getAt(i) == 0 || segmentsByEvent.getAt(i).getHead() == nullptr)
-        {
-            cout << " No tiene segmentos asignados.\n";
-            cout << "--------------------------\n";
-            continue;
-        }
-
-        for (int j = 1; j <= segmentCounts.getAt(i); j++)
-        {
-            cout << "  Segmento #" << j << ":\n";
-            cout << "    Nombre: "
-                << segmentsByEvent.getAt(i).getAt(j).getName() << "\n";
-            cout << "    Filas: "
-                << segmentsByEvent.getAt(i).getAt(j).getRows() << "\n";
-            cout << "    Asientos por fila: "
-                << segmentsByEvent.getAt(i).getAt(j).getSeats() << "\n";
-            cout << "    Precio: "
-                << segmentsByEvent.getAt(i).getAt(j).getPrice() << "\n";
-        }
-        cout << "--------------------------\n";
+        sf::FloatRect bounds = headerTitle.getLocalBounds();
+        float posX = 20.f;
+        float posY = (headerHeight - bounds.height) / 2.f - bounds.top;
+        headerTitle.setPosition(posX, posY);
     }
 
-    cout << "\nPresione Enter para continuar...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
+    // Botón "Volver"
+    sf::RectangleShape backButton(sf::Vector2f(120.f, 40.f));
+    backButton.setFillColor(sf::Color(150, 150, 150));
+    backButton.setPosition(50.f, headerHeight + 20.f); // Justo debajo del header
+
+    sf::Text backButtonText("Volver", font, 20);
+    backButtonText.setFillColor(sf::Color::White);
+    {
+        sf::FloatRect btnBounds = backButtonText.getLocalBounds();
+        float btnX = backButton.getPosition().x + (backButton.getSize().x - btnBounds.width) / 2.f - btnBounds.left;
+        float btnY = backButton.getPosition().y + (backButton.getSize().y - btnBounds.height) / 2.f - btnBounds.top;
+        backButtonText.setPosition(btnX, btnY);
+    }
+
+    // Variable donde construiremos la información a mostrar
+    std::string info;
+
+    // Verificar si hay eventos
+    if (event.getEventCount() == 0)
+    {
+        info = "No hay eventos guardados.\n\nPresione \"Volver\" para regresar...";
+    }
+    else
+    {
+        // Acceder a las estructuras de segmentos
+        List<List<Segment>>& segmentsByEvent = segment.getSegmentsByEvent();
+        List<int>& segmentCounts = segment.getSegmentCount();
+
+        info += "Lista de eventos y segmentos:\n\n";
+        for (int i = 1; i <= event.getEventCount(); i++)
+        {
+            info += "Evento #" + std::to_string(i) + ":\n";
+            info += "  Nombre: " + event.getEvents().getAt(i).getName() + "\n";
+            info += "  Fecha: " + event.getEvents().getAt(i).getDate() + "\n";
+            info += "  Descripcion: " + event.getEvents().getAt(i).getDescription() + "\n";
+            info += "  Segmentos asociados:\n";
+
+            // Verificar si tiene segmentos
+            if (segmentCounts.getAt(i) == 0 || segmentsByEvent.getAt(i).getHead() == nullptr)
+            {
+                info += "    - No tiene segmentos asignados.\n";
+                info += "--------------------------\n\n";
+                continue;
+            }
+
+            // Recorrer los segmentos de cada evento
+            for (int j = 1; j <= segmentCounts.getAt(i); j++)
+            {
+                // Aquí removemos el const
+                Segment seg = segmentsByEvent.getAt(i).getAt(j);
+
+                info += "    Segmento #" + std::to_string(j) + ":\n";
+                info += "      Nombre: " + seg.getName() + "\n";
+                info += "      Filas: " + std::to_string(seg.getRows()) + "\n";
+                info += "      Asientos por fila: " + std::to_string(seg.getSeats()) + "\n";
+                info += "      Precio: " + std::to_string(seg.getPrice()) + "\n";
+            }
+            info += "--------------------------\n\n";
+        }
+        info += "\nPresione \"Volver\" para regresar...";
+    }
+
+    // Texto que mostrará toda la información
+    sf::Text infoText(info, font, 18);
+    infoText.setFillColor(TEXT_COLOR);
+    infoText.setPosition(50.f, headerHeight + 80.f);
+
+    bool inShowScreen = true;
+    while (inShowScreen && win.isOpen())
+    {
+        sf::Event ev;
+        while (win.pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed)
+            {
+                win.close();
+                return;
+            }
+            // Clic en "Volver" para regresar
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x),
+                    static_cast<float>(ev.mouseButton.y));
+                if (backButton.getGlobalBounds().contains(mousePos))
+                {
+                    inShowScreen = false;
+                }
+            }
+        }
+        win.clear(BG_COLOR);
+        win.draw(header);
+        win.draw(headerTitle);
+        win.draw(backButton);
+        win.draw(backButtonText);
+        win.draw(infoText);
+        win.display();
+    }
+
+    // Al salir, restablecemos el título original
+    win.setTitle("Sistema de Ventas de Entradas");
 }
+
 
 void Menu::sellTicket(User& user)
 {
@@ -497,20 +575,62 @@ void Menu::saveEvent(Event& event, Segment& segment)
     event.saveEvent(win, segment);
 }
 
-void Menu::showAbout()
-{
-    using namespace std;
-    system("cls");
-    cout << "\n=========================================\n";
-    cout << "               ACERCA DE                 \n";
-    cout << "=========================================\n";
-    cout << "Integrantes del Proyecto:\n";
-    cout << "  - Harold Avila Hernandez\n";
-    cout << "  - Cristhian Cordero Varela\n";
-    cout << "=========================================\n";
-    cout << "\nPresione Enter para continuar...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
+void Menu::showAbout() {
+    if (!window)
+        return;
+    // Cambiar el título de la ventana para la sección "Acerca de"
+    window->setTitle("Acerca de - Sistema de Ventas de Entradas");
+
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
+        std::cerr << "Error: No se pudo cargar la fuente." << std::endl;
+        return;
+    }
+
+    // Crear un header en la parte superior con el color HEADER_COLOR
+    sf::RectangleShape header(sf::Vector2f(window->getSize().x, 100.f));
+    header.setFillColor(HEADER_COLOR);
+    header.setPosition(0.f, 0.f);
+
+    // Título "ACERCA DE" centrado en el header
+    sf::Text titleText("ACERCA DE", font, 40);
+    titleText.setFillColor(TEXT_COLOR);
+    sf::FloatRect titleBounds = titleText.getLocalBounds();
+    titleText.setPosition((window->getSize().x - titleBounds.width) / 2.f,
+        (100.f - titleBounds.height) / 2.f);
+
+    // Texto con la información del proyecto
+    std::string aboutInfo =
+        "Integrantes del Proyecto:\n"
+        "  - Harold Avila Hernandez\n"
+        "  - Cristhian Cordero Varela\n\n"
+        "Presione cualquier tecla o haga clic para volver al menú.";
+    sf::Text aboutText(aboutInfo, font, 30);
+    aboutText.setFillColor(TEXT_COLOR);
+    aboutText.setPosition(100.f, 150.f);
+
+    // Bucle de la ventana "Acerca de"
+    bool exitAbout = false;
+    while (window->isOpen() && !exitAbout) {
+        sf::Event event;
+        while (window->pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window->close();
+                return;
+            }
+            if (event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonPressed) {
+                exitAbout = true;
+            }
+        }
+        // Usamos BG_COLOR (gris claro) para el fondo
+        window->clear(BG_COLOR);
+        window->draw(header);
+        window->draw(titleText);
+        window->draw(aboutText);
+        window->display();
+    }
+    // Restaurar el título de la ventana al volver al menú principal
+    window->setTitle("Sistema de Ventas de Entradas");
 }
 
 
@@ -531,61 +651,442 @@ int Menu::readIntInRange(int min, int max, const std::string& prompt) {
 void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     std::map<std::tuple<int, int>, Seating>& seatingMap)
 {
-    using namespace std;
-    if (event.getEventCount() == 0) {
-        cout << "No hay eventos disponibles." << endl;
-        cout << "Presione Enter para continuar...";
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cin.get();
+    // Usamos la ventana principal
+    sf::RenderWindow& win = *window;
+    win.setTitle("Modificar o Eliminar Segmentos");
+
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
+    {
+        std::cerr << "Error al cargar la fuente en modifyOrDeleteSegment.\n";
         return;
     }
 
-    cout << "Eventos disponibles:" << endl;
-    for (int i = 1; i <= event.getEventCount(); i++) {
-        cout << i << ". " << event.getEvents().getAt(i).getName() << endl;
-    }
-    cout << "\nIngrese el numero de evento: ";
-    int eventIndex = readIntInRange(1, event.getEventCount());
+    // Verificar si hay eventos
+    if (event.getEventCount() == 0)
+    {
+        // === Pantalla simple: "No hay eventos" + Botón Volver ===
+        const float headerHeight = 100.f;
+        sf::RectangleShape header(sf::Vector2f(1200.f, headerHeight));
+        header.setFillColor(HEADER_COLOR);
+        header.setPosition(0.f, 0.f);
 
+        sf::Text headerTitle("Modificar/Eliminar Segmentos", font, 25);
+        headerTitle.setFillColor(TEXT_COLOR);
+        {
+            sf::FloatRect bounds = headerTitle.getLocalBounds();
+            float posX = 20.f;
+            float posY = (headerHeight - bounds.height) / 2.f - bounds.top;
+            headerTitle.setPosition(posX, posY);
+        }
+
+        sf::Text infoText("No hay eventos disponibles.\n\nHaz clic en 'Volver' para continuar...",
+            font, 20);
+        infoText.setFillColor(sf::Color::Black);
+        infoText.setPosition(50.f, headerHeight + 50.f);
+
+        sf::RectangleShape backButton(sf::Vector2f(120.f, 40.f));
+        backButton.setFillColor(sf::Color(150, 150, 150));
+        backButton.setPosition(50.f, headerHeight + 150.f);
+
+        sf::Text backText("Volver", font, 20);
+        backText.setFillColor(sf::Color::White);
+        {
+            sf::FloatRect btnB = backText.getLocalBounds();
+            float btnX = backButton.getPosition().x + (backButton.getSize().x - btnB.width) / 2.f - btnB.left;
+            float btnY = backButton.getPosition().y + (backButton.getSize().y - btnB.height) / 2.f - btnB.top;
+            backText.setPosition(btnX, btnY);
+        }
+
+        bool noEventsScreen = true;
+        while (noEventsScreen && win.isOpen())
+        {
+            sf::Event ev;
+            while (win.pollEvent(ev))
+            {
+                if (ev.type == sf::Event::Closed) {
+                    win.close();
+                    return;
+                }
+                if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+                {
+                    sf::Vector2f mousePos(ev.mouseButton.x, ev.mouseButton.y);
+                    if (backButton.getGlobalBounds().contains(mousePos)) {
+                        noEventsScreen = false; // Salimos
+                    }
+                }
+            }
+            win.clear(BG_COLOR);
+            win.draw(header);
+            win.draw(headerTitle);
+            win.draw(infoText);
+            win.draw(backButton);
+            win.draw(backText);
+            win.display();
+        }
+        return;
+    }
+
+    // =========================================================
+    // STATE 1: Mostrar listado de eventos para elegir uno
+    // =========================================================
+
+    // Cabecera
+    float headerHeight = 100.f;
+    sf::RectangleShape header(sf::Vector2f(1200.f, headerHeight));
+    header.setFillColor(HEADER_COLOR);
+    header.setPosition(0.f, 0.f);
+
+    sf::Text headerTitle("Seleccionar Evento a Modificar/Eliminar Segmentos", font, 25);
+    headerTitle.setFillColor(TEXT_COLOR);
+    {
+        sf::FloatRect b = headerTitle.getLocalBounds();
+        float posX = 20.f;
+        float posY = (headerHeight - b.height) / 2.f - b.top;
+        headerTitle.setPosition(posX, posY);
+    }
+
+    // Mensaje
+    sf::Text chooseEventText("Elige un evento:", font, 20);
+    chooseEventText.setFillColor(sf::Color::Black);
+    chooseEventText.setPosition(50.f, headerHeight + 50.f);
+
+    // Botón "Volver"
+    sf::RectangleShape backButton(sf::Vector2f(120.f, 40.f));
+    backButton.setFillColor(sf::Color(150, 150, 150));
+    backButton.setPosition(50.f, 600.f);
+
+    sf::Text backButtonText("Volver", font, 20);
+    backButtonText.setFillColor(sf::Color::White);
+    {
+        sf::FloatRect btnB = backButtonText.getLocalBounds();
+        float btnX = backButton.getPosition().x + (backButton.getSize().x - btnB.width) / 2.f - btnB.left;
+        float btnY = backButton.getPosition().y + (backButton.getSize().y - btnB.height) / 2.f - btnB.top;
+        backButtonText.setPosition(btnX, btnY);
+    }
+
+    // Armamos la lista de eventos en pantalla con mayor separación
+    std::vector<sf::Text> eventTexts;
+    {
+        float eventStartY = headerHeight + 100.f;  // Se inicia más abajo
+        for (int i = 1; i <= event.getEventCount(); i++)
+        {
+            std::string evtName = std::to_string(i) + ". " + event.getEvents().getAt(i).getName();
+            sf::Text t(evtName, font, 20);
+            t.setFillColor(sf::Color::Black);
+            // Incremento de 50 píxeles por evento para evitar solapamientos
+            float x = 50.f;
+            float y = eventStartY + (i - 1) * 50.f;
+            t.setPosition(x, y);
+            eventTexts.push_back(t);
+        }
+    }
+
+    bool pickingEvent = true;
+    int chosenEventIndex = -1;
+    while (pickingEvent && win.isOpen())
+    {
+        sf::Event ev;
+        while (win.pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed) {
+                win.close();
+                return;
+            }
+            // Resaltar opciones al pasar el mouse
+            if (ev.type == sf::Event::MouseMoved)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseMove.x),
+                    static_cast<float>(ev.mouseMove.y));
+                for (auto& t : eventTexts)
+                {
+                    if (t.getGlobalBounds().contains(mousePos))
+                        t.setFillColor(HIGHLIGHT_COLOR);
+                    else
+                        t.setFillColor(sf::Color::Black);
+                }
+            }
+            // Clic con el mouse
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x),
+                    static_cast<float>(ev.mouseButton.y));
+                if (backButton.getGlobalBounds().contains(mousePos)) {
+                    return; // Regresamos sin hacer nada
+                }
+                for (int i = 0; i < (int)eventTexts.size(); i++)
+                {
+                    if (eventTexts[i].getGlobalBounds().contains(mousePos))
+                    {
+                        chosenEventIndex = i + 1;
+                        pickingEvent = false;
+                        break;
+                    }
+                }
+            }
+        }
+        win.clear(BG_COLOR);
+        win.draw(header);
+        win.draw(headerTitle);
+        win.draw(chooseEventText);
+        for (auto& t : eventTexts) {
+            win.draw(t);
+        }
+        win.draw(backButton);
+        win.draw(backButtonText);
+        win.display();
+    }
+
+    if (chosenEventIndex < 1) {
+        return;
+    }
+
+    // =========================================================
+    // Revisión de segmentos del evento elegido
+    // =========================================================
     List<List<Segment>>& segmentsByEvent = segment.getSegmentsByEvent();
     List<int>& segmentCount = segment.getSegmentCount();
-    int numSegments = segmentCount.getAt(eventIndex);
+    int numSegments = segmentCount.getAt(chosenEventIndex);
 
-    if (numSegments == 0) {
-        cout << "\nEl evento seleccionado no tiene segmentos." << endl;
-        cout << "Desea registrar un nuevo segmento? (1. Si, 2. No): ";
-        int registerOption = readIntInRange(1, 2);
-        if (registerOption == 1) {
-            segment.saveSegments(*window, segment, event.getEventCount(), eventIndex);
-            return;
+    if (numSegments == 0)
+    {
+        sf::Text noSegmentsText("El evento seleccionado no tiene segmentos.\nDesea registrar un nuevo segmento?\n(Click en Si/No)",
+            font, 20);
+        noSegmentsText.setFillColor(sf::Color::Black);
+        noSegmentsText.setPosition(50.f, 200.f);
+
+        sf::RectangleShape yesButton(sf::Vector2f(60.f, 40.f));
+        yesButton.setFillColor(sf::Color(0, 180, 0));
+        yesButton.setPosition(50.f, 300.f);
+
+        sf::Text yesText("Si", font, 20);
+        yesText.setFillColor(sf::Color::White);
+        {
+            sf::FloatRect b = yesText.getLocalBounds();
+            float x = yesButton.getPosition().x + (yesButton.getSize().x - b.width) / 2.f - b.left;
+            float y = yesButton.getPosition().y + (yesButton.getSize().y - b.height) / 2.f - b.top;
+            yesText.setPosition(x, y);
         }
-        else {
-            cout << "\nPresione Enter para continuar...";
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cin.get();
-            return;
+
+        sf::RectangleShape noButton(sf::Vector2f(60.f, 40.f));
+        noButton.setFillColor(sf::Color(150, 150, 150));
+        noButton.setPosition(120.f, 300.f);
+
+        sf::Text noText("No", font, 20);
+        noText.setFillColor(sf::Color::White);
+        {
+            sf::FloatRect b = noText.getLocalBounds();
+            float x = noButton.getPosition().x + (noButton.getSize().x - b.width) / 2.f - b.left;
+            float y = noButton.getPosition().y + (noButton.getSize().y - b.height) / 2.f - b.top;
+            noText.setPosition(x, y);
+        }
+
+        bool waitingResponse = true;
+        while (waitingResponse && win.isOpen())
+        {
+            sf::Event ev;
+            while (win.pollEvent(ev))
+            {
+                if (ev.type == sf::Event::Closed) {
+                    win.close();
+                    return;
+                }
+                if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+                {
+                    sf::Vector2f mousePos(ev.mouseButton.x, ev.mouseButton.y);
+                    if (yesButton.getGlobalBounds().contains(mousePos)) {
+                        segment.saveSegments(win, segment, event.getEventCount(), chosenEventIndex);
+                        waitingResponse = false;
+                    }
+                    else if (noButton.getGlobalBounds().contains(mousePos)) {
+                        waitingResponse = false;
+                    }
+                }
+            }
+            win.clear(BG_COLOR);
+            win.draw(header);
+            win.draw(headerTitle);
+            win.draw(noSegmentsText);
+            win.draw(yesButton);
+            win.draw(yesText);
+            win.draw(noButton);
+            win.draw(noText);
+            win.display();
+        }
+        return;
+    }
+
+    // =========================================================
+    // STATE 2: Listar segmentos para el evento elegido
+    // =========================================================
+    sf::Text chooseSegmentText("Segmentos para el evento " + std::to_string(chosenEventIndex) +
+        ":\nElige uno para Modificar/Eliminar", font, 20);
+    chooseSegmentText.setFillColor(sf::Color::Black);
+    chooseSegmentText.setPosition(50.f, 110.f);
+
+    std::vector<sf::Text> segmentTexts;
+    {
+        float segmentStartY = chooseSegmentText.getPosition().y + chooseSegmentText.getLocalBounds().height + 20.f;
+        for (int j = 1; j <= numSegments; j++)
+        {
+            Segment seg = segmentsByEvent.getAt(chosenEventIndex).getAt(j);
+            std::string segStr = std::to_string(j) + ". " + seg.getName() +
+                "  (Filas:" + std::to_string(seg.getRows()) +
+                ", Asientos:" + std::to_string(seg.getSeats()) +
+                ", Precio:" + std::to_string(seg.getPrice()) + ")";
+            sf::Text t(segStr, font, 20);
+            t.setFillColor(sf::Color::Black);
+            // Incremento vertical de 50 píxeles
+            t.setPosition(50.f, segmentStartY + (j - 1) * 50.f);
+            segmentTexts.push_back(t);
         }
     }
 
-    cout << "\nSegmentos disponibles para el evento " << eventIndex << ":" << endl;
-    for (int j = 1; j <= numSegments; j++) {
-        Segment seg = segmentsByEvent.getAt(eventIndex).getAt(j);
-        cout << j << ". " << seg.getName() << endl
-            << "   - Filas: " << seg.getRows() << endl
-            << "   - Asientos por fila: " << seg.getSeats() << endl
-            << "   - Precio: " << seg.getPrice() << endl;
+    bool pickingSegment = true;
+    int chosenSegmentIndex = -1;
+    while (pickingSegment && win.isOpen())
+    {
+        sf::Event ev;
+        while (win.pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed) {
+                win.close();
+                return;
+            }
+            if (ev.type == sf::Event::MouseMoved)
+            {
+                sf::Vector2f m(ev.mouseMove.x, ev.mouseMove.y);
+                for (auto& txt : segmentTexts)
+                {
+                    if (txt.getGlobalBounds().contains(m))
+                        txt.setFillColor(HIGHLIGHT_COLOR);
+                    else
+                        txt.setFillColor(sf::Color::Black);
+                }
+            }
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f m(ev.mouseButton.x, ev.mouseButton.y);
+                if (backButton.getGlobalBounds().contains(m)) {
+                    return;
+                }
+                for (int i = 0; i < (int)segmentTexts.size(); i++)
+                {
+                    if (segmentTexts[i].getGlobalBounds().contains(m))
+                    {
+                        chosenSegmentIndex = i + 1;
+                        pickingSegment = false;
+                        break;
+                    }
+                }
+            }
+        }
+        win.clear(BG_COLOR);
+        win.draw(header);
+        win.draw(headerTitle);
+        win.draw(chooseSegmentText);
+        for (auto& txt : segmentTexts) {
+            win.draw(txt);
+        }
+        win.draw(backButton);
+        win.draw(backButtonText);
+        win.display();
     }
-    cout << "\nSeleccione el numero del segmento que desea modificar o eliminar: ";
-    int segmentIndex = readIntInRange(1, numSegments);
+    if (chosenSegmentIndex < 1) {
+        return;
+    }
 
-    std::tuple<int, int> key = std::make_tuple(eventIndex, segmentIndex);
+    // =========================================================
+    // STATE 3: Elegir acción (Actualizar / Eliminar)
+    // =========================================================
+    // Se reubica esta sección para que aparezca más abajo y con mayor separación
+
+    sf::Text actionPrompt("Seleccione la accion a realizar\nEvento: " + std::to_string(chosenEventIndex) +
+        ", Segmento: " + std::to_string(chosenSegmentIndex),
+        font, 20);
+    actionPrompt.setFillColor(sf::Color::Black);
+    actionPrompt.setPosition(50.f, 420.f);  // Ubicado más abajo
+
+    sf::RectangleShape updateButton(sf::Vector2f(150.f, 40.f));
+    updateButton.setFillColor(sf::Color(0, 180, 0));
+    updateButton.setPosition(50.f, 480.f);  // Ubicado más abajo
+
+    sf::Text updateText("Actualizar", font, 20);
+    updateText.setFillColor(sf::Color::White);
+    {
+        sf::FloatRect b = updateText.getLocalBounds();
+        float x = updateButton.getPosition().x + (updateButton.getSize().x - b.width) / 2.f - b.left;
+        float y = updateButton.getPosition().y + (updateButton.getSize().y - b.height) / 2.f - b.top;
+        updateText.setPosition(x, y);
+    }
+
+    sf::RectangleShape deleteButton(sf::Vector2f(150.f, 40.f));
+    deleteButton.setFillColor(sf::Color(180, 0, 0));
+    deleteButton.setPosition(250.f, 480.f);  // Ubicado a la derecha del botón Actualizar
+
+    sf::Text deleteText("Eliminar", font, 20);
+    deleteText.setFillColor(sf::Color::White);
+    {
+        sf::FloatRect b = deleteText.getLocalBounds();
+        float x = deleteButton.getPosition().x + (deleteButton.getSize().x - b.width) / 2.f - b.left;
+        float y = deleteButton.getPosition().y + (deleteButton.getSize().y - b.height) / 2.f - b.top;
+        deleteText.setPosition(x, y);
+    }
+
+    bool pickingAction = true;
+    int actionChosen = -1; // 1=Actualizar, 2=Eliminar
+    while (pickingAction && win.isOpen())
+    {
+        sf::Event ev;
+        while (win.pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed) {
+                win.close();
+                return;
+            }
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f m(ev.mouseButton.x, ev.mouseButton.y);
+                if (updateButton.getGlobalBounds().contains(m)) {
+                    actionChosen = 1;
+                    pickingAction = false;
+                }
+                else if (deleteButton.getGlobalBounds().contains(m)) {
+                    actionChosen = 2;
+                    pickingAction = false;
+                }
+                else if (backButton.getGlobalBounds().contains(m)) {
+                    return;
+                }
+            }
+        }
+        win.clear(BG_COLOR);
+        win.draw(header);
+        win.draw(headerTitle);
+        win.draw(actionPrompt);
+        win.draw(updateButton);
+        win.draw(updateText);
+        win.draw(deleteButton);
+        win.draw(deleteText);
+        win.draw(backButton);
+        win.draw(backButtonText);
+        win.display();
+    }
+    if (actionChosen < 1) {
+        return;
+    }
+
+    // =========================================================
+    // Lógica seatsSold (para permitir o no eliminar o actualizar parcial)
+    // =========================================================
+    std::tuple<int, int> key = std::make_tuple(chosenEventIndex, chosenSegmentIndex);
 
     auto seatsSold = [&]() -> bool {
         if (seatingMap.find(key) != seatingMap.end()) {
             Seating& room = seatingMap[key];
             for (int i = 0; i < room.getNumberOfRows(); i++) {
                 for (int j = 0; j < room.getNumberOfColumns(); j++) {
-                    // Ajusta según la implementación real de tu Seating
+                    // Ajusta según tu implementación
                     // if (room.getSeatPurchased()[i][j]) return true;
                 }
             }
@@ -593,109 +1094,499 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         return false;
         };
 
-    cout << "\nSeleccione una opcion:" << endl;
-    cout << "1. Actualizar segmento" << endl;
-    cout << "2. Eliminar segmento" << endl;
-    int action = readIntInRange(1, 2);
+    // Referencia al Segment
+    Segment& segRef = segmentsByEvent.getAt(chosenEventIndex).getAt(chosenSegmentIndex);
 
-    if (action == 1) {
-        if (seatsSold()) {
-            cout << "\nEl segmento tiene entradas vendidas; solo se permite actualizar el precio." << endl;
-            cout << "Ingrese el nuevo precio: ";
-            float newPrice;
-            while (!(cin >> newPrice) || newPrice <= 0) {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "Precio invalido, reingrese: ";
+    // =============== ACTUALIZAR ===============
+    if (actionChosen == 1)
+    {
+        if (seatsSold())
+        {
+            // Solo actualizar precio
+            float newPrice = 0.0f;
+            bool inputDone = false;
+            std::string priceStr;
+            sf::RectangleShape priceBox(sf::Vector2f(200.f, 30.f));
+            priceBox.setFillColor(sf::Color::White);
+            priceBox.setOutlineColor(sf::Color::Black);
+            priceBox.setOutlineThickness(1.f);
+            priceBox.setPosition(50.f, 150.f);
+
+            sf::Text pricePrompt("El segmento tiene entradas vendidas;\nsolo puede actualizar el precio.\nDigite el nuevo precio y Enter:",
+                font, 20);
+            pricePrompt.setFillColor(sf::Color::Black);
+            pricePrompt.setPosition(50.f, 110.f);
+
+            sf::Text priceInput("", font, 20);
+            priceInput.setFillColor(sf::Color::Black);
+            priceInput.setPosition(priceBox.getPosition().x + 5, priceBox.getPosition().y + 2);
+
+            while (!inputDone && win.isOpen())
+            {
+                sf::Event e;
+                while (win.pollEvent(e))
+                {
+                    if (e.type == sf::Event::Closed) {
+                        win.close();
+                        return;
+                    }
+                    if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Enter)
+                    {
+                        try {
+                            float val = std::stof(priceStr);
+                            if (val > 0) {
+                                newPrice = val;
+                                inputDone = true;
+                            }
+                        }
+                        catch (...) {}
+                    }
+                    else if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Backspace)
+                    {
+                        if (!priceStr.empty()) {
+                            priceStr.pop_back();
+                            priceInput.setString(priceStr);
+                        }
+                    }
+                    else if (e.type == sf::Event::TextEntered)
+                    {
+                        if (e.text.unicode < 128)
+                        {
+                            char c = static_cast<char>(e.text.unicode);
+                            if ((isdigit(c) || c == '.') && priceStr.size() < 10) {
+                                priceStr.push_back(c);
+                                priceInput.setString(priceStr);
+                            }
+                        }
+                    }
+                }
+                win.clear(BG_COLOR);
+                win.draw(header);
+                win.draw(headerTitle);
+                win.draw(pricePrompt);
+                win.draw(priceBox);
+                win.draw(priceInput);
+                win.display();
             }
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            segmentsByEvent.getAt(eventIndex).getAt(segmentIndex).setPrice(newPrice);
-            if (seatingMap.find(key) != seatingMap.end())
-                seatingMap[key].setCost(newPrice);
-            cout << "Precio actualizado." << endl;
-            cout << "\nPresione Enter para continuar...";
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cin.get();
+
+            if (newPrice > 0)
+            {
+                segRef.setPrice(newPrice);
+                if (seatingMap.find(key) != seatingMap.end())
+                    seatingMap[key].setCost(newPrice);
+
+                sf::Text okText("Precio actualizado exitosamente.\nHaga clic en 'Volver' para salir.",
+                    font, 20);
+                okText.setFillColor(sf::Color::Black);
+                okText.setPosition(50.f, 220.f);
+
+                bool doneOk = false;
+                while (!doneOk && win.isOpen())
+                {
+                    sf::Event e;
+                    while (win.pollEvent(e))
+                    {
+                        if (e.type == sf::Event::Closed) {
+                            win.close();
+                            return;
+                        }
+                        if (e.type == sf::Event::MouseButtonPressed && e.mouseButton.button == sf::Mouse::Left)
+                        {
+                            sf::Vector2f m(e.mouseButton.x, e.mouseButton.y);
+                            if (backButton.getGlobalBounds().contains(m)) {
+                                doneOk = true;
+                            }
+                        }
+                    }
+                    win.clear(BG_COLOR);
+                    win.draw(header);
+                    win.draw(headerTitle);
+                    win.draw(okText);
+                    win.draw(backButton);
+                    win.draw(backButtonText);
+                    win.display();
+                }
+            }
             return;
         }
+        else
+        {
+            // Se pueden actualizar filas, asientos, precio
+            bool doneEditing = false;
+            std::string rowStr, seatsStr, priceStr;
+            sf::Text rowPrompt("Nueva cantidad de filas:", font, 20);
+            rowPrompt.setFillColor(sf::Color::Black);
+            rowPrompt.setPosition(50.f, 110.f);
 
-        cout << "\nIngrese la nueva cantidad de filas: ";
-        int newRows = readIntInRange(1, 1000);
-        cout << "Ingrese la nueva cantidad de asientos por fila: ";
-        int newSeats = readIntInRange(1, 1000);
-        cout << "Ingrese el nuevo precio: ";
-        float newPrice;
-        while (!(cin >> newPrice) || newPrice <= 0) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Precio invalido, reingrese: ";
+            sf::RectangleShape rowBox(sf::Vector2f(100.f, 30.f));
+            rowBox.setFillColor(sf::Color::White);
+            rowBox.setOutlineColor(sf::Color::Black);
+            rowBox.setOutlineThickness(1.f);
+            rowBox.setPosition(50.f, 140.f);
+
+            sf::Text rowInput("", font, 20);
+            rowInput.setFillColor(sf::Color::Black);
+            rowInput.setPosition(55.f, 145.f);
+
+            sf::Text seatsPrompt("Nueva cantidad de asientos:", font, 20);
+            seatsPrompt.setFillColor(sf::Color::Black);
+            seatsPrompt.setPosition(50.f, 190.f);
+
+            sf::RectangleShape seatsBox(sf::Vector2f(100.f, 30.f));
+            seatsBox.setFillColor(sf::Color::White);
+            seatsBox.setOutlineColor(sf::Color::Black);
+            seatsBox.setOutlineThickness(1.f);
+            seatsBox.setPosition(50.f, 220.f);
+
+            sf::Text seatsInput("", font, 20);
+            seatsInput.setFillColor(sf::Color::Black);
+            seatsInput.setPosition(55.f, 225.f);
+
+            sf::Text pricePrompt("Nuevo precio:", font, 20);
+            pricePrompt.setFillColor(sf::Color::Black);
+            pricePrompt.setPosition(50.f, 270.f);
+
+            sf::RectangleShape priceBox(sf::Vector2f(100.f, 30.f));
+            priceBox.setFillColor(sf::Color::White);
+            priceBox.setOutlineColor(sf::Color::Black);
+            priceBox.setOutlineThickness(1.f);
+            priceBox.setPosition(50.f, 300.f);
+
+            sf::Text priceInput("", font, 20);
+            priceInput.setFillColor(sf::Color::Black);
+            priceInput.setPosition(55.f, 305.f);
+
+            sf::Text instruct("Presione Enter para guardar.", font, 18);
+            instruct.setFillColor(sf::Color::Blue);
+            instruct.setPosition(50.f, 350.f);
+
+            int activeField = 0; // 0=rows, 1=seats, 2=price
+
+            sf::RectangleShape activeBorder;
+            activeBorder.setFillColor(sf::Color::Transparent);
+            activeBorder.setOutlineColor(HIGHLIGHT_COLOR);
+            activeBorder.setOutlineThickness(2.f);
+            activeBorder.setPosition(rowBox.getPosition());
+            activeBorder.setSize(rowBox.getSize());
+
+            while (!doneEditing && win.isOpen())
+            {
+                sf::Event e;
+                while (win.pollEvent(e))
+                {
+                    if (e.type == sf::Event::Closed) {
+                        win.close();
+                        return;
+                    }
+                    if (e.type == sf::Event::MouseButtonPressed && e.mouseButton.button == sf::Mouse::Left)
+                    {
+                        sf::Vector2f m(e.mouseButton.x, e.mouseButton.y);
+                        if (backButton.getGlobalBounds().contains(m)) {
+                            return;
+                        }
+                        if (rowBox.getGlobalBounds().contains(m))   activeField = 0;
+                        if (seatsBox.getGlobalBounds().contains(m)) activeField = 1;
+                        if (priceBox.getGlobalBounds().contains(m)) activeField = 2;
+                    }
+                    if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Tab)
+                    {
+                        activeField = (activeField + 1) % 3;
+                    }
+                    else if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Enter)
+                    {
+                        try {
+                            int newRowsVal = std::stoi(rowStr);
+                            int newSeatsVal = std::stoi(seatsStr);
+                            float newPriceVal = std::stof(priceStr);
+                            if (newRowsVal > 0 && newSeatsVal > 0 && newPriceVal > 0)
+                            {
+                                segRef.setRows(newRowsVal);
+                                segRef.setSeats(newSeatsVal);
+                                segRef.setPrice(newPriceVal);
+                                if (seatingMap.find(key) != seatingMap.end())
+                                    seatingMap.erase(key);
+
+                                sf::Text doneText("Segmento actualizado exitosamente.\nClick 'Volver' para salir.",
+                                    font, 20);
+                                doneText.setFillColor(sf::Color::Black);
+                                doneText.setPosition(50.f, 400.f);
+
+                                bool waitOk = true;
+                                while (waitOk && win.isOpen())
+                                {
+                                    sf::Event e2;
+                                    while (win.pollEvent(e2))
+                                    {
+                                        if (e2.type == sf::Event::Closed) {
+                                            win.close();
+                                            return;
+                                        }
+                                        if (e2.type == sf::Event::MouseButtonPressed && e2.mouseButton.button == sf::Mouse::Left)
+                                        {
+                                            sf::Vector2f mm(e2.mouseButton.x, e2.mouseButton.y);
+                                            if (backButton.getGlobalBounds().contains(mm)) {
+                                                waitOk = false;
+                                            }
+                                        }
+                                    }
+                                    win.clear(BG_COLOR);
+                                    win.draw(header);
+                                    win.draw(headerTitle);
+                                    win.draw(rowPrompt);
+                                    win.draw(rowBox);
+                                    win.draw(rowInput);
+                                    win.draw(seatsPrompt);
+                                    win.draw(seatsBox);
+                                    win.draw(seatsInput);
+                                    win.draw(pricePrompt);
+                                    win.draw(priceBox);
+                                    win.draw(priceInput);
+                                    win.draw(instruct);
+                                    win.draw(doneText);
+                                    win.draw(backButton);
+                                    win.draw(backButtonText);
+                                    win.display();
+                                }
+                                return;
+                            }
+                        }
+                        catch (...) {}
+                    }
+                    else if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Backspace)
+                    {
+                        if (activeField == 0 && !rowStr.empty()) {
+                            rowStr.pop_back();
+                            rowInput.setString(rowStr);
+                        }
+                        else if (activeField == 1 && !seatsStr.empty()) {
+                            seatsStr.pop_back();
+                            seatsInput.setString(seatsStr);
+                        }
+                        else if (activeField == 2 && !priceStr.empty()) {
+                            priceStr.pop_back();
+                            priceInput.setString(priceStr);
+                        }
+                    }
+                    else if (e.type == sf::Event::TextEntered)
+                    {
+                        if (e.text.unicode < 128)
+                        {
+                            char c = static_cast<char>(e.text.unicode);
+                            if (activeField < 2)
+                            {
+                                if (isdigit(c))
+                                {
+                                    if (activeField == 0) {
+                                        rowStr.push_back(c);
+                                        rowInput.setString(rowStr);
+                                    }
+                                    else {
+                                        seatsStr.push_back(c);
+                                        seatsInput.setString(seatsStr);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (isdigit(c) || c == '.')
+                                {
+                                    priceStr.push_back(c);
+                                    priceInput.setString(priceStr);
+                                }
+                            }
+                        }
+                    }
+                }
+                if (activeField == 0) {
+                    activeBorder.setPosition(rowBox.getPosition());
+                    activeBorder.setSize(rowBox.getSize());
+                }
+                else if (activeField == 1) {
+                    activeBorder.setPosition(seatsBox.getPosition());
+                    activeBorder.setSize(seatsBox.getSize());
+                }
+                else {
+                    activeBorder.setPosition(priceBox.getPosition());
+                    activeBorder.setSize(priceBox.getSize());
+                }
+
+                win.clear(BG_COLOR);
+                win.draw(header);
+                win.draw(headerTitle);
+                win.draw(rowPrompt);
+                win.draw(rowBox);
+                win.draw(rowInput);
+                win.draw(seatsPrompt);
+                win.draw(seatsBox);
+                win.draw(seatsInput);
+                win.draw(pricePrompt);
+                win.draw(priceBox);
+                win.draw(priceInput);
+                win.draw(instruct);
+                win.draw(activeBorder);
+                win.draw(backButton);
+                win.draw(backButtonText);
+                win.display();
+            }
         }
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-        Segment& seg = segmentsByEvent.getAt(eventIndex).getAt(segmentIndex);
-        seg.setRows(newRows);
-        seg.setSeats(newSeats);
-        seg.setPrice(newPrice);
-        if (seatingMap.find(key) != seatingMap.end())
-            seatingMap.erase(key);
-
-        cout << "Segmento actualizado exitosamente." << endl;
-        cout << "\nPresione Enter para continuar...";
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cin.get();
         return;
     }
 
-    if (action == 2) {
-        if (seatsSold()) {
-            cout << "\nNo se puede eliminar el segmento, ya tiene entradas vendidas." << endl;
-            cout << "\nPresione Enter para continuar...";
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cin.get();
+    // =============== ELIMINAR ===============
+    if (actionChosen == 2)
+    {
+        if (seatsSold())
+        {
+            sf::Text msg("No se puede eliminar el segmento,\nya tiene entradas vendidas.\n\nClick 'Volver' para continuar.",
+                font, 20);
+            msg.setFillColor(sf::Color::Black);
+            msg.setPosition(50.f, 150.f);
+
+            bool waitMsg = true;
+            while (waitMsg && win.isOpen())
+            {
+                sf::Event e;
+                while (win.pollEvent(e))
+                {
+                    if (e.type == sf::Event::Closed) {
+                        win.close();
+                        return;
+                    }
+                    if (e.type == sf::Event::MouseButtonPressed && e.mouseButton.button == sf::Mouse::Left)
+                    {
+                        sf::Vector2f m(e.mouseButton.x, e.mouseButton.y);
+                        if (backButton.getGlobalBounds().contains(m)) {
+                            waitMsg = false;
+                        }
+                    }
+                }
+                win.clear(BG_COLOR);
+                win.draw(header);
+                win.draw(headerTitle);
+                win.draw(msg);
+                win.draw(backButton);
+                win.draw(backButtonText);
+                win.display();
+            }
             return;
         }
+        else
+        {
+            segmentsByEvent.getAt(chosenEventIndex).deletePosition(chosenSegmentIndex);
+            int currentCount = segmentCount.getAt(chosenEventIndex);
+            segmentCount.getAt(chosenEventIndex) = currentCount - 1;
+            if (seatingMap.find(key) != seatingMap.end())
+                seatingMap.erase(key);
 
-        segmentsByEvent.getAt(eventIndex).deletePosition(segmentIndex);
-        int currentCount = segmentCount.getAt(eventIndex);
-        segmentCount.getAt(eventIndex) = currentCount - 1;
-        if (seatingMap.find(key) != seatingMap.end())
-            seatingMap.erase(key);
+            sf::Text doneMsg("Segmento eliminado exitosamente.\n\nClick 'Volver' para continuar...",
+                font, 20);
+            doneMsg.setFillColor(sf::Color::Black);
+            doneMsg.setPosition(50.f, 150.f);
 
-        cout << "\nSegmento eliminado exitosamente." << endl;
-        cout << "\nPresione Enter para continuar...";
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cin.get();
-        return;
+            bool waitDone = true;
+            while (waitDone && win.isOpen())
+            {
+                sf::Event e;
+                while (win.pollEvent(e))
+                {
+                    if (e.type == sf::Event::Closed) {
+                        win.close();
+                        return;
+                    }
+                    if (e.type == sf::Event::MouseButtonPressed && e.mouseButton.button == sf::Mouse::Left)
+                    {
+                        sf::Vector2f m(e.mouseButton.x, e.mouseButton.y);
+                        if (backButton.getGlobalBounds().contains(m)) {
+                            waitDone = false;
+                        }
+                    }
+                }
+                win.clear(BG_COLOR);
+                win.draw(header);
+                win.draw(headerTitle);
+                win.draw(doneMsg);
+                win.draw(backButton);
+                win.draw(backButtonText);
+                win.display();
+            }
+            return;
+        }
     }
 }
+
+
 
 void Menu::cancelPurchase()
 {
     sale.cancelPurchase(user, event, segment, seatingMap);
 }
 
-void Menu::updateReport()
-{
-    using namespace std;
-    system("cls");
+void Menu::updateReport() {
+    if (!window)
+        return;
 
-    if (event.getEventCount() == 0) {
-        cout << "No hay eventos disponibles para generar el reporte.\n";
-        cout << "Presione Enter para continuar...";
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cin.get();
+    // Cambiar el título de la ventana para este formulario
+    window->setTitle("Actualizar Reporte - Sistema de Ventas de Entradas");
+
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
+        std::cerr << "Error: No se pudo cargar la fuente." << std::endl;
         return;
     }
 
-    string fileName = "reporte_eventos_actualizado.txt";
+    // Verificar si hay eventos disponibles
+    if (event.getEventCount() == 0) {
+        sf::Text msg("No hay eventos disponibles para generar el reporte.\nPresione cualquier tecla para continuar...", font, 24);
+        msg.setFillColor(TEXT_COLOR); // TEXT_COLOR es negro
+        msg.setPosition(50.f, 200.f);
 
-    // Opción 9: Actualizar reporte
+        bool exitLoop = false;
+        while (window->isOpen() && !exitLoop) {
+            sf::Event ev;
+            while (window->pollEvent(ev)) {
+                if (ev.type == sf::Event::Closed) {
+                    window->close();
+                    return;
+                }
+                if (ev.type == sf::Event::KeyPressed || ev.type == sf::Event::MouseButtonPressed)
+                    exitLoop = true;
+            }
+            window->clear(BG_COLOR);
+            window->draw(msg);
+            window->display();
+        }
+        window->setTitle("Sistema de Ventas de Entradas");
+        return;
+    }
+
+    // Si hay eventos, generar el reporte
+    std::string fileName = "reporte_eventos_actualizado.txt";
     EventReport report;
     report.generateGlobalReport(event, segment, seatingMap, fileName);
 
-    cout << "\nPresione Enter para continuar...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
+    // Mostrar mensaje de éxito en color negro
+    sf::Text successMsg("Reporte actualizado con exito.\nPresione cualquier tecla para continuar...", font, 24);
+    successMsg.setFillColor(TEXT_COLOR); // TEXT_COLOR definido como negro
+    successMsg.setPosition(50.f, 200.f);
+
+    bool exitLoop = false;
+    while (window->isOpen() && !exitLoop) {
+        sf::Event ev;
+        while (window->pollEvent(ev)) {
+            if (ev.type == sf::Event::Closed) {
+                window->close();
+                return;
+            }
+            if (ev.type == sf::Event::KeyPressed || ev.type == sf::Event::MouseButtonPressed)
+                exitLoop = true;
+        }
+        window->clear(BG_COLOR);
+        window->draw(successMsg);
+        window->display();
+    }
+
+    // Restaurar el título de la ventana
+    window->setTitle("Sistema de Ventas de Entradas");
 }
 
 void Menu::generateCodesSFML(Discount& discount)
