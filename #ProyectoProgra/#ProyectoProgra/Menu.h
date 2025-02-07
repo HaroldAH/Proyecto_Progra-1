@@ -15,6 +15,9 @@
 #include "Faq.h"
 #include "EventReport.h"
 #include <limits>
+#include <sstream>
+#include <vector>
+#include <cctype>
 
 class Menu
 {
@@ -54,7 +57,7 @@ public:
     void showDiscountMenuSFML(Discount& discount);
     void showDiscountCodesSFML(Discount& discount);
     void deleteDiscountSFML(Discount& discount);
-    
+    void sellTicketSFML();
 };
 
 #endif

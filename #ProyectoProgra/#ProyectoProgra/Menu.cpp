@@ -1,9 +1,8 @@
 ﻿#include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include "Menu.h"
 #include <iostream>
-#include <map>
-#include <tuple>
-#include <limits>
+
 
 // Alias para evitar conflictos entre las clases de SFML y las del proyecto
 namespace sfml = sf;
@@ -1237,3 +1236,233 @@ void Menu::deleteDiscountSFML(Discount& discount)
     }
 }
 
+
+void Menu::sellTicketSFML()
+{
+    // Cambiar el título de la ventana
+    window->setTitle("Vender Entrada - Sistema de Ventas");
+
+    // Cargar fuente (asegúrate de que la ruta sea correcta)
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
+    {
+        std::cerr << "Error: No se pudo cargar la fuente." << std::endl;
+        return;
+    }
+
+    // Variables para almacenar la entrada del usuario
+    std::string cedula = "";
+    int selectedEvent = -1;
+    int selectedSegment = -1;
+    std::string ticketCountStr = "";
+    int ticketCount = 0;
+
+    // Estado de la interfaz:
+    // 0: Ingresar cédula
+    // 1: Seleccionar evento
+    // 2: Seleccionar segmento (del evento escogido)
+    // 3: Ingresar cantidad de boletos
+    // 4: Confirmación final
+    int currentStep = 0;
+
+    // Textos y elementos gráficos
+    sf::Text promptText("", font, 24);
+    promptText.setFillColor(sf::Color::Black);
+    promptText.setPosition(50.f, 20.f);
+
+    // Para mostrar opciones (eventos o segmentos) se almacenarán en un vector
+    std::vector<sf::Text> optionsTexts;
+
+    // Bucle principal de la venta
+    bool saleCompleted = false;
+    while (window->isOpen() && !saleCompleted)
+    {
+        sf::Event ev;
+        while (window->pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed)
+            {
+                window->close();
+                return;
+            }
+
+            // Procesar entrada de texto para campos
+            if (ev.type == sf::Event::TextEntered)
+            {
+                // Para evitar caracteres no imprimibles
+                if (ev.text.unicode < 128)
+                {
+                    char c = static_cast<char>(ev.text.unicode);
+                    if (currentStep == 0) // Ingreso de cédula
+                    {
+                        if (c == 8) // Backspace
+                        {
+                            if (!cedula.empty())
+                                cedula.pop_back();
+                        }
+                        else if (std::isdigit(c))
+                        {
+                            cedula.push_back(c);
+                        }
+                    }
+                    else if (currentStep == 3) // Ingreso de cantidad de boletos
+                    {
+                        if (c == 8) // Backspace
+                        {
+                            if (!ticketCountStr.empty())
+                                ticketCountStr.pop_back();
+                        }
+                        else if (std::isdigit(c))
+                        {
+                            ticketCountStr.push_back(c);
+                        }
+                    }
+                }
+            }
+
+            // Procesar pulsación de teclas
+            if (ev.type == sf::Event::KeyPressed)
+            {
+                if (ev.key.code == sf::Keyboard::Enter)
+                {
+                    if (currentStep == 0)
+                    {
+                        // Si se ingresó una cédula (mínimo 9 dígitos)
+                        if (cedula.size() >= 9)
+                        {
+                            currentStep = 1; // Pasar a selección de evento
+                            optionsTexts.clear();
+                            // Cargar los eventos disponibles:
+                            int numEvents = event.getEventCount();
+                            for (int i = 1; i <= numEvents; i++)
+                            {
+                                std::string evName = event.getEvents().getAt(i).getName();
+                                sf::Text opt(evName, font, 24);
+                                opt.setFillColor(sf::Color::Black);
+                                opt.setPosition(50.f, 100.f + i * 40.f);
+                                optionsTexts.push_back(opt);
+                            }
+                        }
+                    }
+                    else if (currentStep == 3)
+                    {
+                        if (!ticketCountStr.empty())
+                        {
+                            ticketCount = std::stoi(ticketCountStr);
+                            currentStep = 4; // Confirmación final
+                        }
+                    }
+                    else if (currentStep == 4)
+                    {
+                        // Se confirma la venta (en este ejemplo simplemente mostramos mensaje)
+                        saleCompleted = true;
+                    }
+                }
+            }
+
+            // Procesar clics del mouse para seleccionar opciones
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                if (currentStep == 1) // Selección de evento
+                {
+                    for (size_t i = 0; i < optionsTexts.size(); i++)
+                    {
+                        if (optionsTexts[i].getGlobalBounds().contains(mousePos))
+                        {
+                            selectedEvent = static_cast<int>(i) + 1;
+                            currentStep = 2;
+                            optionsTexts.clear();
+                            // Cargar segmentos del evento seleccionado
+                            int segCount = segment.getSegmentCount().getAt(selectedEvent);
+                            for (int j = 1; j <= segCount; j++)
+                            {
+                                std::string segName = segment.getSegmentsByEvent().getAt(selectedEvent).getAt(j).getName();
+                                sf::Text opt(segName, font, 24);
+                                opt.setFillColor(sf::Color::Black);
+                                opt.setPosition(50.f, 100.f + j * 40.f);
+                                optionsTexts.push_back(opt);
+                            }
+                            break;
+                        }
+                    }
+                }
+                else if (currentStep == 2) // Selección de segmento
+                {
+                    for (size_t i = 0; i < optionsTexts.size(); i++)
+                    {
+                        if (optionsTexts[i].getGlobalBounds().contains(mousePos))
+                        {
+                            selectedSegment = static_cast<int>(i) + 1;
+                            currentStep = 3;
+                            break;
+                        }
+                    }
+                }
+            }
+        } // Fin del pollEvent
+
+        // Renderizado de la pantalla según el paso
+        window->clear(sf::Color(200, 200, 200));
+        if (currentStep == 0)
+        {
+            promptText.setString("Ingrese su numero de cedula (9 o mas digitos):");
+            window->draw(promptText);
+            sf::Text inputText(cedula, font, 24);
+            inputText.setFillColor(sf::Color::Black);
+            inputText.setPosition(50.f, 80.f);
+            window->draw(inputText);
+        }
+        else if (currentStep == 1)
+        {
+            promptText.setString("Seleccione un evento:");
+            window->draw(promptText);
+            for (auto& opt : optionsTexts)
+            {
+                window->draw(opt);
+            }
+        }
+        else if (currentStep == 2)
+        {
+            promptText.setString("Seleccione un segmento:");
+            window->draw(promptText);
+            for (auto& opt : optionsTexts)
+            {
+                window->draw(opt);
+            }
+        }
+        else if (currentStep == 3)
+        {
+            promptText.setString("Ingrese la cantidad de boletos a comprar:");
+            window->draw(promptText);
+            sf::Text ticketText(ticketCountStr, font, 24);
+            ticketText.setFillColor(sf::Color::Black);
+            ticketText.setPosition(50.f, 80.f);
+            window->draw(ticketText);
+        }
+        else if (currentStep == 4)
+        {
+            // Pantalla de confirmación
+            std::stringstream ss;
+            ss << "Resumen de Venta:\n";
+            ss << "Cedula: " << cedula << "\n";
+            ss << "Evento: " << event.getEvents().getAt(selectedEvent).getName() << "\n";
+            ss << "Segmento: " << segment.getSegmentsByEvent().getAt(selectedEvent).getAt(selectedSegment).getName() << "\n";
+            ss << "Cantidad de boletos: " << ticketCount << "\n\n";
+            ss << "Presione Enter para confirmar la venta.";
+            promptText.setString(ss.str());
+            window->draw(promptText);
+        }
+        window->display();
+    } // Fin del while
+
+    // Una vez confirmada la venta, se podría invocar la función de venta real (por ejemplo, sale.sell(...))
+    // Aquí, por simplicidad, solo mostramos una pantalla de "Venta completada".
+    window->clear(sf::Color(200, 200, 200));
+    sf::Text successText("Venta completada con exito!", font, 30);
+    successText.setFillColor(sf::Color::Green);
+    successText.setPosition(50.f, 100.f);
+    window->draw(successText);
+    window->display();
+    sf::sleep(sf::seconds(3));
+}

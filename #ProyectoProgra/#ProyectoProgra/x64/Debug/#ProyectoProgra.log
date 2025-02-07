@@ -1,6 +1,2 @@
-﻿  Discount.cpp
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(26,15): warning C4244: 'argumento': conversión de 'time_t' a 'unsigned int'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(42,34): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-  Menu.cpp
-  Generando código...
+﻿  Menu.cpp
   #ProyectoProgra.vcxproj -> C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\#ProyectoProgra\x64\Debug\ProyectoProgra.exe
