@@ -578,9 +578,21 @@ void Menu::saveEvent(Event& event, Segment& segment)
 void Menu::showAbout() {
     if (!window)
         return;
+
     // Cambiar el título de la ventana para la sección "Acerca de"
     window->setTitle("Acerca de - Sistema de Ventas de Entradas");
 
+    // Crear el objeto Music y cargar la canción de Morat
+    Music moratMusic;
+    std::string musicPath = "C:/Users/Ericka/Desktop/CURSOS/Programacion I Verano/trabajando con sfml/Proyecto_Progra-1/#ProyectoProgra/#ProyectoProgra/resourses/umbrella.ogg";
+    if (!moratMusic.loadMusic(musicPath)) {
+        std::cerr << "Error al cargar la canción de Morat." << std::endl;
+        return;
+    }
+    // Reproducir la canción
+    moratMusic.play();
+
+    // Cargar la fuente
     sf::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
         std::cerr << "Error: No se pudo cargar la fuente." << std::endl;
@@ -622,6 +634,7 @@ void Menu::showAbout() {
                 exitAbout = true;
             }
         }
+
         // Usamos BG_COLOR (gris claro) para el fondo
         window->clear(BG_COLOR);
         window->draw(header);
@@ -629,6 +642,7 @@ void Menu::showAbout() {
         window->draw(aboutText);
         window->display();
     }
+
     // Restaurar el título de la ventana al volver al menú principal
     window->setTitle("Sistema de Ventas de Entradas");
 }

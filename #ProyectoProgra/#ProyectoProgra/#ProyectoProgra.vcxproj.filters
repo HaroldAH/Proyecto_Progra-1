@@ -13,6 +13,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Archivos de encabezado\Archivos de recursos\Archivos de origen\resourses">
+      <UniqueIdentifier>{2699d508-4763-4df2-8b94-e7a50cf2204b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Discount.cpp">
@@ -48,6 +51,9 @@
     <ClCompile Include="List.h">
       <Filter>Archivos de encabezado</Filter>
     </ClCompile>
+    <ClCompile Include="Music.cpp">
+      <Filter>Archivos de encabezado\Archivos de recursos\Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Event.h">
@@ -77,5 +83,13 @@
     <ClInclude Include="discount.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Music.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resourses\umbrella.ogg">
+      <Filter>Archivos de encabezado\Archivos de recursos\Archivos de origen\resourses</Filter>
+    </None>
   </ItemGroup>
 </Project>

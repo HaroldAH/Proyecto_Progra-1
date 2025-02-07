@@ -136,6 +136,7 @@
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="Faq.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Music.cpp" />
     <ClCompile Include="Sale.cpp" />
     <ClCompile Include="seating.cpp" />
     <ClCompile Include="Segment.cpp" />
@@ -149,10 +150,14 @@
     <ClInclude Include="Event.h" />
     <ClInclude Include="Faq.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="Music.h" />
     <ClInclude Include="Sale.h" />
     <ClInclude Include="seating.h" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="User.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resourses\umbrella.ogg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
