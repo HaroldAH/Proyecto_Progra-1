@@ -556,7 +556,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         cout << "Desea registrar un nuevo segmento? (1. Si, 2. No): ";
         int registerOption = readIntInRange(1, 2);
         if (registerOption == 1) {
-            segment.saveSegments(segment, event.getEventCount(), eventIndex);
+            segment.saveSegments(*window, segment, event.getEventCount(), eventIndex);
             return;
         }
         else {

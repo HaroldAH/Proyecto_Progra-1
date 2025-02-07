@@ -3,48 +3,41 @@
 
 #include <string>
 #include "List.h"
-
-using namespace std;
+#include <SFML/Graphics.hpp>
 
 class Segment {
 private:
-    string segmentName;
+    std::string segmentName;
     int rows;
     int seats;
     float price;
     int segmentCapacity;
     List<int> segmentCount;
     List<List<Segment>> segmentsByEvent;
-
 public:
     Segment();
     ~Segment();
 
-    string getName();
-    void setName(string& aSegmentName);
-
+    std::string getName();
     int getRows();
-    void setRows(int& aRows);
-
     int getSeats();
-    void setSeats(int& aSeats);
-
     float getPrice();
-    void setPrice(float& aPrice);
+
+    void setName(const std::string& aSegmentName);
+    void setRows(int aRows);
+    void setSeats(int aSeats);
+    void setPrice(float aPrice);
 
     List<int>& getSegmentCount();
     List<List<Segment>>& getSegmentsByEvent();
 
     void manageSegments(Segment& segment, int& numEvents);
-    void saveSegments(Segment& segment, int events, int eventIndex);
-
-    void addSegmentData(Segment& segment, int index);
+    void addSegmentData(Segment& segment, int index, sf::RenderWindow& win);
+    void saveSegments(sf::RenderWindow& win, Segment& segment, int events, int eventIndex = 0);
 
     int getValidIntInput();
     float getValidFloatInput();
-    string getValidStringInput(const string& prompt);
-
+    std::string getValidStringInput(const std::string& prompt);
 };
 
-#endif
-
+#endif // SEGMENT_H
