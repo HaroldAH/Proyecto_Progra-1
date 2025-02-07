@@ -1,13 +1,2 @@
-﻿  Event.cpp
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(168,61): warning C4244: 'argumento': conversión de 'T' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(168,61): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(168,61): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(168,61): warning C4244:             T=unsigned int
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(168,61): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(168,61): warning C4244:         and
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(168,61): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(168,61): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(168,61): warning C4244:         ]
-  Menu.cpp
-  Generando código...
+﻿  Menu.cpp
   #ProyectoProgra.vcxproj -> C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\#ProyectoProgra\x64\Debug\ProyectoProgra.exe

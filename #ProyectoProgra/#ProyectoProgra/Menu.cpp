@@ -171,7 +171,7 @@ void Menu::executeOption(int option) {
         break;
     case 7:
         // Preguntas y Respuestas (FAQ)
-        showFaq();
+        showFaqMenuSFML();
         break;
     case 8:
         // Salir
@@ -513,10 +513,6 @@ void Menu::showAbout()
     cin.get();
 }
 
-void Menu::showFaq()
-{
-    faq.showFaq();
-}
 
 int Menu::readIntInRange(int min, int max, const std::string& prompt) {
     using namespace std;
@@ -978,9 +974,6 @@ void Menu::generateCodesSFML(Discount& discount)
     win.setTitle("Sistema de Ventas de Entradas");
 }
 
-
-
-
 void Menu::showDiscountCodesSFML(Discount& discount)
 {
     // Reutilizamos la ventana principal
@@ -1046,7 +1039,6 @@ void Menu::showDiscountCodesSFML(Discount& discount)
     // Restablecer el título al salir
     win.setTitle("Sistema de Ventas de Entradas");
 }
-
 
 void Menu::deleteDiscountSFML(Discount& discount)
 {
@@ -1201,8 +1193,6 @@ void Menu::deleteDiscountSFML(Discount& discount)
     // Al salir del submenú, restablecer el título principal
     win.setTitle("Sistema de Ventas de Entradas");
 }
-
-
 
 void Menu::sellTicketSFML()
 {
@@ -1432,4 +1422,157 @@ void Menu::sellTicketSFML()
     window->draw(successText);
     window->display();
     sf::sleep(sf::seconds(3));
+}
+
+
+void Menu::showFaqMenuSFML()
+{
+    // Reutilizamos la ventana principal
+    sf::RenderWindow& win = *window;
+    win.setTitle("Preguntas y Respuestas");
+
+    // Cargar la fuente
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
+    {
+        std::cerr << "Error: No se pudo cargar la fuente para el submenú de FAQ.\n";
+        return;
+    }
+
+    // Definimos las 5 opciones
+    const int NUM_OPTIONS = 5;
+    std::string optionLabels[NUM_OPTIONS] = {
+        "Reglas del evento.",
+        "Como compro entradas?.",
+        "Aplicar descuentos.",
+        "Mostrar compras realizadas.",
+        "Volver al menu."
+    };
+
+    // Creamos el "header" de 100 px
+    float headerHeight = 100.f;
+    sf::RectangleShape header(sf::Vector2f(1200.f, headerHeight));
+    header.setFillColor(HEADER_COLOR);
+    header.setPosition(0.f, 0.f);
+
+    // Texto título del submenú
+    sf::Text titleText("Preguntas y Respuestas", font, 30);
+    titleText.setFillColor(TEXT_COLOR);
+    // Centrar el texto en pantalla
+    sf::FloatRect titleBounds = titleText.getLocalBounds();
+    titleText.setPosition((1200.f - titleBounds.width) / 2.f, headerHeight + 50.f);
+
+    // Creamos un array de textos (botones) para las opciones
+    sf::Text options[NUM_OPTIONS];
+    float spacing = 1200.f / NUM_OPTIONS;  // Para distribuir horizontalmente
+    for (int i = 0; i < NUM_OPTIONS; i++)
+    {
+        options[i].setFont(font);
+        options[i].setString(optionLabels[i]);
+        options[i].setCharacterSize(20);
+        options[i].setFillColor(TEXT_COLOR);
+
+        sf::FloatRect bounds = options[i].getLocalBounds();
+        float posX = i * spacing + (spacing - bounds.width) / 2.f - bounds.left;
+        float posY = (headerHeight - bounds.height) / 2.f - bounds.top;
+        options[i].setPosition(posX, posY);
+    }
+
+    // Variable para controlar el ciclo del submenú
+    bool inFaqMenu = true;
+
+    // Variable para guardar qué contenido de FAQ se mostrará ( -1 = ninguno, 0..3 = secciones )
+    int currentFaqIndex = -1;
+
+    // Creamos un objeto Faq para obtener el contenido desde faq.cpp
+    Faq faq;
+    std::string faqContents[4] = {
+        faq.getRulesContent(),       // Índice 0: Reglas del evento
+        faq.getHowToBuyContent(),      // Índice 1: Cómo comprar entradas
+        faq.getDiscountsContent(),     // Índice 2: Aplicacion de descuentos
+        faq.getViewSalesContent()      // Índice 3: Cómo ver las ventas realizadas
+    };
+
+    // Texto que mostrará el contenido de la FAQ
+    sf::Text faqContent("", font, 20);
+    faqContent.setFillColor(TEXT_COLOR);
+    faqContent.setPosition(100.f, 200.f);
+
+    while (inFaqMenu && win.isOpen())
+    {
+        sf::Event ev;
+        while (win.pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed)
+            {
+                win.close();
+                return; // Cierra el programa
+            }
+
+            // Resaltar opciones al pasar el mouse
+            if (ev.type == sf::Event::MouseMoved)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseMove.x),
+                    static_cast<float>(ev.mouseMove.y));
+                for (int i = 0; i < NUM_OPTIONS; i++)
+                {
+                    if (options[i].getGlobalBounds().contains(mousePos))
+                        options[i].setFillColor(HIGHLIGHT_COLOR);
+                    else
+                        options[i].setFillColor(TEXT_COLOR);
+                }
+            }
+
+            // Clic con el mouse
+            if (ev.type == sf::Event::MouseButtonPressed &&
+                ev.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x),
+                    static_cast<float>(ev.mouseButton.y));
+                for (int i = 0; i < NUM_OPTIONS; i++)
+                {
+                    if (options[i].getGlobalBounds().contains(mousePos))
+                    {
+                        // Si se selecciona "Volver al menú" (índice 4)
+                        if (i == 4)
+                        {
+                            inFaqMenu = false;
+                        }
+                        else
+                        {
+                            // Se muestra el contenido correspondiente de la FAQ
+                            currentFaqIndex = i;  // 0..3
+                        }
+                    }
+                }
+            }
+        }
+
+        // Actualizar el texto de la FAQ según la sección seleccionada
+        if (currentFaqIndex >= 0 && currentFaqIndex < 4)
+        {
+            faqContent.setString(faqContents[currentFaqIndex]);
+        }
+        else
+        {
+            faqContent.setString("");
+        }
+
+        // Renderizado
+        win.clear(BG_COLOR);
+        // Dibujar el header
+        win.draw(header);
+        // Dibujar las opciones en la parte superior
+        for (int i = 0; i < NUM_OPTIONS; i++)
+            win.draw(options[i]);
+        // Dibujar el título
+        win.draw(titleText);
+        // Dibujar el contenido de la FAQ
+        win.draw(faqContent);
+
+        win.display();
+    }
+
+    // Al salir, restablecemos el título de la ventana
+    win.setTitle("Sistema de Ventas de Entradas");
 }

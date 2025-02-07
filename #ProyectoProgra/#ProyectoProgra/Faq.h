@@ -1,18 +1,21 @@
 #ifndef FAQ_H
 #define FAQ_H
 
-class Faq
-{
+#include <string>
+
+class Faq {
 public:
-    
-    void showFaq();
+    // Devuelve el contenido de la sección "Reglas del evento"
+    std::string getRulesContent();
 
-private:
+    // Devuelve el contenido de la sección "Cómo comprar entradas"
+    std::string getHowToBuyContent();
 
-    void showRules();
-    void showHowToBuy();
-    void showDiscounts();
-    void showViewSales();
+    // Devuelve el contenido de la sección "Aplicación de descuentos"
+    std::string getDiscountsContent();
+
+    // Devuelve el contenido de la sección "Cómo ver las ventas realizadas"
+    std::string getViewSalesContent();
 };
 
-#endif
+#endif // FAQ_H

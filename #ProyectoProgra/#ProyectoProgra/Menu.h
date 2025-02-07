@@ -58,6 +58,7 @@ public:
     void showDiscountCodesSFML(Discount& discount);
     void deleteDiscountSFML(Discount& discount);
     void sellTicketSFML();
+    void showFaqMenuSFML();
 };
 
 #endif
