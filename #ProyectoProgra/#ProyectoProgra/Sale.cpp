@@ -250,6 +250,7 @@ bool Sale::checkEventsAvailability(Event& event) {
     }
     return true;
 }
+
 UserData* Sale::getOrRegisterUser(User& user, sf::RenderWindow& win) {
     while (true) {
         // Cargar la fuente
@@ -428,7 +429,6 @@ UserData* Sale::getOrRegisterUser(User& user, sf::RenderWindow& win) {
     }
 }
 
-
 int Sale::chooseSegment(Segment& segment, int selectedEvent, sf::RenderWindow& window)
 {
     // Acceder a la lista de segmentos y cantidad
@@ -511,13 +511,7 @@ int Sale::chooseSegment(Segment& segment, int selectedEvent, sf::RenderWindow& w
     return chosen;
 }
 
-
-
-
-Seating& Sale::ensureSeating(int selectedEvent, int selectedSegment,
-    List<List<Segment>>& segments,
-    std::map<std::tuple<int, int>, Seating>& seatingMap,
-    sf::RenderWindow& win)   // Agregado el parámetro 'win'
+Seating& Sale::ensureSeating(int selectedEvent, int selectedSegment, List<List<Segment>>& segments, std::map<std::tuple<int, int>, Seating>& seatingMap, sf::RenderWindow& win)   // Agregado el parámetro 'win'
 {
     std::tuple<int, int> seatingKey = std::make_tuple(selectedEvent, selectedSegment);
 
@@ -542,20 +536,16 @@ Seating& Sale::ensureSeating(int selectedEvent, int selectedSegment,
     }
     if (availableSeats > 0) {
         seating.displaySeats(win);  // Dibuja la sala en el buffer de la ventana
-        win.display();              // Actualiza la ventana para mostrar el dibujo
-
-        // (Opcional) Espera unos segundos o hasta que se pulse una tecla
-        sf::sleep(sf::seconds(2));
+        
     }
     else {
-        // Este mensaje se repite con lo que haces en `sell()`
+     
         cout << " " << endl;
     }
 
 
     return seating;
 }
-
 
 int Sale::buyTickets(UserData* currentUser, Event& event, int selectedEvent, sf::RenderWindow& window) {
     // Obtener el ID del usuario y los boletos ya comprados
@@ -932,7 +922,6 @@ float Sale::applyDiscountIfWanted(Discount& discount, sf::RenderWindow& window) 
     return 0.0f;
 }
 
-
 string Sale::askCardNumber() {
     string cardNumber;
 
@@ -952,17 +941,8 @@ string Sale::askCardNumber() {
     return cardNumber;
 }
 
-
-#include "Sale.h"
-#include <sstream>
-#include <iomanip>
-#include <SFML/System.hpp>
-
-void Sale::printInvoice(UserData* currentUser, Event& event, int selectedEvent,
-    List<List<Segment>>& segments, int selectedSegment,
-    int numTickets, float ticketPrice, float discountPercentage, float totalCost,
-    int* purchasedRows, char* purchasedCols, int numPurchasedSeats, std::string cardNumber,
-    sf::RenderWindow& window)
+void Sale::printInvoice(UserData* currentUser, Event& event, int selectedEvent,List<List<Segment>>& segments, int selectedSegment,
+    int numTickets, float ticketPrice, float discountPercentage, float totalCost, int* purchasedRows, char* purchasedCols, int numPurchasedSeats, std::string cardNumber,sf::RenderWindow& window)
 {
     // 1. Preparar la fuente
     sf::Font font;
@@ -1625,7 +1605,7 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
     }
 
     // 10. Actualizar la cantidad de boletos en el evento.
-    if (event.getEvents().getAt(selectedEvent).cancelTickets(idNumber, toCancel)) {
+    if (event.getEvents().getAt(selectedEvent).cancelTickets(idNumber, toCancel, window)) {
         sf::Text successMsg("Se han cancelado los boletos correctamente.", font, 24);
         successMsg.setFillColor(TEXT_COLOR_EV);
         successMsg.setPosition(50.f, 50.f);
@@ -1667,6 +1647,7 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         }
     }
 }
+
 int Sale::chooseEvent(Event& event, sf::RenderWindow& window) {
     // Verificar si hay eventos disponibles
     if (event.getEventCount() == 0) {
@@ -1739,7 +1720,8 @@ int Sale::chooseEvent(Event& event, sf::RenderWindow& window) {
     }
     return selected;
 }
-std::pair<int, int> getSoldSeatSelection(sf::RenderWindow& window, Seating& seating)
+
+pair<int, int> getSoldSeatSelection(sf::RenderWindow& window, Seating& seating)
 {
     // Parámetros de dibujo (deben coincidir con los usados en Seating::displaySeats)
     const float seatWidth = 30.f;
@@ -1814,12 +1796,8 @@ std::pair<int, int> getSoldSeatSelection(sf::RenderWindow& window, Seating& seat
     }
     return { -1, -1 };
 }
-void cancelSelectedSeats(sf::RenderWindow& window,
-    Seating* pSeating,
-    int toCancel,
-    int* purchasedRows,
-    char* purchasedCols,
-    sf::Font& font)
+
+void cancelSelectedSeats(sf::RenderWindow& window, Seating* pSeating,int toCancel, int* purchasedRows, char* purchasedCols, sf::Font& font)
 {
     // Se asume que "pSeating" apunta a la sala del segmento seleccionado.
     for (int i = 0; i < toCancel; i++)

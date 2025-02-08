@@ -87,12 +87,58 @@ int Event::getTicketsPurchasedByUser(const string& userId) {
     return 0;
 }
 
-bool Event::cancelTickets(const string& userId, int numTickets) {
-    (void)userId;
-    (void)numTickets;
-    // Aquí tu lógica si la requieres...
-    return true;
+bool Event:: cancelTickets(string userId, int numTickets, sf::RenderWindow& window) {
+    // Obtener los nodos iniciales de las listas
+    List<int>::NodePtr purchaseNode = purchasesByUser.getHead();
+    List<string>::NodePtr userNode = userIds.getHead();
+
+    // Buscar el usuario en la lista
+    while (userNode) {
+        if (userNode->data == userId) {
+            // Si se encontró al usuario, verificar si tiene suficientes boletos para cancelar
+            if (purchaseNode->data >= numTickets) {
+                purchaseNode->data -= numTickets;
+                return true;
+            }
+            else {
+                // Mostrar mensaje de error en la ventana SFML
+                sf::Font font;
+                if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
+                    std::cout << "Error: El usuario no tiene suficientes boletos para cancelar.\n";
+                }
+                else {
+                    sf::Text errorMsg("Error: El usuario no tiene suficientes boletos para cancelar.", font, 24);
+                    errorMsg.setFillColor(TEXT_COLOR_EV);
+                    errorMsg.setPosition(50.f, 50.f);
+                    window.clear(BG_COLOR_EV);
+                    window.draw(errorMsg);
+                    window.display();
+                    sf::sleep(sf::seconds(2));
+                }
+                return false;
+            }
+        }
+        userNode = userNode->next;
+        purchaseNode = purchaseNode->next;
+    }
+
+    // Si no se encontró al usuario, mostrar mensaje de error en la ventana SFML
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
+        std::cout << "Error: Usuario no encontrado.\n";
+    }
+    else {
+        sf::Text errorMsg("Error: Usuario no encontrado.", font, 24);
+        errorMsg.setFillColor(TEXT_COLOR_EV);
+        errorMsg.setPosition(50.f, 50.f);
+        window.clear(BG_COLOR_EV);
+        window.draw(errorMsg);
+        window.display();
+        sf::sleep(sf::seconds(2));
+    }
+    return false;
 }
+
 
 // ---------------------------------------------------------------------------
 //  Asigna 'numEvents' al objeto 'evt' (ejemplo muy sencillo)

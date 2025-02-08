@@ -38,7 +38,7 @@ public:
     void initializeTracking(int maxUsers);
     bool purchaseTickets(const std::string& userId, int numTickets);
     int getTicketsPurchasedByUser(const std::string& userId);
-    bool cancelTickets(const std::string& userId, int numTickets);
+    bool cancelTickets(string userId, int numTickets, sf::RenderWindow& window);
 
     // Manejo de creación y asignación de eventos
     void assignEvents(Event& event, int numEvents);
