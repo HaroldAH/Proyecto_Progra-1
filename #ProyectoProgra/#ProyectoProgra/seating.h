@@ -8,6 +8,7 @@
 #include "Event.h"
 #include "Segment.h"
 
+
 class Seating {
 private:
     float cost;
@@ -41,11 +42,13 @@ public:
     bool freeSeat(int row, int col);
 
     void initializeRoom();
-    void displaySeats();
+    void displaySeats(sf::RenderWindow& window);
     bool isRoomFull();
     bool isRoomComplete();
     void sellField(int row, int column);
-    void checkSales(Event& event, Segment& segment, map<tuple<int, int>, Seating>& seatingMap);
+    void checkSales(Event& event, Segment& segment, std::map<std::tuple<int, int>, Seating>& seatingMap, sf::RenderWindow& win);
+
+
     int validateChoice(int& choice, int& size);
 };
 

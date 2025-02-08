@@ -5,6 +5,9 @@
 #include <limits>
 #include <iostream>
 #include "List.h"
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+
 
 using namespace std;
 
@@ -46,7 +49,7 @@ public:
 
     void createUser(User& usersObj);
     bool isValidDate(string& date);
-    void createUser(User& usersObj, const string& idNumber);
+    void createUser(User& usersObj, const std::string& idNumber, sf::RenderWindow& win);
 
     UserData* searchUserById(string& idNumber);
 

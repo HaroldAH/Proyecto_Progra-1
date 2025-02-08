@@ -31,18 +31,20 @@ private:
     Discount discount;
     Seating seating;
     map<std::tuple<int, int>, Seating> seatingMap;
-    Seating& operator=(const Seating& other); 
-	sf::RenderWindow *window;
-    
-
+    Seating& operator=(const Seating& other);
+    sf::RenderWindow* window;
 
 public:
+    // Modificar para que reciba la ventana de SFML
     void showMenu();
     int validateChoice(int& choice, int& size);
     void configureDiscounts(Discount& discount);
     void configureEvent(Event& event, Segment& segment);
     void listEventAndSegments(Event& event, Segment& segment);
-    void sellTicket(User& user);
+
+    // Modificar para pasar la ventana a la función sellTicket
+    void sellTicket(User& user, sf::RenderWindow& window);
+
     void saveEvent(Event& event, Segment& segment);
     void showAbout();
     void manageCodes(Discount& discount);
@@ -52,7 +54,7 @@ public:
     int readIntInRange(int min, int max, const string& prompt = "Opción inválida. Reingrese: ");
     void cancelPurchase();
     void updateReport();
-    void executeOption(int option);
+    void executeOption(int option, sf::RenderWindow& window); // Pasar la ventana
     void generateCodesSFML(Discount& discount);
     void showDiscountCodes(Discount& discount);
     void showDiscountMenuSFML(Discount& discount);

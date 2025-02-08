@@ -1,13 +1,13 @@
 ================== REPORTE DE EVENTOS ==================
-Actualizado el: 05/02/2025 22:41:37
+Actualizado el: 07/02/2025 19:59:16
 
 ================== REPORTE DEL EVENTO #1 ==================
-Nombre del Evento: 1
+Nombre del Evento: wos
 
 -------------------- SEGMENTO #1 --------------------
-  Nombre del Segmento   : 1
-  Precio por asiento    : $1.00
-  Filas                 : 1    |    Asientos por fila: 1
+  Nombre del Segmento   : pobres
+  Precio por asiento    : $300.00
+  Filas                 : 40    |    Asientos por fila: 30
   No se ha configurado la sala para este segmento.
 
 ================== RESUMEN DEL EVENTO ==================

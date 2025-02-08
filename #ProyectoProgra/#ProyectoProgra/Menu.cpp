@@ -4,6 +4,8 @@
 #include <iostream>
 
 
+
+
 // Alias para evitar conflictos entre las clases de SFML y las del proyecto
 namespace sfml = sf;
 
@@ -125,7 +127,7 @@ void Menu::showMenu() {
                 );
                 for (int i = 0; i < numOptions; i++) {
                     if (headerText[i].getGlobalBounds().contains(mousePos)) {
-                        executeOption(i + 1);
+                        executeOption(i + 1, *window);  // Pasamos la ventana aquí
                         break;
                     }
                 }
@@ -143,7 +145,7 @@ void Menu::showMenu() {
 }
 
 // Ejecuta la acción correspondiente a cada opción
-void Menu::executeOption(int option) {
+void Menu::executeOption(int option, sfml::RenderWindow& window) {
     switch (option) {
     case 1:
         // Configurar evento
@@ -155,11 +157,11 @@ void Menu::executeOption(int option) {
         break;
     case 3:
         // Vender entrada
-        sellTicket(user);
+        sellTicket(user, window);  // Pasamos la ventana aquí
         break;
     case 4:
         // Consultar ventas
-        seating.checkSales(event, segment, seatingMap);
+        seating.checkSales(event, segment, seatingMap,window);
         break;
     case 5:
         // Cancelar compra
@@ -176,7 +178,7 @@ void Menu::executeOption(int option) {
     case 8:
         // Salir
         std::cout << "Saliendo del programa. Gracias!" << std::endl;
-        window->close();
+        window.close();
         break;
     case 9:
         // Actualizar reporte
@@ -187,6 +189,7 @@ void Menu::executeOption(int option) {
         std::cout << "Opción inválida. Intente nuevamente.\n";
     }
 }
+
 
 // Menú SFML para configurar descuentos (extraído del primer código)
 void Menu::showDiscountMenuSFML(Discount& discount)
@@ -563,10 +566,13 @@ void Menu::listEventAndSegments(Event& event, Segment& segment)
 }
 
 
-void Menu::sellTicket(User& user)
+void Menu::sellTicket(User& user, sfml::RenderWindow& window)
 {
-    sale.sell(user, event, segment, seatingMap, discount);
+    // Pasa la ventana de SFML a la clase Sale sin desreferenciarla
+    sale.sell(user, event, segment, seatingMap, discount, window);
 }
+
+
 
 // CORREGIDO: ahora se pasa la ventana al método de Event
 void Menu::saveEvent(Event& event, Segment& segment)
