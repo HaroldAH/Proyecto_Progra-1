@@ -682,22 +682,20 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         return;
     }
 
-    // Verificar si hay eventos
+    // Si no hay eventos, mostrar pantalla simple con botón Volver
     if (event.getEventCount() == 0)
     {
-        // === Pantalla simple: "No hay eventos" + Botón Volver ===
         const float headerHeight = 100.f;
         sf::RectangleShape header(sf::Vector2f(1200.f, headerHeight));
         header.setFillColor(HEADER_COLOR);
         header.setPosition(0.f, 0.f);
 
         sf::Text headerTitle("Modificar/Eliminar Segmentos", font, 25);
-        headerTitle.setFillColor(TEXT_COLOR);
+        // Centramos el título horizontalmente dentro del header
         {
             sf::FloatRect bounds = headerTitle.getLocalBounds();
-            float posX = 20.f;
-            float posY = (headerHeight - bounds.height) / 2.f - bounds.top;
-            headerTitle.setPosition(posX, posY);
+            headerTitle.setOrigin(bounds.left + bounds.width / 2.0f, bounds.top + bounds.height / 2.0f);
+            headerTitle.setPosition(1200.f / 2.0f, headerHeight / 2.0f);
         }
 
         sf::Text infoText("No hay eventos disponibles.\n\nHaz clic en 'Volver' para continuar...",
@@ -712,10 +710,10 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         sf::Text backText("Volver", font, 20);
         backText.setFillColor(sf::Color::White);
         {
-            sf::FloatRect btnB = backText.getLocalBounds();
-            float btnX = backButton.getPosition().x + (backButton.getSize().x - btnB.width) / 2.f - btnB.left;
-            float btnY = backButton.getPosition().y + (backButton.getSize().y - btnB.height) / 2.f - btnB.top;
-            backText.setPosition(btnX, btnY);
+            sf::FloatRect b = backText.getLocalBounds();
+            backText.setOrigin(b.left + b.width / 2.0f, b.top + b.height / 2.0f);
+            backText.setPosition(backButton.getPosition().x + backButton.getSize().x / 2.0f,
+                backButton.getPosition().y + backButton.getSize().y / 2.0f);
         }
 
         bool noEventsScreen = true;
@@ -732,7 +730,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
                 {
                     sf::Vector2f mousePos(ev.mouseButton.x, ev.mouseButton.y);
                     if (backButton.getGlobalBounds().contains(mousePos)) {
-                        noEventsScreen = false; // Salimos
+                        noEventsScreen = false;
                     }
                 }
             }
@@ -750,28 +748,22 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     // =========================================================
     // STATE 1: Mostrar listado de eventos para elegir uno
     // =========================================================
-
-    // Cabecera
     float headerHeight = 100.f;
     sf::RectangleShape header(sf::Vector2f(1200.f, headerHeight));
     header.setFillColor(HEADER_COLOR);
     header.setPosition(0.f, 0.f);
 
     sf::Text headerTitle("Seleccionar Evento a Modificar/Eliminar Segmentos", font, 25);
-    headerTitle.setFillColor(TEXT_COLOR);
     {
         sf::FloatRect b = headerTitle.getLocalBounds();
-        float posX = 20.f;
-        float posY = (headerHeight - b.height) / 2.f - b.top;
-        headerTitle.setPosition(posX, posY);
+        headerTitle.setOrigin(b.left + b.width / 2.0f, b.top + b.height / 2.0f);
+        headerTitle.setPosition(1200.f / 2.0f, headerHeight / 2.0f);
     }
 
-    // Mensaje
     sf::Text chooseEventText("Elige un evento:", font, 20);
     chooseEventText.setFillColor(sf::Color::Black);
     chooseEventText.setPosition(50.f, headerHeight + 50.f);
 
-    // Botón "Volver"
     sf::RectangleShape backButton(sf::Vector2f(120.f, 40.f));
     backButton.setFillColor(sf::Color(150, 150, 150));
     backButton.setPosition(50.f, 600.f);
@@ -779,25 +771,21 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     sf::Text backButtonText("Volver", font, 20);
     backButtonText.setFillColor(sf::Color::White);
     {
-        sf::FloatRect btnB = backButtonText.getLocalBounds();
-        float btnX = backButton.getPosition().x + (backButton.getSize().x - btnB.width) / 2.f - btnB.left;
-        float btnY = backButton.getPosition().y + (backButton.getSize().y - btnB.height) / 2.f - btnB.top;
-        backButtonText.setPosition(btnX, btnY);
+        sf::FloatRect b = backButtonText.getLocalBounds();
+        backButtonText.setOrigin(b.left + b.width / 2.0f, b.top + b.height / 2.0f);
+        backButtonText.setPosition(backButton.getPosition().x + backButton.getSize().x / 2.0f,
+            backButton.getPosition().y + backButton.getSize().y / 2.0f);
     }
 
-    // Armamos la lista de eventos en pantalla con mayor separación
     std::vector<sf::Text> eventTexts;
     {
-        float eventStartY = headerHeight + 100.f;  // Se inicia más abajo
+        float eventStartY = headerHeight + 100.f;
         for (int i = 1; i <= event.getEventCount(); i++)
         {
             std::string evtName = std::to_string(i) + ". " + event.getEvents().getAt(i).getName();
             sf::Text t(evtName, font, 20);
             t.setFillColor(sf::Color::Black);
-            // Incremento de 50 píxeles por evento para evitar solapamientos
-            float x = 50.f;
-            float y = eventStartY + (i - 1) * 50.f;
-            t.setPosition(x, y);
+            t.setPosition(50.f, eventStartY + (i - 1) * 50.f);
             eventTexts.push_back(t);
         }
     }
@@ -813,11 +801,9 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
                 win.close();
                 return;
             }
-            // Resaltar opciones al pasar el mouse
             if (ev.type == sf::Event::MouseMoved)
             {
-                sf::Vector2f mousePos(static_cast<float>(ev.mouseMove.x),
-                    static_cast<float>(ev.mouseMove.y));
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseMove.x), static_cast<float>(ev.mouseMove.y));
                 for (auto& t : eventTexts)
                 {
                     if (t.getGlobalBounds().contains(mousePos))
@@ -826,13 +812,11 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
                         t.setFillColor(sf::Color::Black);
                 }
             }
-            // Clic con el mouse
             if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
             {
-                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x),
-                    static_cast<float>(ev.mouseButton.y));
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
                 if (backButton.getGlobalBounds().contains(mousePos)) {
-                    return; // Regresamos sin hacer nada
+                    return;
                 }
                 for (int i = 0; i < (int)eventTexts.size(); i++)
                 {
@@ -849,17 +833,14 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         win.draw(header);
         win.draw(headerTitle);
         win.draw(chooseEventText);
-        for (auto& t : eventTexts) {
+        for (auto& t : eventTexts)
             win.draw(t);
-        }
         win.draw(backButton);
         win.draw(backButtonText);
         win.display();
     }
-
-    if (chosenEventIndex < 1) {
+    if (chosenEventIndex < 1)
         return;
-    }
 
     // =========================================================
     // Revisión de segmentos del evento elegido
@@ -883,9 +864,9 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         yesText.setFillColor(sf::Color::White);
         {
             sf::FloatRect b = yesText.getLocalBounds();
-            float x = yesButton.getPosition().x + (yesButton.getSize().x - b.width) / 2.f - b.left;
-            float y = yesButton.getPosition().y + (yesButton.getSize().y - b.height) / 2.f - b.top;
-            yesText.setPosition(x, y);
+            yesText.setOrigin(b.left + b.width / 2.0f, b.top + b.height / 2.0f);
+            yesText.setPosition(yesButton.getPosition().x + yesButton.getSize().x / 2.0f,
+                yesButton.getPosition().y + yesButton.getSize().y / 2.0f);
         }
 
         sf::RectangleShape noButton(sf::Vector2f(60.f, 40.f));
@@ -896,9 +877,9 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         noText.setFillColor(sf::Color::White);
         {
             sf::FloatRect b = noText.getLocalBounds();
-            float x = noButton.getPosition().x + (noButton.getSize().x - b.width) / 2.f - b.left;
-            float y = noButton.getPosition().y + (noButton.getSize().y - b.height) / 2.f - b.top;
-            noText.setPosition(x, y);
+            noText.setOrigin(b.left + b.width / 2.0f, b.top + b.height / 2.0f);
+            noText.setPosition(noButton.getPosition().x + noButton.getSize().x / 2.0f,
+                noButton.getPosition().y + noButton.getSize().y / 2.0f);
         }
 
         bool waitingResponse = true;
@@ -956,7 +937,6 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
                 ", Precio:" + std::to_string(seg.getPrice()) + ")";
             sf::Text t(segStr, font, 20);
             t.setFillColor(sf::Color::Black);
-            // Incremento vertical de 50 píxeles
             t.setPosition(50.f, segmentStartY + (j - 1) * 50.f);
             segmentTexts.push_back(t);
         }
@@ -1005,9 +985,8 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         win.draw(header);
         win.draw(headerTitle);
         win.draw(chooseSegmentText);
-        for (auto& txt : segmentTexts) {
+        for (auto& txt : segmentTexts)
             win.draw(txt);
-        }
         win.draw(backButton);
         win.draw(backButtonText);
         win.display();
@@ -1019,38 +998,36 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     // =========================================================
     // STATE 3: Elegir acción (Actualizar / Eliminar)
     // =========================================================
-    // Se reubica esta sección para que aparezca más abajo y con mayor separación
-
     sf::Text actionPrompt("Seleccione la accion a realizar\nEvento: " + std::to_string(chosenEventIndex) +
         ", Segmento: " + std::to_string(chosenSegmentIndex),
         font, 20);
     actionPrompt.setFillColor(sf::Color::Black);
-    actionPrompt.setPosition(50.f, 420.f);  // Ubicado más abajo
+    actionPrompt.setPosition(50.f, 420.f);
 
     sf::RectangleShape updateButton(sf::Vector2f(150.f, 40.f));
     updateButton.setFillColor(sf::Color(0, 180, 0));
-    updateButton.setPosition(50.f, 480.f);  // Ubicado más abajo
+    updateButton.setPosition(50.f, 480.f);
 
     sf::Text updateText("Actualizar", font, 20);
     updateText.setFillColor(sf::Color::White);
     {
         sf::FloatRect b = updateText.getLocalBounds();
-        float x = updateButton.getPosition().x + (updateButton.getSize().x - b.width) / 2.f - b.left;
-        float y = updateButton.getPosition().y + (updateButton.getSize().y - b.height) / 2.f - b.top;
-        updateText.setPosition(x, y);
+        updateText.setOrigin(b.left + b.width / 2.0f, b.top + b.height / 2.0f);
+        updateText.setPosition(updateButton.getPosition().x + updateButton.getSize().x / 2.0f,
+            updateButton.getPosition().y + updateButton.getSize().y / 2.0f);
     }
 
     sf::RectangleShape deleteButton(sf::Vector2f(150.f, 40.f));
     deleteButton.setFillColor(sf::Color(180, 0, 0));
-    deleteButton.setPosition(250.f, 480.f);  // Ubicado a la derecha del botón Actualizar
+    deleteButton.setPosition(250.f, 480.f);
 
     sf::Text deleteText("Eliminar", font, 20);
     deleteText.setFillColor(sf::Color::White);
     {
         sf::FloatRect b = deleteText.getLocalBounds();
-        float x = deleteButton.getPosition().x + (deleteButton.getSize().x - b.width) / 2.f - b.left;
-        float y = deleteButton.getPosition().y + (deleteButton.getSize().y - b.height) / 2.f - b.top;
-        deleteText.setPosition(x, y);
+        deleteText.setOrigin(b.left + b.width / 2.0f, b.top + b.height / 2.0f);
+        deleteText.setPosition(deleteButton.getPosition().x + deleteButton.getSize().x / 2.0f,
+            deleteButton.getPosition().y + deleteButton.getSize().y / 2.0f);
     }
 
     bool pickingAction = true;
@@ -1106,15 +1083,15 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
             Seating& room = seatingMap[key];
             for (int i = 0; i < room.getNumberOfRows(); i++) {
                 for (int j = 0; j < room.getNumberOfColumns(); j++) {
-                    // Ajusta según tu implementación
-                    // if (room.getSeatPurchased()[i][j]) return true;
+                    if (room.getSeatPurchased()[i][j])  // Si algún asiento está vendido, retorna true.
+                        return true;
                 }
             }
         }
         return false;
         };
 
-    // Referencia al Segment
+    // Referencia al segmento seleccionado
     Segment& segRef = segmentsByEvent.getAt(chosenEventIndex).getAt(chosenSegmentIndex);
 
     // =============== ACTUALIZAR ===============
@@ -1122,7 +1099,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     {
         if (seatsSold())
         {
-            // Solo actualizar precio
+            // Solo se permite actualizar el precio
             float newPrice = 0.0f;
             bool inputDone = false;
             std::string priceStr;
@@ -1200,8 +1177,8 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
                 okText.setFillColor(sf::Color::Black);
                 okText.setPosition(50.f, 220.f);
 
-                bool doneOk = false;
-                while (!doneOk && win.isOpen())
+                bool waitOk = true;
+                while (waitOk && win.isOpen())
                 {
                     sf::Event e;
                     while (win.pollEvent(e))
@@ -1214,7 +1191,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
                         {
                             sf::Vector2f m(e.mouseButton.x, e.mouseButton.y);
                             if (backButton.getGlobalBounds().contains(m)) {
-                                doneOk = true;
+                                waitOk = false;
                             }
                         }
                     }
@@ -1231,7 +1208,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         }
         else
         {
-            // Se pueden actualizar filas, asientos, precio
+            // Permitir actualizar filas, asientos y precio
             bool doneEditing = false;
             std::string rowStr, seatsStr, priceStr;
             sf::Text rowPrompt("Nueva cantidad de filas:", font, 20);
@@ -1304,9 +1281,12 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
                         if (backButton.getGlobalBounds().contains(m)) {
                             return;
                         }
-                        if (rowBox.getGlobalBounds().contains(m))   activeField = 0;
-                        if (seatsBox.getGlobalBounds().contains(m)) activeField = 1;
-                        if (priceBox.getGlobalBounds().contains(m)) activeField = 2;
+                        if (rowBox.getGlobalBounds().contains(m))
+                            activeField = 0;
+                        if (seatsBox.getGlobalBounds().contains(m))
+                            activeField = 1;
+                        if (priceBox.getGlobalBounds().contains(m))
+                            activeField = 2;
                     }
                     if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Tab)
                     {
@@ -1533,6 +1513,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         }
     }
 }
+
 
 
 

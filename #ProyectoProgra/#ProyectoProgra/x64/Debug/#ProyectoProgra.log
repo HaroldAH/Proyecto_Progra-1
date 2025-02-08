@@ -1,22 +1,111 @@
-﻿  Sale.cpp
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,75): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,75): warning C4244:         with
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,75): warning C4244:         [
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,75): warning C4244:             T=float
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,75): warning C4244:         ]
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,57): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,57): warning C4244:         with
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,57): warning C4244:         [
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,57): warning C4244:             T=float
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,57): warning C4244:         ]
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,75): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,75): warning C4244:         with
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,75): warning C4244:         [
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,75): warning C4244:             T=float
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,75): warning C4244:         ]
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,57): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,57): warning C4244:         with
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,57): warning C4244:         [
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,57): warning C4244:             T=float
-C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,57): warning C4244:         ]
+﻿  Menu.cpp
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(609,61): warning C4244: 'argumento': conversión de 'T' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(609,61): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(609,61): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(609,61): warning C4244:             T=unsigned int
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(609,61): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(609,61): warning C4244:         and
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(609,61): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(609,61): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(609,61): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(731,75): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(731,75): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(731,75): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(731,75): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(731,75): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(731,57): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(731,57): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(731,57): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(731,57): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(731,57): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(897,75): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(897,75): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(897,75): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(897,75): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(897,75): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(897,57): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(897,57): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(897,57): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(897,57): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(897,57): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(958,60): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(958,60): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(958,60): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(958,60): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(958,60): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(958,44): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(958,44): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(958,44): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(958,44): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(958,44): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(969,64): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(969,64): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(969,64): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(969,64): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(969,64): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(969,46): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(969,46): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(969,46): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(969,46): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(969,46): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1046,64): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1046,64): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1046,64): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1046,64): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1046,64): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1046,46): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1046,46): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1046,46): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1046,46): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1046,46): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1192,74): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1192,74): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1192,74): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1192,74): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1192,74): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1192,57): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1192,57): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1192,57): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1192,57): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1192,57): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1280,70): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1280,70): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1280,70): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1280,70): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1280,70): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1280,53): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1280,53): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1280,53): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1280,53): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1280,53): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1326,93): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1326,93): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1326,93): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1326,93): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1326,93): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1326,75): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1326,75): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1326,75): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1326,75): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1326,75): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1457,70): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1457,70): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1457,70): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1457,70): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1457,70): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1457,53): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1457,53): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1457,53): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1457,53): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1457,53): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1498,70): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1498,70): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1498,70): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1498,70): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1498,70): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1498,53): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1498,53): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1498,53): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1498,53): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Menu.cpp(1498,53): warning C4244:         ]
   #ProyectoProgra.vcxproj -> C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\x64\Debug\ProyectoProgra.exe
