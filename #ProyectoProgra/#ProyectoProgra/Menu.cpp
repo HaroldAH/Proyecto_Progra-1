@@ -164,8 +164,8 @@ void Menu::executeOption(int option, sfml::RenderWindow& window) {
         seating.checkSales(event, segment, seatingMap,window);
         break;
     case 5:
-        // Cancelar compra
-        cancelPurchase();
+        
+        sale.cancelPurchase(user, event, segment, seatingMap, window);
         break;
     case 6:
         // Acerca de
@@ -1536,10 +1536,6 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
 
 
 
-void Menu::cancelPurchase()
-{
-    sale.cancelPurchase(user, event, segment, seatingMap);
-}
 
 void Menu::updateReport() {
     if (!window)

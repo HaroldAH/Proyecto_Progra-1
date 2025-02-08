@@ -7,6 +7,11 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
+static const sf::Color BG_COLOR_EV(200, 200, 200);
+static const sf::Color HEADER_COLOR_EV(160, 160, 160);
+static const sf::Color TEXT_COLOR_EV = sf::Color::Black;
+static const sf::Color HIGHLIGHT_COLOR_EV = sf::Color::Red;
+
 using namespace std;
 
 Seating::Seating() {
@@ -229,79 +234,214 @@ void Seating::sellField(int row, int column) {
 void Seating::checkSales(Event& event, Segment& segment,
     std::map<std::tuple<int, int>, Seating>& seatingMap, sf::RenderWindow& win)
 {
+    // Cargar la fuente
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
+        std::cerr << "Error al cargar la fuente." << std::endl;
+        return;
+    }
+
+    // 1. Verificar que haya eventos disponibles y mostrarlos en pantalla.
     if (event.getEventCount() == 0) {
-        cout << "No hay eventos disponibles.\n";
+        sf::Text noEvents("No hay eventos disponibles.", font, 24);
+        noEvents.setFillColor(TEXT_COLOR_EV);
+        noEvents.setPosition(50.f, 50.f);
+        win.clear(BG_COLOR_EV);
+        win.draw(noEvents);
+        win.display();
+        sf::sleep(sf::seconds(2));
         return;
     }
 
-    cout << "\nEventos disponibles:\n";
-    for (int i = 0; i < event.getEventCount(); i++) {
-        cout << i + 1 << ". " << event.getEvents().getAt(i + 1).getName() << "\n";
+    // Crear una lista gráfica de los eventos disponibles
+    std::vector<sf::Text> eventOptions;
+    for (int i = 1; i <= event.getEventCount(); i++) {
+        std::string eventName = event.getEvents().getAt(i).getName();
+        sf::Text opt(eventName, font, 24);
+        opt.setFillColor(TEXT_COLOR_EV);
+        opt.setPosition(50.f, 100.f + (i - 1) * 40.f);
+        eventOptions.push_back(opt);
     }
 
-    int selectedEvent = 0;
-    int size = event.getEventCount();
-    selectedEvent = validateChoice(selectedEvent, size);
+    // Mostrar la lista y esperar que el usuario seleccione un evento haciendo clic.
+    int selectedEvent = -1;
+    bool eventSelected = false;
+    while (win.isOpen() && !eventSelected) {
+        sf::Event ev;
+        while (win.pollEvent(ev)) {
+            if (ev.type == sf::Event::Closed) {
+                win.close();
+                return;
+            }
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left) {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                for (int i = 0; i < eventOptions.size(); i++) {
+                    if (eventOptions[i].getGlobalBounds().contains(mousePos)) {
+                        selectedEvent = i + 1;
+                        eventSelected = true;
+                        break;
+                    }
+                }
+            }
+        }
+        win.clear(BG_COLOR_EV);
+        sf::Text title("Eventos disponibles:", font, 28);
+        title.setFillColor(TEXT_COLOR_EV);
+        title.setPosition(50.f, 50.f);
+        win.draw(title);
+        for (auto& opt : eventOptions)
+            win.draw(opt);
+        win.display();
+    }
 
+    // 2. Mostrar la lista de segmentos disponibles para el evento seleccionado.
     List<List<Segment>>& segments = segment.getSegmentsByEvent();
-    if (segments.getHead() == nullptr) {
-        cin.get();
-        return;
-    }
-
     List<int>& segmentCounts = segment.getSegmentCount();
     if (segmentCounts.getHead() == nullptr) {
-        cout << "Error: No se pudo obtener el conteo de segmentos.\n";
-        cout << "\nPresione Enter para continuar...";
-        cin.get();
+        // Si no se pudo obtener el conteo, salimos.
+        sf::Text error("Error: No se pudo obtener el conteo de segmentos.", font, 24);
+        error.setFillColor(TEXT_COLOR_EV);
+        error.setPosition(50.f, 50.f);
+        win.clear(BG_COLOR_EV);
+        win.draw(error);
+        win.display();
+        sf::sleep(sf::seconds(2));
         return;
     }
-
     int numSegments = segmentCounts.getAt(selectedEvent);
     if (numSegments <= 0) {
-        cout << "No hay segmentos disponibles para este evento.\n";
-        cout << "\nPresione Enter para continuar...";
-        cin.get();
+        sf::Text noSegments("No hay segmentos disponibles para este evento.", font, 24);
+        noSegments.setFillColor(TEXT_COLOR_EV);
+        noSegments.setPosition(50.f, 50.f);
+        win.clear(BG_COLOR_EV);
+        win.draw(noSegments);
+        win.display();
+        sf::sleep(sf::seconds(2));
         return;
     }
 
-    cout << "\nSegmentos disponibles para el evento \""
-        << event.getEvents().getAt(selectedEvent).getName() << "\":\n";
-    for (int i = 0; i < numSegments; i++) {
-        cout << i + 1 << ". "
-            << segments.getAt(selectedEvent).getAt(i + 1).getName()
-            << " - Precio: "
-            << segments.getAt(selectedEvent).getAt(i + 1).getPrice() << "\n";
+    std::vector<sf::Text> segmentOptions;
+    for (int i = 1; i <= numSegments; i++) {
+        std::ostringstream oss;
+        oss << i << ". " << segments.getAt(selectedEvent).getAt(i).getName()
+            << " - Precio: $" << segments.getAt(selectedEvent).getAt(i).getPrice();
+        sf::Text opt(oss.str(), font, 24);
+        opt.setFillColor(TEXT_COLOR_EV);
+        opt.setPosition(50.f, 100.f + (i - 1) * 40.f);
+        segmentOptions.push_back(opt);
     }
-    int selectedSegment, option = 0;
-    cout << "\nSeleccione un segmento: ";
-    selectedSegment = validateChoice(option, numSegments);
 
-    auto seatingKey = make_tuple(selectedEvent, selectedSegment);
+    int selectedSegment = -1;
+    bool segmentSelected = false;
+    while (win.isOpen() && !segmentSelected) {
+        sf::Event ev;
+        while (win.pollEvent(ev)) {
+            if (ev.type == sf::Event::Closed) {
+                win.close();
+                return;
+            }
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left) {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                for (int i = 0; i < segmentOptions.size(); i++) {
+                    if (segmentOptions[i].getGlobalBounds().contains(mousePos)) {
+                        selectedSegment = i + 1;
+                        segmentSelected = true;
+                        break;
+                    }
+                }
+            }
+        }
+        win.clear(BG_COLOR_EV);
+        sf::Text segTitle("Segmentos para el evento \"" +
+            event.getEvents().getAt(selectedEvent).getName() + "\":", font, 28);
+        segTitle.setFillColor(TEXT_COLOR_EV);
+        segTitle.setPosition(50.f, 50.f);
+        win.draw(segTitle);
+        for (auto& opt : segmentOptions)
+            win.draw(opt);
+        win.display();
+    }
+
+    // 3. Verificar si existen asientos vendidos para el segmento seleccionado.
+    auto seatingKey = std::make_tuple(selectedEvent, selectedSegment);
     if (seatingMap.find(seatingKey) == seatingMap.end()) {
-        cout << "\nNo se han vendido asientos para este segmento.\n\n";
+        // Mostrar mensaje de que no se han vendido asientos y visualizar la sala vacía.
+        sf::Text noSales("No se han vendido asientos para este segmento.", font, 24);
+        noSales.setFillColor(TEXT_COLOR_EV);
+        noSales.setPosition(50.f, 50.f);
+        win.clear(BG_COLOR_EV);
+        win.draw(noSales);
+        win.display();
+        sf::sleep(sf::seconds(2));
+
         int rows = segments.getAt(selectedEvent).getAt(selectedSegment).getRows();
-        int columns = segments.getAt(selectedEvent).getAt(selectedSegment).getSeats();
+        int cols = segments.getAt(selectedEvent).getAt(selectedSegment).getSeats();
         float price = segments.getAt(selectedEvent).getAt(selectedSegment).getPrice();
         Seating tempSeating;
         tempSeating.setNumberOfRows(rows);
-        tempSeating.setNumberOfColumns(columns);
+        tempSeating.setNumberOfColumns(cols);
         tempSeating.setCost(price);
         tempSeating.initializeRoom();
-        cout << "\nVista de la sala vacia (sin ventas):\n";
+
+        sf::Text emptyTitle("Vista de la sala vacia (sin ventas):", font, 28);
+        emptyTitle.setFillColor(TEXT_COLOR_EV);
+        emptyTitle.setPosition(50.f, 50.f);
+        win.clear(BG_COLOR_EV);
+        win.draw(emptyTitle);
         tempSeating.displaySeats(win);
+        // Mostrar un mensaje para continuar
+        sf::Text continueText("Presione ENTER para continuar...", font, 24);
+        continueText.setFillColor(TEXT_COLOR_EV);
+        continueText.setPosition(50.f, win.getSize().y - 50.f);
+        win.draw(continueText);
+        win.display();
+
+        bool cont = false;
+        while (win.isOpen() && !cont) {
+            sf::Event ev;
+            while (win.pollEvent(ev)) {
+                if (ev.type == sf::Event::KeyPressed && ev.key.code == sf::Keyboard::Enter) {
+                    cont = true;
+                    break;
+                }
+                if (ev.type == sf::Event::Closed) {
+                    win.close();
+                    return;
+                }
+            }
+        }
     }
     else {
         Seating& seating = seatingMap[seatingKey];
-        cout << "\nRepresentacion grafica del segmento \""
-            << segments.getAt(selectedEvent).getAt(selectedSegment).getName()
-            << "\":\n";
+        sf::Text seatingTitle("Representacion grafica del segmento \"" +
+            segments.getAt(selectedEvent).getAt(selectedSegment).getName() + "\":", font, 28);
+        seatingTitle.setFillColor(TEXT_COLOR_EV);
+        seatingTitle.setPosition(50.f, 50.f);
+        win.clear(BG_COLOR_EV);
+        win.draw(seatingTitle);
         seating.displaySeats(win);
-    }
+        // Mostrar un mensaje para continuar
+        sf::Text continueText("Presione ENTER para continuar...", font, 24);
+        continueText.setFillColor(TEXT_COLOR_EV);
+        continueText.setPosition(50.f, win.getSize().y - 50.f);
+        win.draw(continueText);
+        win.display();
 
-    cout << "Presione Enter para continuar...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
+        bool cont = false;
+        while (win.isOpen() && !cont) {
+            sf::Event ev;
+            while (win.pollEvent(ev)) {
+                if (ev.type == sf::Event::KeyPressed && ev.key.code == sf::Keyboard::Enter) {
+                    cont = true;
+                    break;
+                }
+                if (ev.type == sf::Event::Closed) {
+                    win.close();
+                    return;
+                }
+            }
+        }
+    }
 }
 
 int Seating::validateChoice(int& choice, int& size) {

@@ -1,2 +1,22 @@
 ﻿  Sale.cpp
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,75): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,75): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,75): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,75): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,75): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,57): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,57): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,57): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,57): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(823,57): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,75): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,75): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,75): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,75): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,75): warning C4244:         ]
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,57): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,57): warning C4244:         with
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,57): warning C4244:         [
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,57): warning C4244:             T=float
+C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\Sale.cpp(902,57): warning C4244:         ]
   #ProyectoProgra.vcxproj -> C:\Users\harol\Desktop\Proyecto_Progra-1\#ProyectoProgra\x64\Debug\ProyectoProgra.exe
