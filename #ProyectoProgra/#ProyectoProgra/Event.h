@@ -14,9 +14,9 @@ private:
     std::string description;
     int eventCount;             // Cantidad total de eventos creados
     List<Event> events;         // Lista que almacena los eventos
-    List<int> purchasesByUser;  // (Stub) para control de compras
-    List<std::string> userIds;  // (Stub) para control de usuarios
-    
+    List<int> purchasesByUser;  // Para el control de compras (cantidad de boletos por usuario)
+    List<std::string> userIds;  // Para el control de usuarios (ID de cada usuario)
+
 public:
     Event();
     ~Event();
@@ -36,9 +36,15 @@ public:
 
     // Métodos para inicializar / seguimiento / venta
     void initializeTracking(int maxUsers);
-    bool purchaseTickets(const std::string& userId, int numTickets);
+
+    // Función de compra de boletos: ahora recibe la ventana SFML para mostrar mensajes de error
+    bool purchaseTickets(const std::string& userId, int numTickets, sf::RenderWindow& window);
+
+    // Retorna la cantidad de boletos que ha comprado el usuario para este evento
     int getTicketsPurchasedByUser(const std::string& userId);
-    bool cancelTickets(string userId, int numTickets, sf::RenderWindow& window);
+
+    // Función de cancelación de boletos: utiliza la ventana SFML para mostrar mensajes
+    bool cancelTickets(std::string userId, int numTickets, sf::RenderWindow& window);
 
     // Manejo de creación y asignación de eventos
     void assignEvents(Event& event, int numEvents);
@@ -46,7 +52,8 @@ public:
     std::string getValidStringInput(const std::string& prompt);
     bool isValidDate(std::string& date);
 
-    // * Método que recibe una ventana SFML para capturar datos del nuevo evento *
+    // Método que recibe una ventana SFML para capturar los datos (nombre, fecha, descripción)
+    // del nuevo evento y lo guarda (además de llamar a segment.saveSegments(...))
     void saveEvent(sf::RenderWindow& win, Segment& segment);
 };
 

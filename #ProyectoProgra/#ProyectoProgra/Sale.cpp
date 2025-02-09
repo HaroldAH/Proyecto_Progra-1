@@ -550,29 +550,27 @@ Seating& Sale::ensureSeating(int selectedEvent, int selectedSegment, List<List<S
 }
 
 int Sale::buyTickets(UserData* currentUser, Event& event, int selectedEvent, Seating& seating, sf::RenderWindow& window) {
-    // 1. Contar los asientos disponibles en el segmento
+    // Obtén el evento específico de la lista de eventos.
+    // Se asume que 'selectedEvent' es 1-indexado.
+    Event& currentEvent = event.getEvents().getAt(selectedEvent);
+
+    // 1. Contar los asientos disponibles en el segmento.
     int availableSeats = 0;
-    for (int i = 0; i < seating.getNumberOfRows(); i++) {
-        for (int j = 0; j < seating.getNumberOfColumns(); j++) {
+    for (int i = 0; i < seating.getNumberOfRows(); i++)
+        for (int j = 0; j < seating.getNumberOfColumns(); j++)
             if (!seating.getSeatPurchased()[i][j])
                 availableSeats++;
-        }
-    }
 
-    // 2. Obtener los boletos ya comprados por el usuario para este evento
+    // 2. Obtener la cantidad de boletos ya comprados PARA ESTE evento.
     std::string userId = currentUser->getIdNumber();
-    int currentTickets = event.getTicketsPurchasedByUser(userId);
+    int currentTickets = currentEvent.getTicketsPurchasedByUser(userId);
 
-    // 3. Calcular el máximo de boletos adicionales permitidos para este evento
+    // 3. Calcular el máximo de boletos adicionales permitidos para este evento.
     int maxTickets = 5 - currentTickets;
-
-    // Si ya alcanzó o superó el límite de 5 boletos para este evento, mostramos mensaje y salimos
     if (maxTickets <= 0) {
         sf::Font font;
-        if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
-            std::cerr << "Error al cargar la fuente." << std::endl;
+        if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
             return 0;
-        }
         sf::Text msg("Ya has comprado el numero maximo de 5 boletos para este evento.", font, 24);
         msg.setFillColor(TEXT_COLOR_EV);
         msg.setPosition(50.f, 50.f);
@@ -583,17 +581,16 @@ int Sale::buyTickets(UserData* currentUser, Event& event, int selectedEvent, Sea
         return 0;
     }
 
-    // 4. Ajustar el máximo permitido según la disponibilidad de asientos en el segmento
+    // 4. Ajustar el máximo permitido según la disponibilidad de asientos en el segmento.
     if (availableSeats < maxTickets)
         maxTickets = availableSeats;
 
-    // 5. Preparar la interfaz para solicitar la cantidad de boletos
+    // 5. Preparar la interfaz para solicitar la cantidad de boletos.
     sf::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
         std::cerr << "Error al cargar la fuente." << std::endl;
         return 0;
     }
-
     sf::Text prompt("¿Cuantos boletos desea comprar? (max " + std::to_string(maxTickets) + "):", font, 24);
     prompt.setFillColor(TEXT_COLOR_EV);
     prompt.setPosition(50.f, 50.f);
@@ -627,8 +624,8 @@ int Sale::buyTickets(UserData* currentUser, Event& event, int selectedEvent, Sea
                     try {
                         int numTickets = std::stoi(ticketStr);
                         if (numTickets >= 1 && numTickets <= maxTickets) {
-                            // Registrar la compra en el evento (actualiza el mapa ticketsByUser)
-                            if (event.purchaseTickets(userId, numTickets)) {
+                            // Registrar la compra en el evento específico
+                            if (currentEvent.purchaseTickets(userId, numTickets, window)) {
                                 return numTickets;
                             }
                             else {
@@ -671,7 +668,6 @@ int Sale::buyTickets(UserData* currentUser, Event& event, int selectedEvent, Sea
         window.draw(errorText);
         window.display();
     }
-
     return 0;
 }
 
@@ -1238,15 +1234,14 @@ int Sale::readIntInRange(int minValue, int maxValue, const std::string& errorPro
         cout << errorPrompt;
     }
 }
-
 void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
     std::map<std::tuple<int, int>, Seating>& seatingMap, sf::RenderWindow& window)
 {
     // 1. Verificar si hay eventos disponibles.
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
+        return;
     if (event.getEventCount() == 0) {
-        sf::Font font;
-        if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
-            return;
         sf::Text msg("No hay eventos disponibles para cancelar compras.", font, 24);
         msg.setFillColor(TEXT_COLOR_EV);
         msg.setPosition(50.f, 50.f);
@@ -1258,9 +1253,6 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
     }
 
     // 2. Solicitar cédula mediante SFML.
-    sf::Font font;
-    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
-        return;
     sf::Text prompt("Ingrese su numero de cedula (9 digitos):", font, 24);
     prompt.setFillColor(TEXT_COLOR_EV);
     prompt.setPosition(50.f, 50.f);
@@ -1348,7 +1340,7 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         return;
     }
 
-    // 4. Mostrar eventos disponibles.
+    // 4. Mostrar eventos disponibles y seleccionar uno.
     std::vector<sf::Text> eventOptions;
     for (int i = 1; i <= event.getEventCount(); i++) {
         std::string evName = event.getEvents().getAt(i).getName();
@@ -1364,7 +1356,8 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         while (window.pollEvent(ev)) {
             if (ev.type == sf::Event::Closed) { window.close(); return; }
             if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left) {
-                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x),
+                    static_cast<float>(ev.mouseButton.y));
                 for (int i = 0; i < eventOptions.size(); i++) {
                     if (eventOptions[i].getGlobalBounds().contains(mousePos)) {
                         selectedEvent = i + 1;
@@ -1384,8 +1377,11 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         window.display();
     }
 
-    // 5. Verificar boletos comprados en el evento seleccionado.
-    int purchasedTickets = event.getEvents().getAt(selectedEvent).getTicketsPurchasedByUser(idNumber);
+    // 5. Obtener el evento específico (por lo tanto, sus datos de boletos son independientes).
+    Event& currentEvent = event.getEvents().getAt(selectedEvent);
+
+    // 6. Verificar boletos comprados en el evento seleccionado.
+    int purchasedTickets = currentEvent.getTicketsPurchasedByUser(idNumber);
     if (purchasedTickets == 0) {
         sf::Text msg("El usuario no tiene boletos comprados para este evento.", font, 24);
         msg.setFillColor(TEXT_COLOR_EV);
@@ -1404,7 +1400,7 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
     window.display();
     sf::sleep(sf::seconds(2));
 
-    // 6. Solicitar el número de boletos a cancelar.
+    // 7. Solicitar el número de boletos a cancelar.
     sf::Text cancelPrompt("Cuantos boletos desea cancelar?", font, 24);
     cancelPrompt.setFillColor(TEXT_COLOR_EV);
     cancelPrompt.setPosition(50.f, 50.f);
@@ -1425,9 +1421,10 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
             if (ev.type == sf::Event::TextEntered) {
                 if (ev.text.unicode < 128) {
                     char c = static_cast<char>(ev.text.unicode);
-                    if (isdigit(c))
+                    if (isdigit(c)) {
                         cancelStr.push_back(c);
-                    cancelInputText.setString(cancelStr);
+                        cancelInputText.setString(cancelStr);
+                    }
                 }
             }
             if (ev.type == sf::Event::KeyPressed) {
@@ -1482,7 +1479,7 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
     }
     int toCancel = stoi(cancelStr);
 
-    // 7. Mostrar segmentos disponibles para el evento seleccionado.
+    // 8. Mostrar segmentos disponibles para el evento seleccionado.
     std::vector<sf::Text> segmentOptions;
     int numSegs = segment.getSegmentCount().getAt(selectedEvent);
     for (int i = 1; i <= numSegs; i++) {
@@ -1517,89 +1514,13 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         segTitle.setFillColor(TEXT_COLOR_EV);
         segTitle.setPosition(50.f, 50.f);
         window.draw(segTitle);
-        for (auto& opt : segmentOptions)
+        for (const auto& opt : segmentOptions)
             window.draw(opt);
         window.display();
     }
 
-    // 8. Verificar si en el segmento seleccionado hay asientos vendidos.
-    auto seatingKey = std::make_tuple(selectedEvent, chosenSegment);
-    if (seatingMap.find(seatingKey) == seatingMap.end()) {
-        sf::Text noSales("No se han vendido asientos para este segmento.", font, 24);
-        noSales.setFillColor(TEXT_COLOR_EV);
-        noSales.setPosition(50.f, 50.f);
-        window.clear(BG_COLOR_EV);
-        window.draw(noSales);
-        window.display();
-        sf::sleep(sf::seconds(2));
-
-        // Mostrar vista de la sala vacía.
-        int rows = segment.getSegmentsByEvent().getAt(selectedEvent).getAt(chosenSegment).getRows();
-        int cols = segment.getSegmentsByEvent().getAt(selectedEvent).getAt(chosenSegment).getSeats();
-        float price = segment.getSegmentsByEvent().getAt(selectedEvent).getAt(chosenSegment).getPrice();
-        Seating tempSeating;
-        tempSeating.setNumberOfRows(rows);
-        tempSeating.setNumberOfColumns(cols);
-        tempSeating.setCost(price);
-        tempSeating.initializeRoom();
-        sf::Text emptyTitle("Vista de la sala vacia (sin ventas):", font, 28);
-        emptyTitle.setFillColor(TEXT_COLOR_EV);
-        emptyTitle.setPosition(50.f, 50.f);
-        window.clear(BG_COLOR_EV);
-        window.draw(emptyTitle);
-        tempSeating.displaySeats(window);
-        sf::Text continueText("Presione ENTER para continuar...", font, 24);
-        continueText.setFillColor(TEXT_COLOR_EV);
-        continueText.setPosition(50.f, window.getSize().y - 50.f);
-        window.draw(continueText);
-        window.display();
-        bool cont = false;
-        while (window.isOpen() && !cont) {
-            sf::Event ev;
-            while (window.pollEvent(ev)) {
-                if (ev.type == sf::Event::KeyPressed && ev.key.code == sf::Keyboard::Enter) {
-                    cont = true;
-                    break;
-                }
-                if (ev.type == sf::Event::Closed) {
-                    window.close();
-                    return;
-                }
-            }
-        }
-    }
-    else {
-        // Usamos un puntero para referirnos a la sala del segmento seleccionado.
-        Seating* pSeating = &seatingMap[seatingKey];
-        sf::Text segDisplay(" ", font, 28);
-        segDisplay.setFillColor(TEXT_COLOR_EV);
-        segDisplay.setPosition(50.f, 50.f);
-        window.clear(BG_COLOR_EV);
-        window.draw(segDisplay);
-        pSeating->displaySeats(window);
-        sf::Text continueText("Presione ENTER para continuar...", font, 24);
-        continueText.setFillColor(TEXT_COLOR_EV);
-        continueText.setPosition(50.f, window.getSize().y - 50.f);
-        window.draw(continueText);
-        window.display();
-        bool cont = false;
-        while (window.isOpen() && !cont) {
-            sf::Event ev;
-            while (window.pollEvent(ev)) {
-                if (ev.type == sf::Event::KeyPressed && ev.key.code == sf::Keyboard::Enter) {
-                    cont = true;
-                    break;
-                }
-                if (ev.type == sf::Event::Closed) {
-                    window.close();
-                    return;
-                }
-            }
-        }
-    }
-
-    // 9. Para cada boleto a cancelar, solicitar que el usuario ingrese la columna y la fila.
-    // Usaremos el puntero pSeating para operar sobre la sala.
+    // 9. Obtener la sala correspondiente al segmento seleccionado.
+    std::tuple<int, int> seatingKey = std::make_tuple(selectedEvent, chosenSegment);
     Seating* pSeating = nullptr;
     if (seatingMap.find(seatingKey) != seatingMap.end())
         pSeating = &seatingMap[seatingKey];
@@ -1613,6 +1534,8 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         sf::sleep(sf::seconds(2));
         return;
     }
+
+    // 10. Solicitar la liberación de asientos (por cada boleto a cancelar).
     for (int i = 0; i < toCancel; i++) {
         // Solicitar columna:
         sf::Text colPrompt("Ingrese la columna a liberar (A-" +
@@ -1657,6 +1580,8 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
             window.draw(colPrompt);
             window.draw(colInputBox);
             window.draw(colInputText);
+            // Dibujar la matriz debajo de los inputs.
+            pSeating->displaySeats(window);
             window.display();
         }
         char colChar = colStr.empty() ? ' ' : colStr[0];
@@ -1703,11 +1628,13 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
             window.draw(rowPrompt);
             window.draw(rowInputBox);
             window.draw(rowInputText);
+            // Dibujar la matriz debajo de los inputs.
+            pSeating->displaySeats(window);
             window.display();
         }
         int rowVal = rowStr.empty() ? 0 : stoi(rowStr);
-        int colIndex = colChar - 'A';
-        // Intentar liberar el asiento usando el puntero pSeating.
+        int colIndex = colStr.empty() ? -1 : (colStr[0] - 'A');
+        // Intentar liberar el asiento usando pSeating.
         if (pSeating->freeSeat(rowVal - 1, colIndex)) {
             sf::Text freedMsg("Asiento liberado correctamente.", font, 24);
             freedMsg.setFillColor(TEXT_COLOR_EV);
@@ -1729,8 +1656,8 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         }
     }
 
-    // 10. Actualizar la cantidad de boletos en el evento.
-    if (event.getEvents().getAt(selectedEvent).cancelTickets(idNumber, toCancel, window)) {
+    // 10. Actualizar la cantidad de boletos en el evento (usando el evento específico).
+    if (currentEvent.cancelTickets(idNumber, toCancel, window)) {
         sf::Text successMsg("Se han cancelado los boletos correctamente.", font, 24);
         successMsg.setFillColor(TEXT_COLOR_EV);
         successMsg.setPosition(50.f, 50.f);
@@ -1772,6 +1699,7 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         }
     }
 }
+
 
 int Sale::chooseEvent(Event& event, sf::RenderWindow& window) {
     // Verificar si hay eventos disponibles
