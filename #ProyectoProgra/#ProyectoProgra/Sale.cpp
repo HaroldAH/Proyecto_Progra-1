@@ -82,7 +82,6 @@ std::pair<int, int> getSeatSelection(sf::RenderWindow& window, Seating& seating)
     return { -1, -1 };
 }
 
-
 void Sale::sell(User& user, Event& event, Segment& segment,
     std::map<std::tuple<int, int>, Seating>& seatingMap, Discount& discount,
     sf::RenderWindow& window)
@@ -671,7 +670,6 @@ int Sale::buyTickets(UserData* currentUser, Event& event, int selectedEvent, Sea
     return 0;
 }
 
-
 float Sale::applyDiscountIfWanted(Discount& discount, sf::RenderWindow& window) {
     sf::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
@@ -1042,8 +1040,6 @@ std::string Sale::askCardNumber(sf::RenderWindow& window) {
     return cardNumber;
 }
 
-
-
 void Sale::printInvoice(UserData* currentUser, Event& event, int selectedEvent,
     List<List<Segment>>& segments, int selectedSegment,
     int numTickets, float ticketPrice, float discountPercentage, float totalCost,
@@ -1214,7 +1210,73 @@ void Sale::printInvoice(UserData* currentUser, Event& event, int selectedEvent,
     window.display();
 }
 
+std::pair<int, int> getSoldSeatSelection(sf::RenderWindow& window, Seating& seating)
+{
+    // Parámetros de dibujo: deben coincidir con los usados en Seating::displaySeats y en getSeatSelection
+    const float seatWidth = 30.f;
+    const float seatHeight = 30.f;
+    const float spacing = 10.f;
+    const float marginX = 50.f;
+    const float marginY = 150.f; // Cambiado de 100.f a 150.f
 
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
+    {
+        return { -1, -1 };
+    }
+
+    while (window.isOpen())
+    {
+        sf::Event ev;
+        while (window.pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed)
+            {
+                window.close();
+                return { -1, -1 };
+            }
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+            {
+                float x = static_cast<float>(ev.mouseButton.x);
+                float y = static_cast<float>(ev.mouseButton.y);
+
+                if (x < marginX || y < marginY)
+                    continue;
+
+                int col = static_cast<int>((x - marginX) / (seatWidth + spacing));
+                int row = static_cast<int>((y - marginY) / (seatHeight + spacing));
+
+                float seatX = marginX + col * (seatWidth + spacing);
+                float seatY = marginY + row * (seatHeight + spacing);
+                if (x >= seatX && x <= seatX + seatWidth &&
+                    y >= seatY && y <= seatY + seatHeight)
+                {
+                    if (row < 0 || row >= seating.getNumberOfRows() || col < 0 || col >= seating.getNumberOfColumns())
+                        continue;
+
+                    // Aquí se espera que el asiento esté ocupado para poder cancelarlo
+                    if (!seating.getSeatPurchased()[row][col])
+                    {
+                        sf::Text errorMsg("Asiento no vendido, elija otro.", font, 24);
+                        errorMsg.setFillColor(sf::Color::Red);
+                        errorMsg.setPosition(50.f, marginY + seating.getNumberOfRows() * (seatHeight + spacing) + 20.f);
+                        window.clear(BG_COLOR_EV);
+                        seating.displaySeats(window);
+                        window.draw(errorMsg);
+                        window.display();
+                        sf::sleep(sf::seconds(2));
+                        continue;
+                    }
+                    return { row, col };
+                }
+            }
+        }
+        window.clear(BG_COLOR_EV);
+        seating.displaySeats(window);
+        window.display();
+    }
+    return { -1, -1 };
+}
 
 int Sale::readIntInRange(int minValue, int maxValue, const std::string& errorPrompt)
 {
@@ -1234,6 +1296,7 @@ int Sale::readIntInRange(int minValue, int maxValue, const std::string& errorPro
         cout << errorPrompt;
     }
 }
+
 void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
     std::map<std::tuple<int, int>, Seating>& seatingMap, sf::RenderWindow& window)
 {
@@ -1344,7 +1407,7 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
     std::vector<sf::Text> eventOptions;
     for (int i = 1; i <= event.getEventCount(); i++) {
         std::string evName = event.getEvents().getAt(i).getName();
-        sf::Text opt(to_string(i) + ". " + evName, font, 24);
+        sf::Text opt(std::to_string(i) + ". " + evName, font, 24);
         opt.setFillColor(TEXT_COLOR_EV);
         opt.setPosition(50.f, 100.f + (i - 1) * 40.f);
         eventOptions.push_back(opt);
@@ -1377,7 +1440,7 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         window.display();
     }
 
-    // 5. Obtener el evento específico (por lo tanto, sus datos de boletos son independientes).
+    // 5. Obtener el evento específico.
     Event& currentEvent = event.getEvents().getAt(selectedEvent);
 
     // 6. Verificar boletos comprados en el evento seleccionado.
@@ -1392,7 +1455,7 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         sf::sleep(sf::seconds(2));
         return;
     }
-    sf::Text ticketInfo("Usted tiene " + to_string(purchasedTickets) + " boletos para este evento.", font, 24);
+    sf::Text ticketInfo("Usted tiene " + std::to_string(purchasedTickets) + " boletos para este evento.", font, 24);
     ticketInfo.setFillColor(TEXT_COLOR_EV);
     ticketInfo.setPosition(50.f, 50.f);
     window.clear(BG_COLOR_EV);
@@ -1436,11 +1499,11 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
                 }
                 if (ev.key.code == sf::Keyboard::Enter) {
                     try {
-                        int num = stoi(cancelStr);
+                        int num = std::stoi(cancelStr);
                         if (num >= 1 && num <= purchasedTickets)
                             cancelDone = true;
                         else {
-                            sf::Text err("Ingrese un numero entre 1 y " + to_string(purchasedTickets), font, 24);
+                            sf::Text err("Ingrese un numero entre 1 y " + std::to_string(purchasedTickets), font, 24);
                             err.setFillColor(sf::Color::Red);
                             err.setPosition(50.f, 180.f);
                             window.clear(BG_COLOR_EV);
@@ -1477,7 +1540,7 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         window.draw(cancelInputText);
         window.display();
     }
-    int toCancel = stoi(cancelStr);
+    int toCancel = std::stoi(cancelStr);
 
     // 8. Mostrar segmentos disponibles para el evento seleccionado.
     std::vector<sf::Text> segmentOptions;
@@ -1535,108 +1598,25 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         return;
     }
 
-    // 10. Solicitar la liberación de asientos (por cada boleto a cancelar).
+    // 10. Solicitar la liberación de asientos de forma interactiva (haciendo clic sobre cada asiento vendido).
     for (int i = 0; i < toCancel; i++) {
-        // Solicitar columna:
-        sf::Text colPrompt("Ingrese la columna a liberar (A-" +
-            std::string(1, 'A' + pSeating->getNumberOfColumns() - 1) + "):", font, 24);
-        colPrompt.setFillColor(TEXT_COLOR_EV);
-        colPrompt.setPosition(50.f, 50.f);
-        sf::RectangleShape colInputBox(sf::Vector2f(100.f, 40.f));
-        colInputBox.setFillColor(sf::Color::White);
-        colInputBox.setOutlineColor(sf::Color::Black);
-        colInputBox.setOutlineThickness(1.f);
-        colInputBox.setPosition(50.f, 120.f);
-        sf::Text colInputText("", font, 24);
-        colInputText.setFillColor(TEXT_COLOR_EV);
-        colInputText.setPosition(55.f, 125.f);
-        std::string colStr;
-        bool colDone = false;
-        while (!colDone && window.isOpen()) {
-            sf::Event ev;
-            while (window.pollEvent(ev)) {
-                if (ev.type == sf::Event::Closed) { window.close(); return; }
-                if (ev.type == sf::Event::TextEntered) {
-                    if (ev.text.unicode < 128) {
-                        char c = static_cast<char>(ev.text.unicode);
-                        if (isalpha(c)) {
-                            colStr.push_back(toupper(c));
-                            colInputText.setString(colStr);
-                        }
-                    }
-                }
-                if (ev.type == sf::Event::KeyPressed) {
-                    if (ev.key.code == sf::Keyboard::Enter)
-                        colDone = true;
-                    else if (ev.key.code == sf::Keyboard::Backspace) {
-                        if (!colStr.empty()) {
-                            colStr.pop_back();
-                            colInputText.setString(colStr);
-                        }
-                    }
-                }
-            }
-            window.clear(BG_COLOR_EV);
-            window.draw(colPrompt);
-            window.draw(colInputBox);
-            window.draw(colInputText);
-            // Dibujar la matriz debajo de los inputs.
-            pSeating->displaySeats(window);
-            window.display();
-        }
-        char colChar = colStr.empty() ? ' ' : colStr[0];
+        window.clear(BG_COLOR_EV);
+        pSeating->displaySeats(window);
+        sf::Text seatPrompt("Seleccione el asiento vendido a cancelar (boleto " + std::to_string(i + 1) + ")", font, 24);
+        seatPrompt.setFillColor(TEXT_COLOR_EV);
+        seatPrompt.setPosition(50.f, 20.f);
+        window.draw(seatPrompt);
+        window.display();
 
-        // Solicitar fila:
-        sf::Text rowPrompt("Ingrese la fila a liberar (1-" + to_string(pSeating->getNumberOfRows()) + "):", font, 24);
-        rowPrompt.setFillColor(TEXT_COLOR_EV);
-        rowPrompt.setPosition(50.f, 50.f);
-        sf::RectangleShape rowInputBox(sf::Vector2f(100.f, 40.f));
-        rowInputBox.setFillColor(sf::Color::White);
-        rowInputBox.setOutlineColor(sf::Color::Black);
-        rowInputBox.setOutlineThickness(1.f);
-        rowInputBox.setPosition(50.f, 120.f);
-        sf::Text rowInputText("", font, 24);
-        rowInputText.setFillColor(TEXT_COLOR_EV);
-        rowInputText.setPosition(55.f, 125.f);
-        std::string rowStr;
-        bool rowDone = false;
-        while (!rowDone && window.isOpen()) {
-            sf::Event ev;
-            while (window.pollEvent(ev)) {
-                if (ev.type == sf::Event::Closed) { window.close(); return; }
-                if (ev.type == sf::Event::TextEntered) {
-                    if (ev.text.unicode < 128) {
-                        char c = static_cast<char>(ev.text.unicode);
-                        if (isdigit(c)) {
-                            rowStr.push_back(c);
-                            rowInputText.setString(rowStr);
-                        }
-                    }
-                }
-                if (ev.type == sf::Event::KeyPressed) {
-                    if (ev.key.code == sf::Keyboard::Enter)
-                        rowDone = true;
-                    else if (ev.key.code == sf::Keyboard::Backspace) {
-                        if (!rowStr.empty()) {
-                            rowStr.pop_back();
-                            rowInputText.setString(rowStr);
-                        }
-                    }
-                }
-            }
-            window.clear(BG_COLOR_EV);
-            window.draw(rowPrompt);
-            window.draw(rowInputBox);
-            window.draw(rowInputText);
-            // Dibujar la matriz debajo de los inputs.
-            pSeating->displaySeats(window);
-            window.display();
+        // Usar la función getSoldSeatSelection para que el usuario haga clic sobre un asiento vendido.
+        std::pair<int, int> seat = getSoldSeatSelection(window, *pSeating);
+        if (seat.first == -1 || seat.second == -1) {
+            // Si se cierra la ventana o la selección es inválida, abortamos la cancelación.
+            return;
         }
-        int rowVal = rowStr.empty() ? 0 : stoi(rowStr);
-        int colIndex = colStr.empty() ? -1 : (colStr[0] - 'A');
-        // Intentar liberar el asiento usando pSeating.
-        if (pSeating->freeSeat(rowVal - 1, colIndex)) {
-            sf::Text freedMsg("Asiento liberado correctamente.", font, 24);
+        // Intentar liberar el asiento seleccionado.
+        if (pSeating->freeSeat(seat.first, seat.second)) {
+            sf::Text freedMsg("Asiento liberado correctamente para boleto " + std::to_string(i + 1), font, 24);
             freedMsg.setFillColor(TEXT_COLOR_EV);
             freedMsg.setPosition(50.f, 50.f);
             window.clear(BG_COLOR_EV);
@@ -1645,7 +1625,7 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
             sf::sleep(sf::seconds(1));
         }
         else {
-            sf::Text errMsg("Ese asiento no estaba comprado. Intente otro.", font, 24);
+            sf::Text errMsg("Ese asiento no estaba vendido. Intente otro.", font, 24);
             errMsg.setFillColor(sf::Color::Red);
             errMsg.setPosition(50.f, 50.f);
             window.clear(BG_COLOR_EV);
@@ -1656,7 +1636,7 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         }
     }
 
-    // 10. Actualizar la cantidad de boletos en el evento (usando el evento específico).
+    // 11. Actualizar la cantidad de boletos en el evento (usando el evento específico).
     if (currentEvent.cancelTickets(idNumber, toCancel, window)) {
         sf::Text successMsg("Se han cancelado los boletos correctamente.", font, 24);
         successMsg.setFillColor(TEXT_COLOR_EV);
@@ -1676,7 +1656,7 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         sf::sleep(sf::seconds(2));
     }
 
-    // 11. Mostrar mensaje final y esperar que el usuario presione ENTER para volver al menú.
+    // 12. Mostrar mensaje final y esperar que el usuario presione ENTER para volver al menú.
     sf::Text finalMsg("Presione ENTER para continuar...", font, 24);
     finalMsg.setFillColor(TEXT_COLOR_EV);
     finalMsg.setPosition(50.f, window.getSize().y - 50.f);
@@ -1699,7 +1679,6 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         }
     }
 }
-
 
 int Sale::chooseEvent(Event& event, sf::RenderWindow& window) {
     // Verificar si hay eventos disponibles
@@ -1772,82 +1751,6 @@ int Sale::chooseEvent(Event& event, sf::RenderWindow& window) {
         window.display();
     }
     return selected;
-}
-
-pair<int, int> getSoldSeatSelection(sf::RenderWindow& window, Seating& seating)
-{
-    // Parámetros de dibujo (deben coincidir con los usados en Seating::displaySeats)
-    const float seatWidth = 30.f;
-    const float seatHeight = 30.f;
-    const float spacing = 10.f;
-    const float marginX = 50.f;
-    const float marginY = 100.f;
-
-    sf::Font font;
-    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
-    {
-        // Si no se pudo cargar la fuente, se retorna una selección inválida.
-        return { -1, -1 };
-    }
-
-    // Bucle para esperar la selección
-    while (window.isOpen())
-    {
-        sf::Event ev;
-        while (window.pollEvent(ev))
-        {
-            if (ev.type == sf::Event::Closed)
-            {
-                window.close();
-                return { -1, -1 };
-            }
-            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
-            {
-                float x = static_cast<float>(ev.mouseButton.x);
-                float y = static_cast<float>(ev.mouseButton.y);
-
-                // Verificar que el clic esté dentro de la región de la sala
-                if (x < marginX || y < marginY)
-                    continue;
-
-                // Calcular la columna y la fila a partir de las coordenadas
-                int col = static_cast<int>((x - marginX) / (seatWidth + spacing));
-                int row = static_cast<int>((y - marginY) / (seatHeight + spacing));
-
-                // Calcular las coordenadas exactas del recuadro del asiento seleccionado
-                float seatX = marginX + col * (seatWidth + spacing);
-                float seatY = marginY + row * (seatHeight + spacing);
-                if (x >= seatX && x <= seatX + seatWidth &&
-                    y >= seatY && y <= seatY + seatHeight)
-                {
-                    // Verificar que los índices sean válidos
-                    if (row < 0 || row >= seating.getNumberOfRows() || col < 0 || col >= seating.getNumberOfColumns())
-                        continue;
-
-                    // Para cancelar, el asiento debe estar ocupado
-                    if (!seating.getSeatPurchased()[row][col])
-                    {
-                        sf::Text errorMsg("Asiento no vendido, elija otro.", font, 24);
-                        errorMsg.setFillColor(sf::Color::Red);
-                        errorMsg.setPosition(50.f, marginY + seating.getNumberOfRows() * (seatHeight + spacing) + 20.f);
-                        window.clear(BG_COLOR_EV);
-                        seating.displaySeats(window); // Redibuja la sala
-                        window.draw(errorMsg);
-                        window.display();
-                        sf::sleep(sf::seconds(2));
-                        continue;
-                    }
-                    // Asiento válido seleccionado; devolver fila y columna (0-indexado)
-                    return { row, col };
-                }
-            }
-        }
-        // Redibujar la sala mientras se espera la entrada
-        window.clear(BG_COLOR_EV);
-        seating.displaySeats(window);
-        window.display();
-    }
-    return { -1, -1 };
 }
 
 void cancelSelectedSeats(sf::RenderWindow& window, Seating* pSeating, int toCancel, int* purchasedRows, char* purchasedCols, sf::Font& font)
