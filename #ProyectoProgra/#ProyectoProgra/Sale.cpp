@@ -181,7 +181,7 @@ void Sale::sell(User& user, Event& event, Segment& segment,
     Seating& seating = *seatingPtr;
 
     // 7. Solicitar el número de boletos mediante una función gráfica (implementada en SFML).
-    int numTickets = buyTickets(currentUser, event, selectedEvent, window);
+    int numTickets = buyTickets(currentUser, event, selectedEvent, seating, window);
     if (numTickets <= 0)
         return;
 
@@ -547,66 +547,72 @@ Seating& Sale::ensureSeating(int selectedEvent, int selectedSegment, List<List<S
     return seating;
 }
 
-int Sale::buyTickets(UserData* currentUser, Event& event, int selectedEvent, sf::RenderWindow& window) {
-    // Obtener el ID del usuario y los boletos ya comprados
-   
-    string userId = currentUser->getIdNumber();
-    int currentTickets = event.getEvents().getAt(selectedEvent).getTicketsPurchasedByUser(userId);
-
-    // Si ya se alcanzó el máximo, mostrar mensaje y retornar 0
-    if (currentTickets >= 5) {
-        sf::Font font;
-        if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
-            cerr << "Error al cargar la fuente." << endl;
-            return 0;
+int Sale::buyTickets(UserData* currentUser, Event& event, int selectedEvent, Seating& seating, sf::RenderWindow& window) {
+    // 1. Contar los asientos disponibles en el segmento
+    int availableSeats = 0;
+    for (int i = 0; i < seating.getNumberOfRows(); i++) {
+        for (int j = 0; j < seating.getNumberOfColumns(); j++) {
+            if (!seating.getSeatPurchased()[i][j])
+                availableSeats++;
         }
-        sf::Text message("Ya has comprado el numero maximo de 5 boletos para este evento.", font, 24);
-        message.setFillColor(TEXT_COLOR_EV);
-        message.setPosition(50.f, 50.f);
-
-        window.clear(BG_COLOR_EV);
-        window.draw(message);
-        window.display();
-        sf::sleep(sf::seconds(5));
-     
-        return 0;
     }
 
+    // 2. Obtener los boletos ya comprados por el usuario para este evento
+    std::string userId = currentUser->getIdNumber();
+    int currentTickets = event.getTicketsPurchasedByUser(userId);
+
+    // 3. Calcular el máximo de boletos adicionales permitidos para este evento
     int maxTickets = 5 - currentTickets;
 
-    // Preparar la interfaz de entrada
-    sf::Font font;
-    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
-        cerr << "Error al cargar la fuente." << endl;
+    // Si ya alcanzó o superó el límite de 5 boletos para este evento, mostramos mensaje y salimos
+    if (maxTickets <= 0) {
+        sf::Font font;
+        if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
+            std::cerr << "Error al cargar la fuente." << std::endl;
+            return 0;
+        }
+        sf::Text msg("Ya has comprado el numero maximo de 5 boletos para este evento.", font, 24);
+        msg.setFillColor(TEXT_COLOR_EV);
+        msg.setPosition(50.f, 50.f);
+        window.clear(BG_COLOR_EV);
+        window.draw(msg);
+        window.display();
+        sf::sleep(sf::seconds(3));
         return 0;
     }
 
-    // Texto de consigna
-    sf::Text prompt("¿Cuantos boletos desea comprar? (max " + to_string(maxTickets) + "):", font, 24);
+    // 4. Ajustar el máximo permitido según la disponibilidad de asientos en el segmento
+    if (availableSeats < maxTickets)
+        maxTickets = availableSeats;
+
+    // 5. Preparar la interfaz para solicitar la cantidad de boletos
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
+        std::cerr << "Error al cargar la fuente." << std::endl;
+        return 0;
+    }
+
+    sf::Text prompt("¿Cuantos boletos desea comprar? (max " + std::to_string(maxTickets) + "):", font, 24);
     prompt.setFillColor(TEXT_COLOR_EV);
     prompt.setPosition(50.f, 50.f);
 
-    // Caja de entrada
     sf::RectangleShape inputBox(sf::Vector2f(200.f, 40.f));
     inputBox.setFillColor(sf::Color::White);
     inputBox.setOutlineColor(sf::Color::Black);
     inputBox.setOutlineThickness(1.f);
     inputBox.setPosition(50.f, 120.f);
 
-    // Texto para mostrar lo ingresado
     sf::Text inputText("", font, 24);
     inputText.setFillColor(TEXT_COLOR_EV);
     inputText.setPosition(55.f, 125.f);
 
-    // Texto para mensajes de error
     sf::Text errorText("", font, 20);
     errorText.setFillColor(sf::Color::Red);
     errorText.setPosition(50.f, 180.f);
 
-    string ticketStr;
+    std::string ticketStr;
     bool done = false;
 
-    // Bucle principal de entrada
     while (!done && window.isOpen()) {
         sf::Event ev;
         while (window.pollEvent(ev)) {
@@ -616,12 +622,11 @@ int Sale::buyTickets(UserData* currentUser, Event& event, int selectedEvent, sf:
             }
             if (ev.type == sf::Event::KeyPressed) {
                 if (ev.key.code == sf::Keyboard::Enter) {
-                    // Al presionar Enter se intenta convertir la cadena a entero
                     try {
-                        int numTickets = stoi(ticketStr);
+                        int numTickets = std::stoi(ticketStr);
                         if (numTickets >= 1 && numTickets <= maxTickets) {
-                            // Intentar registrar la compra
-                            if (event.getEvents().getAt(selectedEvent).purchaseTickets(userId, numTickets)) {
+                            // Registrar la compra en el evento (actualiza el mapa ticketsByUser)
+                            if (event.purchaseTickets(userId, numTickets)) {
                                 return numTickets;
                             }
                             else {
@@ -631,7 +636,7 @@ int Sale::buyTickets(UserData* currentUser, Event& event, int selectedEvent, sf:
                             }
                         }
                         else {
-                            errorText.setString("Ingrese un numero entre 1 y " + to_string(maxTickets));
+                            errorText.setString("Ingrese un numero entre 1 y " + std::to_string(maxTickets));
                         }
                     }
                     catch (...) {
@@ -649,7 +654,7 @@ int Sale::buyTickets(UserData* currentUser, Event& event, int selectedEvent, sf:
             if (ev.type == sf::Event::TextEntered) {
                 if (ev.text.unicode < 128) {
                     char c = static_cast<char>(ev.text.unicode);
-                    if (isdigit(c)) {
+                    if (std::isdigit(c)) {
                         ticketStr.push_back(c);
                         inputText.setString(ticketStr);
                         errorText.setString("");
@@ -665,8 +670,9 @@ int Sale::buyTickets(UserData* currentUser, Event& event, int selectedEvent, sf:
         window.display();
     }
 
-    return 0; // En caso de que se cierre la ventana o salga el bucle sin seleccionar
+    return 0;
 }
+
 
 float Sale::applyDiscountIfWanted(Discount& discount, sf::RenderWindow& window) {
     sf::Font font;

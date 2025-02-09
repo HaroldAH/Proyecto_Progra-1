@@ -17,6 +17,7 @@
 #include <SFML/Window.hpp>
 #include <cctype>    // Para isdigit
 
+
 using namespace std;
 
 // Definiciones de colores (ajusta según tus necesidades)
@@ -42,7 +43,7 @@ private:
         sf::RenderWindow& win);
 
 
-    int buyTickets(UserData* currentUser, Event& event, int selectedEvent, sf::RenderWindow& window);
+    int buyTickets(UserData* currentUser, Event& event, int selectedEvent, Seating& seating, sf::RenderWindow& window);
 
     float applyDiscountIfWanted(Discount& discount, sf::RenderWindow& window);
 

@@ -13,10 +13,7 @@ EventReport::EventReport() {
 EventReport::~EventReport() {
 }
 
-void EventReport::generateGlobalReport(Event& evento,
-    Segment& segmento,
-    map<tuple<int, int>, Seating>& seatingMap,
-    string& fileName)
+void EventReport::generateGlobalReport(Event& evento,Segment& segmento,map<tuple<int, int>, Seating>& seatingMap, string& fileName)
 {
     ofstream reporte(fileName, ios::out);
     if (!reporte.is_open()) {

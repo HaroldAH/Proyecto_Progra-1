@@ -230,7 +230,7 @@ void Seating::sellField(int row, int column) {
         << " vendido exitosamente.\n";
 }
 
-/// Función checkSales adaptada parcialmente (sigue mostrando texto por consola)
+// Función checkSales adaptada parcialmente (sigue mostrando texto por consola)
 void Seating::checkSales(Event& event, Segment& segment,
     std::map<std::tuple<int, int>, Seating>& seatingMap, sf::RenderWindow& win)
 {
@@ -274,8 +274,9 @@ void Seating::checkSales(Event& event, Segment& segment,
                 return;
             }
             if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left) {
-                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
-                for (int i = 0; i < eventOptions.size(); i++) {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x),
+                    static_cast<float>(ev.mouseButton.y));
+                for (int i = 0; i < static_cast<int>(eventOptions.size()); i++) {
                     if (eventOptions[i].getGlobalBounds().contains(mousePos)) {
                         selectedEvent = i + 1;
                         eventSelected = true;
@@ -298,7 +299,6 @@ void Seating::checkSales(Event& event, Segment& segment,
     List<List<Segment>>& segments = segment.getSegmentsByEvent();
     List<int>& segmentCounts = segment.getSegmentCount();
     if (segmentCounts.getHead() == nullptr) {
-        // Si no se pudo obtener el conteo, salimos.
         sf::Text error("Error: No se pudo obtener el conteo de segmentos.", font, 24);
         error.setFillColor(TEXT_COLOR_EV);
         error.setPosition(50.f, 50.f);
@@ -341,8 +341,9 @@ void Seating::checkSales(Event& event, Segment& segment,
                 return;
             }
             if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left) {
-                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
-                for (int i = 0; i < segmentOptions.size(); i++) {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x),
+                    static_cast<float>(ev.mouseButton.y));
+                for (int i = 0; i < static_cast<int>(segmentOptions.size()); i++) {
                     if (segmentOptions[i].getGlobalBounds().contains(mousePos)) {
                         selectedSegment = i + 1;
                         segmentSelected = true;
@@ -365,7 +366,6 @@ void Seating::checkSales(Event& event, Segment& segment,
     // 3. Verificar si existen asientos vendidos para el segmento seleccionado.
     auto seatingKey = std::make_tuple(selectedEvent, selectedSegment);
     if (seatingMap.find(seatingKey) == seatingMap.end()) {
-        // Mostrar mensaje de que no se han vendido asientos y visualizar la sala vacía.
         sf::Text noSales("No se han vendido asientos para este segmento.", font, 24);
         noSales.setFillColor(TEXT_COLOR_EV);
         noSales.setPosition(50.f, 50.f);
@@ -373,54 +373,18 @@ void Seating::checkSales(Event& event, Segment& segment,
         win.draw(noSales);
         win.display();
         sf::sleep(sf::seconds(2));
-
-        int rows = segments.getAt(selectedEvent).getAt(selectedSegment).getRows();
-        int cols = segments.getAt(selectedEvent).getAt(selectedSegment).getSeats();
-        float price = segments.getAt(selectedEvent).getAt(selectedSegment).getPrice();
-        Seating tempSeating;
-        tempSeating.setNumberOfRows(rows);
-        tempSeating.setNumberOfColumns(cols);
-        tempSeating.setCost(price);
-        tempSeating.initializeRoom();
-
-        sf::Text emptyTitle("Vista de la sala vacia (sin ventas):", font, 28);
-        emptyTitle.setFillColor(TEXT_COLOR_EV);
-        emptyTitle.setPosition(50.f, 50.f);
-        win.clear(BG_COLOR_EV);
-        win.draw(emptyTitle);
-        tempSeating.displaySeats(win);
-        // Mostrar un mensaje para continuar
-        sf::Text continueText("Presione ENTER para continuar...", font, 24);
-        continueText.setFillColor(TEXT_COLOR_EV);
-        continueText.setPosition(50.f, win.getSize().y - 50.f);
-        win.draw(continueText);
-        win.display();
-
-        bool cont = false;
-        while (win.isOpen() && !cont) {
-            sf::Event ev;
-            while (win.pollEvent(ev)) {
-                if (ev.type == sf::Event::KeyPressed && ev.key.code == sf::Keyboard::Enter) {
-                    cont = true;
-                    break;
-                }
-                if (ev.type == sf::Event::Closed) {
-                    win.close();
-                    return;
-                }
-            }
-        }
+        return;
     }
     else {
+        // **Modificación solicitada: ajustar la posición del título para separar el mensaje y la visualización de asientos.**
         Seating& seating = seatingMap[seatingKey];
         sf::Text seatingTitle("Representacion grafica del segmento \"" +
             segments.getAt(selectedEvent).getAt(selectedSegment).getName() + "\":", font, 28);
         seatingTitle.setFillColor(TEXT_COLOR_EV);
-        seatingTitle.setPosition(50.f, 50.f);
+        seatingTitle.setPosition(50.f, 10.f);  // Se cambia de y=50.f a y=10.f para dejar más espacio
         win.clear(BG_COLOR_EV);
         win.draw(seatingTitle);
         seating.displaySeats(win);
-        // Mostrar un mensaje para continuar
         sf::Text continueText("Presione ENTER para continuar...", font, 24);
         continueText.setFillColor(TEXT_COLOR_EV);
         continueText.setPosition(50.f, win.getSize().y - 50.f);

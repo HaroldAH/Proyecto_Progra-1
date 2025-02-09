@@ -16,7 +16,7 @@ private:
     List<Event> events;         // Lista que almacena los eventos
     List<int> purchasesByUser;  // (Stub) para control de compras
     List<std::string> userIds;  // (Stub) para control de usuarios
-
+    
 public:
     Event();
     ~Event();

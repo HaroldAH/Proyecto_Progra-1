@@ -1,19 +1,25 @@
 ================== REPORTE DE EVENTOS ==================
-Actualizado el: 07/02/2025 19:59:16
+Actualizado el: 08/02/2025 19:14:36
 
 ================== REPORTE DEL EVENTO #1 ==================
-Nombre del Evento: wos
+Nombre del Evento: sdf
 
 -------------------- SEGMENTO #1 --------------------
-  Nombre del Segmento   : pobres
-  Precio por asiento    : $300.00
-  Filas                 : 40    |    Asientos por fila: 30
-  No se ha configurado la sala para este segmento.
+  Nombre del Segmento   : asdf
+  Precio por asiento    : $2.00
+  Filas                 : 2    |    Asientos por fila: 2
+  Asientos Disponibles  : 1
+  Asientos Vendidos     : 3
+  Ganancias Segmento    : $6.00
+
+  Mapa de Asientos:
+[ ][X]
+[X][X]
 
 ================== RESUMEN DEL EVENTO ==================
-  Total de asientos disponibles: 0
-  Total de asientos vendidos   : 0
-  Ganancias generadas          : $0.00
+  Total de asientos disponibles: 1
+  Total de asientos vendidos   : 3
+  Ganancias generadas          : $6.00
 ========================================================
 
 =======================================================
