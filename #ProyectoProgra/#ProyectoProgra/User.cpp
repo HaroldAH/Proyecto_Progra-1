@@ -75,6 +75,20 @@ void User::createUser(User& usersObj, const std::string& idNumber, sf::RenderWin
     errorText.setFillColor(sf::Color::Red);
     errorText.setPosition(50.f, 230.f);
 
+    // Botón Guardar
+    sf::RectangleShape saveButton(sf::Vector2f(120.f, 40.f));
+    saveButton.setFillColor(sf::Color(0, 180, 0)); // Verde
+    saveButton.setPosition(50.f, 280.f);
+
+    sf::Text saveButtonText("Guardar", font, 20);
+    saveButtonText.setFillColor(sf::Color::White);
+    {
+        sf::FloatRect btnBounds = saveButtonText.getLocalBounds();
+        float btnX = saveButton.getPosition().x + (saveButton.getSize().x - btnBounds.width) / 2.f - btnBounds.left;
+        float btnY = saveButton.getPosition().y + (saveButton.getSize().y - btnBounds.height) / 2.f - btnBounds.top;
+        saveButtonText.setPosition(btnX, btnY);
+    }
+
     // Borde para indicar el campo activo
     sf::RectangleShape activeBorder;
     activeBorder.setFillColor(sf::Color::Transparent);
@@ -97,43 +111,39 @@ void User::createUser(User& usersObj, const std::string& idNumber, sf::RenderWin
                 win.close();
                 return;
             }
-            if (event.type == sf::Event::KeyPressed) {
-                // Con la tecla Tab se cambia el campo activo
-                if (event.key.code == sf::Keyboard::Tab) {
-                    activeField = (activeField + 1) % 2;
-                    if (activeField == 0) {
-                        activeBorder.setPosition(nameBox.getPosition());
-                        activeBorder.setSize(nameBox.getSize());
+            // Detectar clics para seleccionar el campo activo o el botón guardar
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                sf::Vector2f mousePos(static_cast<float>(event.mouseButton.x),
+                    static_cast<float>(event.mouseButton.y));
+                // Si se hace clic en el área de la caja de nombre
+                if (nameBox.getGlobalBounds().contains(mousePos)) {
+                    activeField = 0;
+                    activeBorder.setPosition(nameBox.getPosition());
+                    activeBorder.setSize(nameBox.getSize());
+                }
+                // Si se hace clic en el área de la caja de fecha
+                else if (birthBox.getGlobalBounds().contains(mousePos)) {
+                    activeField = 1;
+                    activeBorder.setPosition(birthBox.getPosition());
+                    activeBorder.setSize(birthBox.getSize());
+                }
+                // Si se hace clic en el botón Guardar
+                else if (saveButton.getGlobalBounds().contains(mousePos)) {
+                    // Validar campos
+                    if (name.empty()) {
+                        errorText.setString("El nombre no puede estar vacio.");
+                    }
+                    else if (birthDate.empty() || !isValidDate(birthDate)) {
+                        errorText.setString("Fecha invalida. Intente nuevamente.");
                     }
                     else {
-                        activeBorder.setPosition(birthBox.getPosition());
-                        activeBorder.setSize(birthBox.getSize());
+                        done = true;
                     }
                 }
-                // La tecla Enter: si se está en el campo nombre, se pasa al campo fecha;
-                // si se está en el campo fecha, se intenta confirmar los datos
-                else if (event.key.code == sf::Keyboard::Enter) {
-                    if (activeField == 0) {
-                        // Si se presiona Enter en el campo nombre, pasa a la fecha
-                        activeField = 1;
-                        activeBorder.setPosition(birthBox.getPosition());
-                        activeBorder.setSize(birthBox.getSize());
-                    }
-                    else if (activeField == 1) {
-                        // Si se presiona Enter en el campo fecha, se valida
-                        if (name.empty()) {
-                            errorText.setString("El nombre no puede estar vacio.");
-                        }
-                        else if (birthDate.empty() || !isValidDate(birthDate)) {
-                            errorText.setString("Fecha invalida. Intente nuevamente.");
-                        }
-                        else {
-                            done = true;
-                        }
-                    }
-                }
+            }
+            if (event.type == sf::Event::KeyPressed) {
                 // Tecla Backspace para borrar el último caracter
-                else if (event.key.code == sf::Keyboard::Backspace) {
+                if (event.key.code == sf::Keyboard::Backspace) {
                     if (activeField == 0 && !name.empty()) {
                         name.pop_back();
                         nameInput.setString(name);
@@ -172,6 +182,8 @@ void User::createUser(User& usersObj, const std::string& idNumber, sf::RenderWin
         win.draw(birthBox);
         win.draw(birthInput);
         win.draw(errorText);
+        win.draw(saveButton);
+        win.draw(saveButtonText);
         win.draw(activeBorder);
         win.display();
     }

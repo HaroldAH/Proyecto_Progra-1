@@ -276,9 +276,9 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment)
     inputDate.setPosition(boxDate.getPosition().x + 5.f, boxDate.getPosition().y + 2.f);
 
     // Mensaje de error sobre la fecha
-    sfml::Text dateErrorText("", font, 18);
+    sfml::Text dateErrorText("", font, 12);
     dateErrorText.setFillColor(sfml::Color::Red);
-    dateErrorText.setPosition(formStartX, boxDate.getPosition().y + 40.f);
+    dateErrorText.setPosition(formStartX, boxDate.getPosition().y + 30.f);
 
     // Etiqueta: Descripción
     sfml::Text labelDesc("Descripción:", font, 20);
@@ -394,7 +394,7 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment)
                         // Validar fecha
                         if (!isValidDate(strDate))
                         {
-                            dateErrorText.setString("ERROR: Fecha invalida. Use DD/MM/YYYY (año >= 20xx)");
+                            dateErrorText.setString("ERROR: Fecha invalida. Use DD/MM/YYYY");
                         }
                         else
                         {

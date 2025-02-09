@@ -1,111 +1,22 @@
-﻿  Menu.cpp
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(599,61): warning C4244: 'argumento': conversión de 'T' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(599,61): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(599,61): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(599,61): warning C4244:             T=unsigned int
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(599,61): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(599,61): warning C4244:         and
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(599,61): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(599,61): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(599,61): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(722,75): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(722,75): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(722,75): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(722,75): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(722,75): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(722,57): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(722,57): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(722,57): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(722,57): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(722,57): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(895,75): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(895,75): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(895,75): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(895,75): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(895,75): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(895,57): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(895,57): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(895,57): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(895,57): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(895,57): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(956,60): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(956,60): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(956,60): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(956,60): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(956,60): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(956,44): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(956,44): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(956,44): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(956,44): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(956,44): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(967,64): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(967,64): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(967,64): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(967,64): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(967,64): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(967,46): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(967,46): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(967,46): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(967,46): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(967,46): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1046,64): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1046,64): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1046,64): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1046,64): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1046,64): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1046,46): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1046,46): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1046,46): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1046,46): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1046,46): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1193,74): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1193,74): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1193,74): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1193,74): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1193,74): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1193,57): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1193,57): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1193,57): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1193,57): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1193,57): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1281,70): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1281,70): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1281,70): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1281,70): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1281,70): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1281,53): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1281,53): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1281,53): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1281,53): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1281,53): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1324,93): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1324,93): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1324,93): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1324,93): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1324,93): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1324,75): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1324,75): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1324,75): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1324,75): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1324,75): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1455,70): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1455,70): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1455,70): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1455,70): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1455,70): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1455,53): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1455,53): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1455,53): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1455,53): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1455,53): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1496,70): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1496,70): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1496,70): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1496,70): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1496,70): warning C4244:         ]
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1496,53): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1496,53): warning C4244:         with
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1496,53): warning C4244:         [
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1496,53): warning C4244:             T=float
-C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(1496,53): warning C4244:         ]
+﻿  Sale.cpp
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(821,75): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(821,75): warning C4244:         with
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(821,75): warning C4244:         [
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(821,75): warning C4244:             T=float
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(821,75): warning C4244:         ]
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(821,57): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(821,57): warning C4244:         with
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(821,57): warning C4244:         [
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(821,57): warning C4244:             T=float
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(821,57): warning C4244:         ]
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(900,75): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(900,75): warning C4244:         with
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(900,75): warning C4244:         [
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(900,75): warning C4244:             T=float
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(900,75): warning C4244:         ]
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(900,57): warning C4244: 'argumento': conversión de 'int' a 'T'; posible pérdida de datos
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(900,57): warning C4244:         with
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(900,57): warning C4244:         [
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(900,57): warning C4244:             T=float
+C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\(900,57): warning C4244:         ]
   #ProyectoProgra.vcxproj -> C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\#ProyectoProgra\x64\Debug\ProyectoProgra.exe

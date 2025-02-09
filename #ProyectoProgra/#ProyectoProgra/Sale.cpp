@@ -12,7 +12,7 @@ std::pair<int, int> getSeatSelection(sf::RenderWindow& window, Seating& seating)
     const float seatHeight = 30.f;
     const float spacing = 10.f;
     const float marginX = 50.f;
-    const float marginY = 100.f;
+    const float marginY = 150.f;
 
     sf::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
@@ -81,24 +81,26 @@ std::pair<int, int> getSeatSelection(sf::RenderWindow& window, Seating& seating)
     }
     return { -1, -1 };
 }
+
+
 void Sale::sell(User& user, Event& event, Segment& segment,
     std::map<std::tuple<int, int>, Seating>& seatingMap, Discount& discount,
     sf::RenderWindow& window)
 {
     // 1. Verificar disponibilidad de eventos.
-    if (!checkEventsAvailability(event))
+    if (event.getEventCount() == 0)
     {
         sf::Font font;
         if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
             return;
-        sf::Text msg("No hay eventos disponibles.", font, 24);
+        sf::Text msg("No hay eventos disponibles para la venta.", font, 24);
         msg.setFillColor(TEXT_COLOR_EV);
         msg.setPosition(50.f, 50.f);
         window.clear(BG_COLOR_EV);
         window.draw(msg);
         window.display();
         sf::sleep(sf::seconds(2));
-        return;
+        return;  // Se interrumpe el proceso de venta.
     }
 
     // 2. Solicitar o registrar usuario (con función SFML adaptada).
@@ -1450,9 +1452,7 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
     else {
         // Usamos un puntero para referirnos a la sala del segmento seleccionado.
         Seating* pSeating = &seatingMap[seatingKey];
-        sf::Text segDisplay("Representacion grafica del segmento \"" +
-            segment.getSegmentsByEvent().getAt(selectedEvent).getAt(chosenSegment).getName()
-            + "\":", font, 28);
+        sf::Text segDisplay(" ", font, 28);
         segDisplay.setFillColor(TEXT_COLOR_EV);
         segDisplay.setPosition(50.f, 50.f);
         window.clear(BG_COLOR_EV);
@@ -1803,7 +1803,7 @@ pair<int, int> getSoldSeatSelection(sf::RenderWindow& window, Seating& seating)
     return { -1, -1 };
 }
 
-void cancelSelectedSeats(sf::RenderWindow& window, Seating* pSeating,int toCancel, int* purchasedRows, char* purchasedCols, sf::Font& font)
+void cancelSelectedSeats(sf::RenderWindow& window, Seating* pSeating, int toCancel, int* purchasedRows, char* purchasedCols, sf::Font& font)
 {
     // Se asume que "pSeating" apunta a la sala del segmento seleccionado.
     for (int i = 0; i < toCancel; i++)

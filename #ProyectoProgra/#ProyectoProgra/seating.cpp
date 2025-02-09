@@ -103,7 +103,7 @@ void Seating::displaySeats(sf::RenderWindow& window) {
     const float seatHeight = 30.f;
     const float spacing = 10.f;      // Espaciado entre asientos
     const float marginX = 50.f;      // Margen izquierdo
-    const float marginY = 100.f;     // Margen superior (donde se dibujarán las filas)
+    const float marginY = 150.f;
 
     // Cargar fuente para etiquetas
     sf::Font font;
@@ -113,9 +113,9 @@ void Seating::displaySeats(sf::RenderWindow& window) {
     }
 
     // Dibujar título en la parte superior
-    sf::Text title("Representacion de la sala", font, 28);
+    sf::Text title("Representacion de la sala", font, 20);
     title.setFillColor(sf::Color::Black);
-    title.setPosition(marginX, marginY - 60.f);
+    title.setPosition(marginX, marginY - 90.f);
     window.draw(title);
 
     // Dibujar etiquetas de columnas (letras)
