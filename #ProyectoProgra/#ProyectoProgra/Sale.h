@@ -47,7 +47,7 @@ private:
 
     float applyDiscountIfWanted(Discount& discount, sf::RenderWindow& window);
 
-    string askCardNumber();
+    string askCardNumber(sf::RenderWindow& window);
 
     int readIntInRange(int minValue, int maxValue, const std::string& errorPrompt);
 

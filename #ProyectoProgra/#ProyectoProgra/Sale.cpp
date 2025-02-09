@@ -227,7 +227,7 @@ void Sale::sell(User& user, Event& event, Segment& segment,
         totalCost -= totalCost * (discountPercentage / 100.0f);
 
     // 10. Solicitar el número de tarjeta (aquí se usa un valor fijo; idealmente implementa una función gráfica).
-    string cardNumber = "123456789012";
+    string cardNumber = askCardNumber(window);
 
     // 11. Mostrar la factura (aquí se sigue usando la función original, que imprime por consola).
     printInvoice(currentUser, event, selectedEvent, segments, selectedSegment,
@@ -235,7 +235,7 @@ void Sale::sell(User& user, Event& event, Segment& segment,
         purchasedRows, purchasedCols, numTickets, cardNumber,window);
 
     // 12. Pausa para que el usuario vea la factura.
-    sf::sleep(sf::seconds(3));
+    sf::sleep(sf::seconds(1));
 
     delete[] purchasedRows;
     delete[] purchasedCols;
@@ -930,27 +930,129 @@ float Sale::applyDiscountIfWanted(Discount& discount, sf::RenderWindow& window) 
     return 0.0f;
 }
 
-string Sale::askCardNumber() {
-    string cardNumber;
-
-    while (true) {
-        cout << "\nIngrese el numero de su tarjeta (12 digitos): ";
-        cin >> cardNumber;
-
-        if (cardNumber.length() == 12 &&
-            cardNumber.find_first_not_of("0123456789") == string::npos) {
-            cout << "Numero de tarjeta valido.\n";
-            break;
-        }
-
-        cout << "Numero de tarjeta invalido. Por favor, ingrese exactamente 12 digitos numericos.\n";
+std::string Sale::askCardNumber(sf::RenderWindow& window) {
+    // Cargar la fuente
+    sf::Font font;
+    if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
+        std::cerr << "Error al cargar la fuente." << std::endl;
+        return "";
     }
 
+    // Crear el texto de consigna
+    sf::Text prompt("Ingrese el numero de su tarjeta (12 digitos):", font, 24);
+    prompt.setFillColor(TEXT_COLOR_EV);
+    prompt.setPosition(50.f, 50.f);
+
+    // Definir la caja de entrada
+    sf::RectangleShape inputBox(sf::Vector2f(300.f, 40.f));
+    inputBox.setFillColor(sf::Color::White);
+    inputBox.setOutlineColor(sf::Color::Black);
+    inputBox.setOutlineThickness(1.f);
+    inputBox.setPosition(50.f, 120.f);
+
+    // Texto para mostrar lo que escribe el usuario
+    sf::Text inputText("", font, 24);
+    inputText.setFillColor(TEXT_COLOR_EV);
+    inputText.setPosition(55.f, 125.f);
+
+    // Texto para mensajes de error
+    sf::Text errorText("", font, 20);
+    errorText.setFillColor(sf::Color::Red);
+    errorText.setPosition(50.f, 180.f);
+
+    // Crear el botón "Aplicar" (similar al botón "Guardar" en createUser)
+    sf::RectangleShape applyButton(sf::Vector2f(120.f, 40.f));
+    applyButton.setFillColor(sf::Color(0, 180, 0)); // Color verde
+    applyButton.setPosition(50.f, 240.f);
+
+    sf::Text applyButtonText("Aplicar", font, 24);
+    applyButtonText.setFillColor(sf::Color::White);
+    {
+        sf::FloatRect bounds = applyButtonText.getLocalBounds();
+        applyButtonText.setPosition(
+            applyButton.getPosition().x + (applyButton.getSize().x - bounds.width) / 2.f - bounds.left,
+            applyButton.getPosition().y + (applyButton.getSize().y - bounds.height) / 2.f - bounds.top
+        );
+    }
+
+    std::string cardNumber;
+    bool valid = false;
+
+    // Bucle principal: se repite hasta que se ingrese un número válido o se cierre la ventana
+    while (!valid && window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            // Manejo de cierre de ventana
+            if (event.type == sf::Event::Closed) {
+                window.close();
+                return "";
+            }
+            // Capturar caracteres ingresados
+            if (event.type == sf::Event::TextEntered) {
+                if (event.text.unicode < 128) {
+                    char c = static_cast<char>(event.text.unicode);
+                    // Solo se aceptan dígitos y se limita a 12 caracteres
+                    if (std::isdigit(c) && cardNumber.size() < 12) {
+                        cardNumber.push_back(c);
+                        inputText.setString(cardNumber);
+                        errorText.setString("");
+                    }
+                }
+            }
+            // Manejar retroceso y validación al presionar Enter
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Backspace) {
+                    if (!cardNumber.empty()) {
+                        cardNumber.pop_back();
+                        inputText.setString(cardNumber);
+                        errorText.setString("");
+                    }
+                }
+                else if (event.key.code == sf::Keyboard::Enter) {
+                    // Validar al presionar Enter
+                    if (cardNumber.length() == 12 &&
+                        cardNumber.find_first_not_of("0123456789") == std::string::npos) {
+                        valid = true;
+                    }
+                    else {
+                        errorText.setString("Numero invalido. Ingrese 12 digitos numericos.");
+                    }
+                }
+            }
+            // Detectar clic en el botón "Aplicar"
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                sf::Vector2f mousePos(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                if (applyButton.getGlobalBounds().contains(mousePos)) {
+                    if (cardNumber.length() == 12 &&
+                        cardNumber.find_first_not_of("0123456789") == std::string::npos) {
+                        valid = true;
+                    }
+                    else {
+                        errorText.setString("Numero invalido. Ingrese 12 digitos numericos.");
+                    }
+                }
+            }
+        }
+        // Actualizar la pantalla
+        window.clear(BG_COLOR_EV);
+        window.draw(prompt);
+        window.draw(inputBox);
+        window.draw(inputText);
+        window.draw(errorText);
+        window.draw(applyButton);
+        window.draw(applyButtonText);
+        window.display();
+    }
     return cardNumber;
 }
 
-void Sale::printInvoice(UserData* currentUser, Event& event, int selectedEvent,List<List<Segment>>& segments, int selectedSegment,
-    int numTickets, float ticketPrice, float discountPercentage, float totalCost, int* purchasedRows, char* purchasedCols, int numPurchasedSeats, std::string cardNumber,sf::RenderWindow& window)
+
+
+void Sale::printInvoice(UserData* currentUser, Event& event, int selectedEvent,
+    List<List<Segment>>& segments, int selectedSegment,
+    int numTickets, float ticketPrice, float discountPercentage, float totalCost,
+    int* purchasedRows, char* purchasedCols, int numPurchasedSeats,
+    std::string cardNumber, sf::RenderWindow& window)
 {
     // 1. Preparar la fuente
     sf::Font font;
@@ -965,36 +1067,44 @@ void Sale::printInvoice(UserData* currentUser, Event& event, int selectedEvent,L
     float startY = 20.f;           // Posición vertical inicial
     const float lineSpacing = 30.f; // Espaciado vertical entre líneas
 
-    // Encabezado de la factura
+    // Encabezado de la factura (centrado y con un offset de 20 px hacia abajo)
     sf::Text header("==================== FACTURA ====================", font, 24);
     header.setFillColor(TEXT_COLOR_EV);
-    header.setPosition(20.f, startY);
+    float headerX = (window.getSize().x - header.getLocalBounds().width) / 2.f;
+    float headerY = startY + 20.f;  // Offset de 20 píxeles (aprox. medio centímetro)
+    header.setPosition(headerX, headerY);
     invoiceLines.push_back(header);
-    startY += lineSpacing;
+    startY = headerY + lineSpacing;
+
+    // Función lambda para centrar un texto horizontalmente
+    auto centerText = [&window](sf::Text& text, float y) {
+        float x = (window.getSize().x - text.getLocalBounds().width) / 2.f;
+        text.setPosition(x, y);
+        };
 
     // Datos del usuario
     sf::Text userLine("Usuario: " + currentUser->getName(), font, 20);
     userLine.setFillColor(TEXT_COLOR_EV);
-    userLine.setPosition(20.f, startY);
+    centerText(userLine, startY);
     invoiceLines.push_back(userLine);
     startY += lineSpacing;
 
     sf::Text cedulaLine("Cedula: " + currentUser->getIdNumber(), font, 20);
     cedulaLine.setFillColor(TEXT_COLOR_EV);
-    cedulaLine.setPosition(20.f, startY);
+    centerText(cedulaLine, startY);
     invoiceLines.push_back(cedulaLine);
     startY += lineSpacing;
 
     // Datos del evento
     sf::Text eventLine("Evento: " + event.getEvents().getAt(selectedEvent).getName(), font, 20);
     eventLine.setFillColor(TEXT_COLOR_EV);
-    eventLine.setPosition(20.f, startY);
+    centerText(eventLine, startY);
     invoiceLines.push_back(eventLine);
     startY += lineSpacing;
 
     sf::Text segmentLine("Segmento: " + segments.getAt(selectedEvent).getAt(selectedSegment).getName(), font, 20);
     segmentLine.setFillColor(TEXT_COLOR_EV);
-    segmentLine.setPosition(20.f, startY);
+    centerText(segmentLine, startY);
     invoiceLines.push_back(segmentLine);
     startY += lineSpacing;
 
@@ -1002,7 +1112,7 @@ void Sale::printInvoice(UserData* currentUser, Event& event, int selectedEvent,L
     std::string cardMasked = "****-****-****-" + cardNumber.substr(cardNumber.length() - 4);
     sf::Text cardLine("Tarjeta: " + cardMasked, font, 20);
     cardLine.setFillColor(TEXT_COLOR_EV);
-    cardLine.setPosition(20.f, startY);
+    centerText(cardLine, startY);
     invoiceLines.push_back(cardLine);
     startY += lineSpacing;
 
@@ -1011,7 +1121,7 @@ void Sale::printInvoice(UserData* currentUser, Event& event, int selectedEvent,L
     oss << "Boletos: " << numTickets << " x $" << std::fixed << std::setprecision(2) << ticketPrice;
     sf::Text ticketsLine(oss.str(), font, 20);
     ticketsLine.setFillColor(TEXT_COLOR_EV);
-    ticketsLine.setPosition(20.f, startY);
+    centerText(ticketsLine, startY);
     invoiceLines.push_back(ticketsLine);
     startY += lineSpacing;
 
@@ -1020,7 +1130,7 @@ void Sale::printInvoice(UserData* currentUser, Event& event, int selectedEvent,L
     {
         sf::Text discountLine("Descuento: " + std::to_string(discountPercentage) + "%", font, 20);
         discountLine.setFillColor(TEXT_COLOR_EV);
-        discountLine.setPosition(20.f, startY);
+        centerText(discountLine, startY);
         invoiceLines.push_back(discountLine);
         startY += lineSpacing;
     }
@@ -1033,7 +1143,7 @@ void Sale::printInvoice(UserData* currentUser, Event& event, int selectedEvent,L
     }
     sf::Text seatsLine(seatsStr, font, 20);
     seatsLine.setFillColor(TEXT_COLOR_EV);
-    seatsLine.setPosition(20.f, startY);
+    centerText(seatsLine, startY);
     invoiceLines.push_back(seatsLine);
     startY += lineSpacing;
 
@@ -1042,14 +1152,14 @@ void Sale::printInvoice(UserData* currentUser, Event& event, int selectedEvent,L
     oss2 << "Total pagado: $" << std::fixed << std::setprecision(2) << totalCost;
     sf::Text totalLine(oss2.str(), font, 20);
     totalLine.setFillColor(TEXT_COLOR_EV);
-    totalLine.setPosition(20.f, startY);
+    centerText(totalLine, startY);
     invoiceLines.push_back(totalLine);
     startY += lineSpacing;
 
     // Pie de página
     sf::Text footer("=================================================", font, 24);
     footer.setFillColor(TEXT_COLOR_EV);
-    footer.setPosition(20.f, startY);
+    centerText(footer, startY);
     invoiceLines.push_back(footer);
 
     // 3. Dibujar la factura en la ventana.
@@ -1059,26 +1169,29 @@ void Sale::printInvoice(UserData* currentUser, Event& event, int selectedEvent,L
         window.draw(line);
     }
 
-    // 4. Crear y dibujar un botón verde "Avanzar" para finalizar la visualización.
-    sf::RectangleShape avanzarButton(sf::Vector2f(120.f, 40.f));
-    avanzarButton.setFillColor(sf::Color::Green);
-    avanzarButton.setPosition(window.getSize().x - 150.f, window.getSize().y - 70.f);
+    // 4. Crear y dibujar un botón verde "Finalizar" centrado horizontalmente,
+    // posicionado a 40 píxeles debajo del contenido (footer).
+    sf::RectangleShape finalizeButton(sf::Vector2f(120.f, 40.f));
+    finalizeButton.setFillColor(sf::Color::Green);
+    float buttonX = (window.getSize().x - finalizeButton.getSize().x) / 2.f;
+    float buttonY = startY + 40.f; // 40 píxeles debajo del último renglón
+    finalizeButton.setPosition(buttonX, buttonY);
 
-    sf::Text avanzarText("Avanzar", font, 24);
-    avanzarText.setFillColor(sf::Color::White);
-    sf::FloatRect textBounds = avanzarText.getLocalBounds();
-    avanzarText.setPosition(
-        avanzarButton.getPosition().x + (avanzarButton.getSize().x - textBounds.width) / 2.f - textBounds.left,
-        avanzarButton.getPosition().y + (avanzarButton.getSize().y - textBounds.height) / 2.f - textBounds.top
+    sf::Text finalizeText("Finalizar", font, 24);
+    finalizeText.setFillColor(sf::Color::White);
+    sf::FloatRect textBounds = finalizeText.getLocalBounds();
+    finalizeText.setPosition(
+        buttonX + (finalizeButton.getSize().x - textBounds.width) / 2.f - textBounds.left,
+        buttonY + (finalizeButton.getSize().y - textBounds.height) / 2.f - textBounds.top
     );
 
-    window.draw(avanzarButton);
-    window.draw(avanzarText);
+    window.draw(finalizeButton);
+    window.draw(finalizeText);
     window.display();
 
-    // 5. Esperar que el usuario presione ENTER para volver al menú principal.
-    bool proceed = false;
-    while (window.isOpen() && !proceed)
+    // 5. Esperar que el usuario haga clic en el botón "Finalizar"
+    bool clicked = false;
+    while (window.isOpen() && !clicked)
     {
         sf::Event ev;
         while (window.pollEvent(ev))
@@ -1088,18 +1201,24 @@ void Sale::printInvoice(UserData* currentUser, Event& event, int selectedEvent,L
                 window.close();
                 return;
             }
-            if (ev.type == sf::Event::KeyPressed && ev.key.code == sf::Keyboard::Enter)
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
             {
-                proceed = true;
-                break;
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                if (finalizeButton.getGlobalBounds().contains(mousePos))
+                {
+                    clicked = true;
+                    break;
+                }
             }
         }
     }
 
-    // Al presionar ENTER, se limpia la ventana (lo que en el flujo de tu aplicación debería retornar al menú principal)
+    // Al hacer clic en "Finalizar", se limpia la ventana (retorna al menú principal)
     window.clear(BG_COLOR_EV);
     window.display();
 }
+
+
 
 int Sale::readIntInRange(int minValue, int maxValue, const std::string& errorPrompt)
 {

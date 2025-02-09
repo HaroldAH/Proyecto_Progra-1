@@ -92,4 +92,9 @@
       <Filter>Archivos de encabezado\Archivos de recursos\Archivos de origen\resourses</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\..\..\..\Downloads\Logo-UNA-Rojo_FondoTransparente.png">
+      <Filter>Archivos de encabezado\Archivos de recursos\Archivos de origen\resourses</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
