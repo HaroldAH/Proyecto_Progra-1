@@ -16,6 +16,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <cctype>    // Para isdigit
+std::pair<int, int> getSoldSeatSelection(sf::RenderWindow& window, Seating& seating);
 
 
 using namespace std;
@@ -54,11 +55,13 @@ private:
     void printInvoice(UserData* currentUser, Event& event, int selectedEvent, List<List<Segment>>& segments, int selectedSegment,
         int numTickets, float ticketPrice, float discountPercentage, float totalCost,
         int* purchasedRows, char* purchasedCols, int numPurchasedSeats, std::string cardNumber, sf::RenderWindow& window);
+   
 
 public:
     // Función pública que maneja la compra de boletos
     void cancelPurchase(User& user, Event& event, Segment& segment,
         std::map<std::tuple<int, int>, Seating>& seatingMap, sf::RenderWindow& window);
+   
 
 
     void sell(User& user, Event& event, Segment& segment,

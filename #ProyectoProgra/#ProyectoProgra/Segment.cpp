@@ -451,15 +451,67 @@ void Segment::addSegmentData(Segment& segment, int index, sf::RenderWindow& win)
                         int numSeats = std::stoi(seatsStr);
                         float segPrice = std::stof(priceStr);
 
-                        segment.setName(nameStr);
-                        segment.setRows(numRows);
-                        segment.setSeats(numSeats);
-                        segment.setPrice(segPrice);
+                        // Validar que el número de filas no supere 10 y asientos no supere 26
+                        if (numRows > 10) {
+                            sf::Text errorMsg("Error: El numero maximo de filas es 10.", font, 24);
+                            errorMsg.setFillColor(sf::Color::Red);
+                            // Posicionar el mensaje (por ejemplo, debajo del formulario)
+                            errorMsg.setPosition(formStartX, formStartY + 300.f);
+                            win.clear(BG_COLOR_EV);
+                            win.draw(header);
+                            win.draw(headerTitle);
+                            win.draw(labelName);    win.draw(boxName);   win.draw(inputName);
+                            win.draw(labelRows);    win.draw(boxRows);   win.draw(inputRows);
+                            win.draw(labelSeats);   win.draw(boxSeats);  win.draw(inputSeats);
+                            win.draw(labelPrice);   win.draw(boxPrice);  win.draw(inputPrice);
+                            win.draw(saveButton);
+                            win.draw(activeBorder);
+                            win.draw(errorMsg);
+                            win.display();
+                            sf::sleep(sf::seconds(2));
+                        }
+                        else if (numSeats > 26) {
+                            sf::Text errorMsg("Error: El numero maximo de asientos es 26.", font, 24);
+                            errorMsg.setFillColor(sf::Color::Red);
+                            errorMsg.setPosition(formStartX, formStartY + 300.f);
+                            win.clear(BG_COLOR_EV);
+                            win.draw(header);
+                            win.draw(headerTitle);
+                            win.draw(labelName);    win.draw(boxName);   win.draw(inputName);
+                            win.draw(labelRows);    win.draw(boxRows);   win.draw(inputRows);
+                            win.draw(labelSeats);   win.draw(boxSeats);  win.draw(inputSeats);
+                            win.draw(labelPrice);   win.draw(boxPrice);  win.draw(inputPrice);
+                            win.draw(saveButton);
+                            win.draw(activeBorder);
+                            win.draw(errorMsg);
+                            win.display();
+                            sf::sleep(sf::seconds(2));
+                        }
+                        else {
+                            segment.setName(nameStr);
+                            segment.setRows(numRows);
+                            segment.setSeats(numSeats);
+                            segment.setPrice(segPrice);
 
-                        editing = false; // Cerramos el formulario
+                            editing = false; // Cerramos el formulario
+                        }
                     }
                     catch (...) {
-                        std::cout << "Error: datos no válidos." << std::endl;
+                        sf::Text errorMsg("Error: datos no validos.", font, 24);
+                        errorMsg.setFillColor(sf::Color::Red);
+                        errorMsg.setPosition(formStartX, formStartY + 300.f);
+                        win.clear(BG_COLOR_EV);
+                        win.draw(header);
+                        win.draw(headerTitle);
+                        win.draw(labelName);    win.draw(boxName);   win.draw(inputName);
+                        win.draw(labelRows);    win.draw(boxRows);   win.draw(inputRows);
+                        win.draw(labelSeats);   win.draw(boxSeats);  win.draw(inputSeats);
+                        win.draw(labelPrice);   win.draw(boxPrice);  win.draw(inputPrice);
+                        win.draw(saveButton);
+                        win.draw(activeBorder);
+                        win.draw(errorMsg);
+                        win.display();
+                        sf::sleep(sf::seconds(2));
                     }
                 }
             }
@@ -485,15 +537,66 @@ void Segment::addSegmentData(Segment& segment, int index, sf::RenderWindow& win)
                             int numSeats = std::stoi(seatsStr);
                             float segPrice = std::stof(priceStr);
 
-                            segment.setName(nameStr);
-                            segment.setRows(numRows);
-                            segment.setSeats(numSeats);
-                            segment.setPrice(segPrice);
+                            // Validar que el número de filas no supere 10 y asientos no supere 26
+                            if (numRows > 10) {
+                                sf::Text errorMsg("Error: El numero maximo de filas es 10.", font, 24);
+                                errorMsg.setFillColor(sf::Color::Red);
+                                errorMsg.setPosition(formStartX, formStartY + 300.f);
+                                win.clear(BG_COLOR_EV);
+                                win.draw(header);
+                                win.draw(headerTitle);
+                                win.draw(labelName);    win.draw(boxName);   win.draw(inputName);
+                                win.draw(labelRows);    win.draw(boxRows);   win.draw(inputRows);
+                                win.draw(labelSeats);   win.draw(boxSeats);  win.draw(inputSeats);
+                                win.draw(labelPrice);   win.draw(boxPrice);  win.draw(inputPrice);
+                                win.draw(saveButton);
+                                win.draw(activeBorder);
+                                win.draw(errorMsg);
+                                win.display();
+                                sf::sleep(sf::seconds(2));
+                            }
+                            else if (numSeats > 26) {
+                                sf::Text errorMsg("Error: El numero maximo de asientos es 26.", font, 24);
+                                errorMsg.setFillColor(sf::Color::Red);
+                                errorMsg.setPosition(formStartX, formStartY + 300.f);
+                                win.clear(BG_COLOR_EV);
+                                win.draw(header);
+                                win.draw(headerTitle);
+                                win.draw(labelName);    win.draw(boxName);   win.draw(inputName);
+                                win.draw(labelRows);    win.draw(boxRows);   win.draw(inputRows);
+                                win.draw(labelSeats);   win.draw(boxSeats);  win.draw(inputSeats);
+                                win.draw(labelPrice);   win.draw(boxPrice);  win.draw(inputPrice);
+                                win.draw(saveButton);
+                                win.draw(activeBorder);
+                                win.draw(errorMsg);
+                                win.display();
+                                sf::sleep(sf::seconds(2));
+                            }
+                            else {
+                                segment.setName(nameStr);
+                                segment.setRows(numRows);
+                                segment.setSeats(numSeats);
+                                segment.setPrice(segPrice);
 
-                            editing = false;
+                                editing = false;
+                            }
                         }
                         catch (...) {
-                            std::cout << "Error: datos no válidos." << std::endl;
+                            sf::Text errorMsg("Error: datos no validos.", font, 24);
+                            errorMsg.setFillColor(sf::Color::Red);
+                            errorMsg.setPosition(formStartX, formStartY + 300.f);
+                            win.clear(BG_COLOR_EV);
+                            win.draw(header);
+                            win.draw(headerTitle);
+                            win.draw(labelName);    win.draw(boxName);   win.draw(inputName);
+                            win.draw(labelRows);    win.draw(boxRows);   win.draw(inputRows);
+                            win.draw(labelSeats);   win.draw(boxSeats);  win.draw(inputSeats);
+                            win.draw(labelPrice);   win.draw(boxPrice);  win.draw(inputPrice);
+                            win.draw(saveButton);
+                            win.draw(activeBorder);
+                            win.draw(errorMsg);
+                            win.display();
+                            sf::sleep(sf::seconds(2));
                         }
                     }
                     else {
@@ -568,7 +671,6 @@ void Segment::addSegmentData(Segment& segment, int index, sf::RenderWindow& win)
         win.display();
     }
 }
-
 
 
 /////////////////////////////////////////
