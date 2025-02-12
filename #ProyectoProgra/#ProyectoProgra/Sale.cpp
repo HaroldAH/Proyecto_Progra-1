@@ -1304,126 +1304,246 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
     sf::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
         return;
-    if (event.getEventCount() == 0) {
+
+    if (event.getEventCount() == 0)
+    {
+        // Si NO hay eventos disponibles, mostramos mensaje y el botón "Volver".
         sf::Text msg("No hay eventos disponibles para cancelar compras.", font, 24);
         msg.setFillColor(TEXT_COLOR_EV);
         msg.setPosition(50.f, 50.f);
-        window.clear(BG_COLOR_EV);
-        window.draw(msg);
-        window.display();
-        sf::sleep(sf::seconds(2));
+
+        // Botón "Volver"
+        sf::RectangleShape volverButton(sf::Vector2f(120.f, 40.f));
+        volverButton.setFillColor(sf::Color::Red);
+        volverButton.setPosition(50.f, 120.f);
+
+        sf::Text volverText("Volver", font, 24);
+        volverText.setFillColor(sf::Color::White);
+        {
+            sf::FloatRect bounds = volverText.getLocalBounds();
+            volverText.setPosition(
+                volverButton.getPosition().x + (volverButton.getSize().x - bounds.width) / 2.f - bounds.left,
+                volverButton.getPosition().y + (volverButton.getSize().y - bounds.height) / 2.f - bounds.top
+            );
+        }
+
+        // Bucle de eventos para esperar clic en "Volver" o cerrar ventana
+        bool done = false;
+        while (window.isOpen() && !done)
+        {
+            sf::Event ev;
+            while (window.pollEvent(ev))
+            {
+                if (ev.type == sf::Event::Closed)
+                {
+                    window.close();
+                    return;
+                }
+                if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+                {
+                    sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                    if (volverButton.getGlobalBounds().contains(mousePos))
+                    {
+                        // Se presionó "Volver": simplemente retornamos.
+                        return;
+                    }
+                }
+            }
+
+            window.clear(BG_COLOR_EV);
+            window.draw(msg);
+            window.draw(volverButton);
+            window.draw(volverText);
+            window.display();
+        }
         return;
     }
 
-    // 2. Solicitar cédula mediante SFML.
+    // 2. Solicitar cédula mediante SFML (con un botón "Aceptar").
     sf::Text prompt("Ingrese su numero de cedula (9 digitos):", font, 24);
     prompt.setFillColor(TEXT_COLOR_EV);
     prompt.setPosition(50.f, 50.f);
+
     sf::RectangleShape inputBox(sf::Vector2f(300.f, 40.f));
     inputBox.setFillColor(sf::Color::White);
     inputBox.setOutlineColor(sf::Color::Black);
     inputBox.setOutlineThickness(1.f);
     inputBox.setPosition(50.f, 120.f);
+
     sf::Text inputText("", font, 24);
     inputText.setFillColor(TEXT_COLOR_EV);
     inputText.setPosition(55.f, 125.f);
+
+    // Botón "Aceptar"
+    sf::RectangleShape aceptarButton(sf::Vector2f(120.f, 40.f));
+    aceptarButton.setFillColor(sf::Color::Green);
+    aceptarButton.setPosition(50.f, 180.f);
+
+    sf::Text aceptarText("Aceptar", font, 24);
+    aceptarText.setFillColor(sf::Color::White);
+    {
+        sf::FloatRect bounds = aceptarText.getLocalBounds();
+        aceptarText.setPosition(
+            aceptarButton.getPosition().x + (aceptarButton.getSize().x - bounds.width) / 2.f - bounds.left,
+            aceptarButton.getPosition().y + (aceptarButton.getSize().y - bounds.height) / 2.f - bounds.top
+        );
+    }
 
     std::string idNumber;
     bool inputDone = false;
     while (!inputDone && window.isOpen())
     {
         sf::Event ev;
-        while (window.pollEvent(ev)) {
-            if (ev.type == sf::Event::Closed) {
+        while (window.pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed)
+            {
                 window.close();
                 return;
             }
-            if (ev.type == sf::Event::TextEntered) {
-                if (ev.text.unicode < 128) {
+            if (ev.type == sf::Event::TextEntered)
+            {
+                if (ev.text.unicode < 128)
+                {
                     char c = static_cast<char>(ev.text.unicode);
-                    if (isdigit(c) && idNumber.size() < 9) {
+                    if (isdigit(c) && idNumber.size() < 9)
+                    {
                         idNumber.push_back(c);
                         inputText.setString(idNumber);
                     }
                 }
             }
-            if (ev.type == sf::Event::KeyPressed) {
-                if (ev.key.code == sf::Keyboard::Backspace) {
-                    if (!idNumber.empty()) {
-                        idNumber.pop_back();
-                        inputText.setString(idNumber);
-                    }
+            if (ev.type == sf::Event::KeyPressed)
+            {
+                // Backspace para borrar
+                if (ev.key.code == sf::Keyboard::Backspace && !idNumber.empty())
+                {
+                    idNumber.pop_back();
+                    inputText.setString(idNumber);
                 }
-                if (ev.key.code == sf::Keyboard::Enter) {
+                // También podríamos permitir Enter aquí, si se desea
+                else if (ev.key.code == sf::Keyboard::Enter)
+                {
+                    if (idNumber.size() == 9)
+                        inputDone = true;  // Cedula válida
+                }
+            }
+            // Detección de clic en el botón "Aceptar"
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                if (aceptarButton.getGlobalBounds().contains(mousePos))
+                {
+                    // Validar
                     if (idNumber.size() == 9)
                         inputDone = true;
-                    else {
-                        sf::Text errorMsg("Cedula invalida. Debe tener 9 digitos.", font, 24);
-                        errorMsg.setFillColor(sf::Color::Red);
-                        errorMsg.setPosition(50.f, 180.f);
-                        window.clear(BG_COLOR_EV);
-                        window.draw(prompt);
-                        window.draw(inputBox);
-                        window.draw(inputText);
-                        window.draw(errorMsg);
-                        window.display();
-                        sf::sleep(sf::seconds(2));
-                    }
                 }
             }
         }
+
+        // Render
         window.clear(BG_COLOR_EV);
         window.draw(prompt);
         window.draw(inputBox);
         window.draw(inputText);
+        window.draw(aceptarButton);
+        window.draw(aceptarText);
         window.display();
+    }
+
+    if (idNumber.size() != 9)
+    {
+        // Si se cierra la ventana o el usuario no ingresó una cédula válida,
+        // simplemente salimos de la función.
+        return;
     }
 
     // 3. Buscar usuario por cédula.
     UserData* currentUser = user.searchUserById(idNumber);
-    if (!currentUser) {
+    if (!currentUser)
+    {
+        // Mostrar mensaje y botón "Volver"
         sf::Text err("Usuario no encontrado.", font, 24);
         err.setFillColor(TEXT_COLOR_EV);
         err.setPosition(50.f, 50.f);
-        window.clear(BG_COLOR_EV);
-        window.draw(err);
-        window.display();
-        bool wait = true;
-        while (window.isOpen() && wait) {
+
+        sf::RectangleShape volverButton(sf::Vector2f(120.f, 40.f));
+        volverButton.setFillColor(sf::Color::Red);
+        volverButton.setPosition(50.f, 120.f);
+
+        sf::Text volverText("Volver", font, 24);
+        volverText.setFillColor(sf::Color::White);
+        {
+            sf::FloatRect bounds = volverText.getLocalBounds();
+            volverText.setPosition(
+                volverButton.getPosition().x + (volverButton.getSize().x - bounds.width) / 2.f - bounds.left,
+                volverButton.getPosition().y + (volverButton.getSize().y - bounds.height) / 2.f - bounds.top
+            );
+        }
+
+        bool done = false;
+        while (window.isOpen() && !done)
+        {
             sf::Event ev;
-            while (window.pollEvent(ev)) {
-                if (ev.type == sf::Event::KeyPressed && ev.key.code == sf::Keyboard::Enter)
-                    wait = false;
-                if (ev.type == sf::Event::Closed) {
+            while (window.pollEvent(ev))
+            {
+                if (ev.type == sf::Event::Closed)
+                {
                     window.close();
                     return;
                 }
+                if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+                {
+                    sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                    if (volverButton.getGlobalBounds().contains(mousePos))
+                    {
+                        done = true; // Volvemos
+                    }
+                }
             }
+
+            window.clear(BG_COLOR_EV);
+            window.draw(err);
+            window.draw(volverButton);
+            window.draw(volverText);
+            window.display();
         }
         return;
     }
 
     // 4. Mostrar eventos disponibles y seleccionar uno.
+    //    (Se mantiene la mecánica de hacer clic en el evento.)
     std::vector<sf::Text> eventOptions;
-    for (int i = 1; i <= event.getEventCount(); i++) {
+    for (int i = 1; i <= event.getEventCount(); i++)
+    {
         std::string evName = event.getEvents().getAt(i).getName();
         sf::Text opt(std::to_string(i) + ". " + evName, font, 24);
         opt.setFillColor(TEXT_COLOR_EV);
         opt.setPosition(50.f, 100.f + (i - 1) * 40.f);
         eventOptions.push_back(opt);
     }
-    int selectedEvent = -1;
+
+    int selectedEventIndex = -1;
     bool eventSelected = false;
-    while (window.isOpen() && !eventSelected) {
+    while (window.isOpen() && !eventSelected)
+    {
         sf::Event ev;
-        while (window.pollEvent(ev)) {
-            if (ev.type == sf::Event::Closed) { window.close(); return; }
-            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left) {
+        while (window.pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed)
+            {
+                window.close();
+                return;
+            }
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+            {
                 sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x),
                     static_cast<float>(ev.mouseButton.y));
-                for (int i = 0; i < eventOptions.size(); i++) {
-                    if (eventOptions[i].getGlobalBounds().contains(mousePos)) {
-                        selectedEvent = i + 1;
+                for (int i = 0; i < (int)eventOptions.size(); i++)
+                {
+                    if (eventOptions[i].getGlobalBounds().contains(mousePos))
+                    {
+                        selectedEventIndex = i + 1;  // i es 0-based, eventos son 1-based
                         eventSelected = true;
                         break;
                     }
@@ -1431,30 +1551,74 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
             }
         }
         window.clear(BG_COLOR_EV);
+
         sf::Text title("Eventos disponibles:", font, 28);
         title.setFillColor(TEXT_COLOR_EV);
         title.setPosition(50.f, 50.f);
         window.draw(title);
+
         for (auto& opt : eventOptions)
             window.draw(opt);
+
         window.display();
     }
 
     // 5. Obtener el evento específico.
-    Event& currentEvent = event.getEvents().getAt(selectedEvent);
+    Event& currentEvent = event.getEvents().getAt(selectedEventIndex);
 
     // 6. Verificar boletos comprados en el evento seleccionado.
     int purchasedTickets = currentEvent.getTicketsPurchasedByUser(idNumber);
-    if (purchasedTickets == 0) {
+    if (purchasedTickets == 0)
+    {
+        // Si el usuario no tiene boletos, mostramos un mensaje y botón "Volver".
         sf::Text msg("El usuario no tiene boletos comprados para este evento.", font, 24);
         msg.setFillColor(TEXT_COLOR_EV);
         msg.setPosition(50.f, 50.f);
-        window.clear(BG_COLOR_EV);
-        window.draw(msg);
-        window.display();
-        sf::sleep(sf::seconds(2));
+
+        sf::RectangleShape volverButton(sf::Vector2f(120.f, 40.f));
+        volverButton.setFillColor(sf::Color::Red);
+        volverButton.setPosition(50.f, 120.f);
+
+        sf::Text volverText("Volver", font, 24);
+        volverText.setFillColor(sf::Color::White);
+        {
+            sf::FloatRect bounds = volverText.getLocalBounds();
+            volverText.setPosition(
+                volverButton.getPosition().x + (volverButton.getSize().x - bounds.width) / 2.f - bounds.left,
+                volverButton.getPosition().y + (volverButton.getSize().y - bounds.height) / 2.f - bounds.top
+            );
+        }
+
+        bool done = false;
+        while (window.isOpen() && !done)
+        {
+            sf::Event ev;
+            while (window.pollEvent(ev))
+            {
+                if (ev.type == sf::Event::Closed)
+                {
+                    window.close();
+                    return;
+                }
+                if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+                {
+                    sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                    if (volverButton.getGlobalBounds().contains(mousePos))
+                    {
+                        done = true;
+                    }
+                }
+            }
+            window.clear(BG_COLOR_EV);
+            window.draw(msg);
+            window.draw(volverButton);
+            window.draw(volverText);
+            window.display();
+        }
         return;
     }
+
+    // Mostrar cuántos boletos tiene
     sf::Text ticketInfo("Usted tiene " + std::to_string(purchasedTickets) + " boletos para este evento.", font, 24);
     ticketInfo.setFillColor(TEXT_COLOR_EV);
     ticketInfo.setPosition(50.f, 50.f);
@@ -1463,109 +1627,184 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
     window.display();
     sf::sleep(sf::seconds(2));
 
-    // 7. Solicitar el número de boletos a cancelar.
+    // 7. Solicitar el numero de boletos a cancelar con una caja de texto.
     sf::Text cancelPrompt("Cuantos boletos desea cancelar?", font, 24);
     cancelPrompt.setFillColor(TEXT_COLOR_EV);
     cancelPrompt.setPosition(50.f, 50.f);
+
     sf::RectangleShape cancelInputBox(sf::Vector2f(200.f, 40.f));
     cancelInputBox.setFillColor(sf::Color::White);
     cancelInputBox.setOutlineColor(sf::Color::Black);
     cancelInputBox.setOutlineThickness(1.f);
     cancelInputBox.setPosition(50.f, 120.f);
+
     sf::Text cancelInputText("", font, 24);
     cancelInputText.setFillColor(TEXT_COLOR_EV);
     cancelInputText.setPosition(55.f, 125.f);
+
+    // Botón "Aceptar" para confirmar cuántos boletos se van a cancelar
+    sf::RectangleShape aceptarCancelButton(sf::Vector2f(120.f, 40.f));
+    aceptarCancelButton.setFillColor(sf::Color::Green);
+    aceptarCancelButton.setPosition(50.f, 180.f);
+
+    sf::Text aceptarCancelText("Aceptar", font, 24);
+    aceptarCancelText.setFillColor(sf::Color::White);
+    {
+        sf::FloatRect bounds = aceptarCancelText.getLocalBounds();
+        aceptarCancelText.setPosition(
+            aceptarCancelButton.getPosition().x + (aceptarCancelButton.getSize().x - bounds.width) / 2.f - bounds.left,
+            aceptarCancelButton.getPosition().y + (aceptarCancelButton.getSize().y - bounds.height) / 2.f - bounds.top
+        );
+    }
+
     std::string cancelStr;
     bool cancelDone = false;
-    while (!cancelDone && window.isOpen()) {
+    int toCancel = 0;
+
+    while (!cancelDone && window.isOpen())
+    {
         sf::Event ev;
-        while (window.pollEvent(ev)) {
-            if (ev.type == sf::Event::Closed) { window.close(); return; }
-            if (ev.type == sf::Event::TextEntered) {
-                if (ev.text.unicode < 128) {
+        while (window.pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed)
+            {
+                window.close();
+                return;
+            }
+            if (ev.type == sf::Event::TextEntered)
+            {
+                if (ev.text.unicode < 128)
+                {
                     char c = static_cast<char>(ev.text.unicode);
-                    if (isdigit(c)) {
+                    if (std::isdigit(c))
+                    {
                         cancelStr.push_back(c);
                         cancelInputText.setString(cancelStr);
                     }
                 }
             }
-            if (ev.type == sf::Event::KeyPressed) {
-                if (ev.key.code == sf::Keyboard::Backspace) {
-                    if (!cancelStr.empty()) {
-                        cancelStr.pop_back();
-                        cancelInputText.setString(cancelStr);
-                    }
+            if (ev.type == sf::Event::KeyPressed)
+            {
+                if (ev.key.code == sf::Keyboard::Backspace && !cancelStr.empty())
+                {
+                    cancelStr.pop_back();
+                    cancelInputText.setString(cancelStr);
                 }
-                if (ev.key.code == sf::Keyboard::Enter) {
-                    try {
+                if (ev.key.code == sf::Keyboard::Enter)
+                {
+                    // Intentar parsear
+                    try
+                    {
                         int num = std::stoi(cancelStr);
                         if (num >= 1 && num <= purchasedTickets)
+                        {
+                            toCancel = num;
                             cancelDone = true;
-                        else {
+                        }
+                        else
+                        {
+                            // Mostrar error temporal
                             sf::Text err("Ingrese un numero entre 1 y " + std::to_string(purchasedTickets), font, 24);
                             err.setFillColor(sf::Color::Red);
-                            err.setPosition(50.f, 180.f);
+                            err.setPosition(50.f, 240.f);
                             window.clear(BG_COLOR_EV);
                             window.draw(cancelPrompt);
                             window.draw(cancelInputBox);
                             window.draw(cancelInputText);
+                            window.draw(aceptarCancelButton);
+                            window.draw(aceptarCancelText);
                             window.draw(err);
                             window.display();
                             sf::sleep(sf::seconds(2));
-                            cancelStr = "";
+                            cancelStr.clear();
                             cancelInputText.setString("");
                         }
                     }
-                    catch (...) {
+                    catch (...)
+                    {
+                        // Error de parseo
                         sf::Text err("Entrada invalida. Ingrese un numero.", font, 24);
                         err.setFillColor(sf::Color::Red);
-                        err.setPosition(50.f, 180.f);
+                        err.setPosition(50.f, 240.f);
                         window.clear(BG_COLOR_EV);
                         window.draw(cancelPrompt);
                         window.draw(cancelInputBox);
                         window.draw(cancelInputText);
+                        window.draw(aceptarCancelButton);
+                        window.draw(aceptarCancelText);
                         window.draw(err);
                         window.display();
                         sf::sleep(sf::seconds(2));
-                        cancelStr = "";
+                        cancelStr.clear();
                         cancelInputText.setString("");
                     }
                 }
             }
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                if (aceptarCancelButton.getGlobalBounds().contains(mousePos))
+                {
+                    // Validar
+                    try
+                    {
+                        int num = std::stoi(cancelStr);
+                        if (num >= 1 && num <= purchasedTickets)
+                        {
+                            toCancel = num;
+                            cancelDone = true;
+                        }
+                    }
+                    catch (...) { /* Ignorar; se muestra error abajo si no cumple. */ }
+                }
+            }
         }
+
         window.clear(BG_COLOR_EV);
         window.draw(cancelPrompt);
         window.draw(cancelInputBox);
         window.draw(cancelInputText);
+        window.draw(aceptarCancelButton);
+        window.draw(aceptarCancelText);
         window.display();
     }
-    int toCancel = std::stoi(cancelStr);
 
     // 8. Mostrar segmentos disponibles para el evento seleccionado.
     std::vector<sf::Text> segmentOptions;
-    int numSegs = segment.getSegmentCount().getAt(selectedEvent);
-    for (int i = 1; i <= numSegs; i++) {
+    int numSegs = segment.getSegmentCount().getAt(selectedEventIndex);
+    for (int i = 1; i <= numSegs; i++)
+    {
         std::ostringstream oss;
-        oss << i << ". " << segment.getSegmentsByEvent().getAt(selectedEvent).getAt(i).getName()
-            << " - Precio: $" << segment.getSegmentsByEvent().getAt(selectedEvent).getAt(i).getPrice();
+        oss << i << ". "
+            << segment.getSegmentsByEvent().getAt(selectedEventIndex).getAt(i).getName()
+            << " - Precio: $"
+            << segment.getSegmentsByEvent().getAt(selectedEventIndex).getAt(i).getPrice();
         sf::Text opt(oss.str(), font, 24);
         opt.setFillColor(TEXT_COLOR_EV);
         opt.setPosition(50.f, 100.f + (i - 1) * 40.f);
         segmentOptions.push_back(opt);
     }
+
     int chosenSegment = -1;
     bool segmentChosen = false;
-    while (window.isOpen() && !segmentChosen) {
+    while (window.isOpen() && !segmentChosen)
+    {
         sf::Event ev;
-        while (window.pollEvent(ev)) {
-            if (ev.type == sf::Event::Closed) { window.close(); return; }
-            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left) {
-                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x),
-                    static_cast<float>(ev.mouseButton.y));
-                for (int i = 0; i < segmentOptions.size(); i++) {
-                    if (segmentOptions[i].getGlobalBounds().contains(mousePos)) {
-                        chosenSegment = i + 1;
+        while (window.pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed)
+            {
+                window.close();
+                return;
+            }
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                for (int i = 0; i < (int)segmentOptions.size(); i++)
+                {
+                    if (segmentOptions[i].getGlobalBounds().contains(mousePos))
+                    {
+                        chosenSegment = i + 1; // 1-based
                         segmentChosen = true;
                         break;
                     }
@@ -1573,21 +1812,25 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
             }
         }
         window.clear(BG_COLOR_EV);
+
         sf::Text segTitle("Segmentos disponibles:", font, 28);
         segTitle.setFillColor(TEXT_COLOR_EV);
         segTitle.setPosition(50.f, 50.f);
         window.draw(segTitle);
-        for (const auto& opt : segmentOptions)
+
+        for (auto& opt : segmentOptions)
             window.draw(opt);
+
         window.display();
     }
 
     // 9. Obtener la sala correspondiente al segmento seleccionado.
-    std::tuple<int, int> seatingKey = std::make_tuple(selectedEvent, chosenSegment);
+    std::tuple<int, int> seatingKey = std::make_tuple(selectedEventIndex, chosenSegment);
     Seating* pSeating = nullptr;
     if (seatingMap.find(seatingKey) != seatingMap.end())
         pSeating = &seatingMap[seatingKey];
-    else {
+    else
+    {
         sf::Text errMsg("Error: No se pudo obtener la sala.", font, 24);
         errMsg.setFillColor(sf::Color::Red);
         errMsg.setPosition(50.f, 50.f);
@@ -1598,25 +1841,31 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         return;
     }
 
-    // 10. Solicitar la liberación de asientos de forma interactiva (haciendo clic sobre cada asiento vendido).
-    for (int i = 0; i < toCancel; i++) {
+    // 10. Solicitar la liberación de asientos de forma interactiva.
+    for (int i = 0; i < toCancel; i++)
+    {
         window.clear(BG_COLOR_EV);
         pSeating->displaySeats(window);
-        sf::Text seatPrompt("Seleccione el asiento vendido a cancelar (boleto " + std::to_string(i + 1) + ")", font, 24);
+
+        sf::Text seatPrompt("Seleccione el asiento vendido a cancelar (boleto "
+            + std::to_string(i + 1) + ")", font, 24);
         seatPrompt.setFillColor(TEXT_COLOR_EV);
         seatPrompt.setPosition(50.f, 20.f);
         window.draw(seatPrompt);
         window.display();
 
-        // Usar la función getSoldSeatSelection para que el usuario haga clic sobre un asiento vendido.
         std::pair<int, int> seat = getSoldSeatSelection(window, *pSeating);
-        if (seat.first == -1 || seat.second == -1) {
-            // Si se cierra la ventana o la selección es inválida, abortamos la cancelación.
+        if (seat.first == -1 || seat.second == -1)
+        {
+            // Si se cierra la ventana o la selección es inválida, abortamos.
             return;
         }
-        // Intentar liberar el asiento seleccionado.
-        if (pSeating->freeSeat(seat.first, seat.second)) {
-            sf::Text freedMsg("Asiento liberado correctamente para boleto " + std::to_string(i + 1), font, 24);
+
+        // Liberar el asiento
+        if (pSeating->freeSeat(seat.first, seat.second))
+        {
+            sf::Text freedMsg("Asiento liberado correctamente para boleto "
+                + std::to_string(i + 1), font, 24);
             freedMsg.setFillColor(TEXT_COLOR_EV);
             freedMsg.setPosition(50.f, 50.f);
             window.clear(BG_COLOR_EV);
@@ -1624,7 +1873,8 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
             window.display();
             sf::sleep(sf::seconds(1));
         }
-        else {
+        else
+        {
             sf::Text errMsg("Ese asiento no estaba vendido. Intente otro.", font, 24);
             errMsg.setFillColor(sf::Color::Red);
             errMsg.setPosition(50.f, 50.f);
@@ -1632,12 +1882,13 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
             window.draw(errMsg);
             window.display();
             sf::sleep(sf::seconds(2));
-            i--; // Repetir este ciclo si la liberación falla.
+            i--; // Repetir la selección
         }
     }
 
-    // 11. Actualizar la cantidad de boletos en el evento (usando el evento específico).
-    if (currentEvent.cancelTickets(idNumber, toCancel, window)) {
+    // 11. Actualizar la cantidad de boletos en el evento
+    if (currentEvent.cancelTickets(idNumber, toCancel, window))
+    {
         sf::Text successMsg("Se han cancelado los boletos correctamente.", font, 24);
         successMsg.setFillColor(TEXT_COLOR_EV);
         successMsg.setPosition(50.f, 50.f);
@@ -1646,7 +1897,8 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         window.display();
         sf::sleep(sf::seconds(2));
     }
-    else {
+    else
+    {
         sf::Text errorMsg("No fue posible cancelar los boletos.", font, 24);
         errorMsg.setFillColor(sf::Color::Red);
         errorMsg.setPosition(50.f, 50.f);
@@ -1656,27 +1908,50 @@ void Sale::cancelPurchase(User& user, Event& event, Segment& segment,
         sf::sleep(sf::seconds(2));
     }
 
-    // 12. Mostrar mensaje final y esperar que el usuario presione ENTER para volver al menú.
-    sf::Text finalMsg("Presione ENTER para continuar...", font, 24);
+    // 12. Mensaje final con botón "Volver"
+    sf::Text finalMsg("Operacion finalizada. Presione 'Volver' para continuar...", font, 24);
     finalMsg.setFillColor(TEXT_COLOR_EV);
-    finalMsg.setPosition(50.f, window.getSize().y - 50.f);
-    window.clear(BG_COLOR_EV);
-    window.draw(finalMsg);
-    window.display();
+    finalMsg.setPosition(50.f, 50.f);
 
-    bool proceed = false;
-    while (window.isOpen() && !proceed) {
+    sf::RectangleShape volverButton2(sf::Vector2f(120.f, 40.f));
+    volverButton2.setFillColor(sf::Color::Red);
+    volverButton2.setPosition(50.f, 120.f);
+
+    sf::Text volverText2("Volver", font, 24);
+    volverText2.setFillColor(sf::Color::White);
+    {
+        sf::FloatRect bounds = volverText2.getLocalBounds();
+        volverText2.setPosition(
+            volverButton2.getPosition().x + (volverButton2.getSize().x - bounds.width) / 2.f - bounds.left,
+            volverButton2.getPosition().y + (volverButton2.getSize().y - bounds.height) / 2.f - bounds.top
+        );
+    }
+
+    bool finish = false;
+    while (window.isOpen() && !finish)
+    {
         sf::Event ev;
-        while (window.pollEvent(ev)) {
-            if (ev.type == sf::Event::KeyPressed && ev.key.code == sf::Keyboard::Enter) {
-                proceed = true;
-                break;
-            }
-            if (ev.type == sf::Event::Closed) {
+        while (window.pollEvent(ev))
+        {
+            if (ev.type == sf::Event::Closed)
+            {
                 window.close();
                 return;
             }
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
+            {
+                sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
+                if (volverButton2.getGlobalBounds().contains(mousePos))
+                {
+                    finish = true; // Salimos
+                }
+            }
         }
+        window.clear(BG_COLOR_EV);
+        window.draw(finalMsg);
+        window.draw(volverButton2);
+        window.draw(volverText2);
+        window.display();
     }
 }
 
@@ -1755,7 +2030,7 @@ int Sale::chooseEvent(Event& event, sf::RenderWindow& window) {
 
 void cancelSelectedSeats(sf::RenderWindow& window, Seating* pSeating, int toCancel, int* purchasedRows, char* purchasedCols, sf::Font& font)
 {
-    // Se asume que "pSeating" apunta a la sala del segmento seleccionado.
+  
     for (int i = 0; i < toCancel; i++)
     {
         // Mostrar la sala y esperar que el usuario haga clic sobre un asiento vendido.

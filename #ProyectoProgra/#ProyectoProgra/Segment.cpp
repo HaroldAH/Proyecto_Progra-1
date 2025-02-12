@@ -8,14 +8,15 @@
 using namespace std;
 
 // Definiciones de colores (ajusta según tus necesidades)
-static const sf::Color BG_COLOR_EV(200, 200, 200);
-static const sf::Color HEADER_COLOR_EV(160, 160, 160);
-static const sf::Color TEXT_COLOR_EV = sf::Color::Black;
-static const sf::Color HIGHLIGHT_COLOR_EV = sf::Color::Red;
+static const sf::Color BG_COLOR_EV(50, 50, 50);
+static const sf::Color HEADER_COLOR_EV(70, 70, 70);
+static const sf::Color TEXT_COLOR_EV = sf::Color::White;
+static const sf::Color HIGHLIGHT_COLOR_EV = sf::Color(255, 140, 0);
 
-/////////////////////////////////////////
+
+
 // Función auxiliar: Solicitar una cadena usando SFML
-/////////////////////////////////////////
+
 std::string getValidStringInputSFML(sf::RenderWindow& win, const std::string& prompt) {
     sf::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
@@ -82,9 +83,9 @@ std::string getValidStringInputSFML(sf::RenderWindow& win, const std::string& pr
     return inputStr;
 }
 
-/////////////////////////////////////////
-// Función auxiliar: Solicitar un entero usando SFML
-/////////////////////////////////////////
+
+// Función auxiliar: Solicitar un entero 
+
 int getValidIntInputSFML(sf::RenderWindow& win, const std::string& prompt) {
     sf::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
@@ -155,9 +156,9 @@ int getValidIntInputSFML(sf::RenderWindow& win, const std::string& prompt) {
     return value;
 }
 
-/////////////////////////////////////////
-// Función auxiliar: Solicitar un float usando SFML
-/////////////////////////////////////////
+
+// Función auxiliar: Solicitar un float 
+
 float getValidFloatInputSFML(sf::RenderWindow& win, const std::string& prompt) {
     sf::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
@@ -227,9 +228,8 @@ float getValidFloatInputSFML(sf::RenderWindow& win, const std::string& prompt) {
     return value;
 }
 
-/////////////////////////////////////////
 // Métodos de la clase Segment
-/////////////////////////////////////////
+
 
 Segment::Segment() {
     segmentName = "";
@@ -283,9 +283,8 @@ void Segment::setPrice(float aPrice) {
     price = aPrice;
 }
 
-/////////////////////////////////////////
 // Gestionar (crear/ampliar) las listas de segmentos según el número de eventos
-/////////////////////////////////////////
+
 void Segment::manageSegments(Segment& segment, int& numEvents) {
     if (numEvents <= 0) {
         cout << "No hay eventos disponibles." << endl;
@@ -309,9 +308,7 @@ void Segment::manageSegments(Segment& segment, int& numEvents) {
     segmentCapacity = numEvents;
 }
 
-/////////////////////////////////////////
-// Función miembro que solicita datos para un segmento mediante SFML
-/////////////////////////////////////////
+
 void Segment::addSegmentData(Segment& segment, int index, sf::RenderWindow& win)
 {
     // 1. Encabezado (barra superior de 100 px)
@@ -341,19 +338,19 @@ void Segment::addSegmentData(Segment& segment, int index, sf::RenderWindow& win)
 
     // Etiquetas
     sf::Text labelName("Nombre del Segmento:", font, 18);
-    labelName.setFillColor(sf::Color::Black);
+    labelName.setFillColor(sf::Color::White);
     labelName.setPosition(formStartX, formStartY);
 
     sf::Text labelRows("Numero de Filas:", font, 18);
-    labelRows.setFillColor(sf::Color::Black);
+    labelRows.setFillColor(sf::Color::White);
     labelRows.setPosition(formStartX, formStartY + 60.f);
 
     sf::Text labelSeats("Cantidad de Asientos:", font, 18);
-    labelSeats.setFillColor(sf::Color::Black);
+    labelSeats.setFillColor(sf::Color::White);
     labelSeats.setPosition(formStartX, formStartY + 120.f);
 
     sf::Text labelPrice("Precio del Segmento:", font, 18);
-    labelPrice.setFillColor(sf::Color::Black);
+    labelPrice.setFillColor(sf::Color::White);
     labelPrice.setPosition(formStartX, formStartY + 180.f);
 
     // Cajas de texto
@@ -686,9 +683,7 @@ void Segment::saveSegments(sf::RenderWindow& win, Segment& segment, int events, 
     // Asegurarnos de que la estructura interna tenga espacio para 'events' eventos
     manageSegments(segment, events);
 
-    // ==============================================================
-    // Creamos un encabezado de 100 px con el texto "Configuración de Segmentos"
-    // ==============================================================
+    
     const float headerHeight = 100.f;
     sf::RectangleShape header(sf::Vector2f(win.getSize().x, headerHeight));
     header.setFillColor(HEADER_COLOR_EV);
@@ -714,7 +709,7 @@ void Segment::saveSegments(sf::RenderWindow& win, Segment& segment, int events, 
     float formStartY = headerHeight + 50.f;
 
     sf::Text instruction("", font, 20);
-    instruction.setFillColor(sf::Color::Black);
+    instruction.setFillColor(sf::Color::White);
     instruction.setPosition(formStartX, formStartY);
 
     // Cajas para mostrar/ingresar cantidad de segmentos
@@ -748,9 +743,7 @@ void Segment::saveSegments(sf::RenderWindow& win, Segment& segment, int events, 
     bool haveSegmentsCount = false;
     std::string segmentsCountStr;
 
-    // ===================================================================
-    // Determinar si es para un evento puntual (eventIndex > 0) o para todos
-    // ===================================================================
+   
     auto eventNode = segmentsByEvent.getHead();
     auto countNode = segmentCount.getHead();
     for (int i = 1; i < eventIndex; i++) {
@@ -850,9 +843,7 @@ void Segment::saveSegments(sf::RenderWindow& win, Segment& segment, int events, 
         win.display();
     }
 
-    // ====================================================
-    //  Si ya tenemos la cantidad de segmentos, abrimos formularios
-    // ====================================================
+    
     if (haveSegmentsCount) {
         int numSegments = countNode->data;
         // Bucle para agregar cada uno de los segmentos
@@ -863,15 +854,13 @@ void Segment::saveSegments(sf::RenderWindow& win, Segment& segment, int events, 
         }
     }
     else {
-        // El usuario canceló o algo similar (numSegments no válido)
+        
         return;
     }
 }
 
 
-/////////////////////////////////////////
-// Métodos de validación de entrada vía consola (para otros usos)
-/////////////////////////////////////////
+
 int Segment::getValidIntInput() {
     int input;
     while (true) {

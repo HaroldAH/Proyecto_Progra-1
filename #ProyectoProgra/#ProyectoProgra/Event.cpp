@@ -13,14 +13,13 @@ using namespace std;
 namespace sfml = sf;  // Para usar sfml:: en vez de sf::
 
 // Colores para la interfaz
-static const sfml::Color BG_COLOR_EV(200, 200, 200);
-static const sfml::Color HEADER_COLOR_EV(160, 160, 160);
-static const sfml::Color TEXT_COLOR_EV = sfml::Color::Black;
-static const sfml::Color HIGHLIGHT_COLOR_EV = sfml::Color::Red;
+static const sfml::Color BG_COLOR_EV(50, 50, 50);     // Fondo oscuro suave
+static const sfml::Color HEADER_COLOR_EV(80, 80, 80); // Encabezado gris oscuro
+static const sfml::Color TEXT_COLOR_EV(230, 230, 230); // Texto en gris claro
+static const sfml::Color HIGHLIGHT_COLOR_EV(255, 120, 0); // Resaltado en naranja
 
-// ---------------------------------------------------------------------------
-//                          IMPLEMENTACIÓN DE Event
-// ---------------------------------------------------------------------------
+
+
 Event::Event() {
     name = "";
     date = "";
@@ -45,6 +44,7 @@ void Event::initializeTracking(int maxUsers) {
         userIds.insertAtEnd("");
     }
 }
+
 int Event::getTicketsPurchasedByUser(const string& userId) {
     List<int>::NodePtr purchaseNode = purchasesByUser.getHead();
     List<string>::NodePtr userNode = userIds.getHead();
@@ -147,7 +147,6 @@ bool Event::cancelTickets(string userId, int numTickets, sfml::RenderWindow& win
 
 
 
-// ---------------------------------------------------------------------------
 //  Asigna 'numEvents' al objeto 'evt' (ejemplo muy sencillo)
 void Event::assignEvents(Event& evt, int numEvents) {
     if (numEvents <= 0) {
@@ -173,19 +172,25 @@ int Event::getValidIntInput() {
 }
 
 bool Event::isValidDate(string& date) {
-    // EXACTAMENTE LA MISMA validación que ya tenías
+    // Mismo largo
     if (date.length() != 10) return false;
 
+    // Mismo formato dd/mm/yyyy
     for (int i = 0; i < 10; i++) {
         if ((i == 2 || i == 5) && date[i] != '/') return false;
         if (i != 2 && i != 5 && (date[i] < '0' || date[i] > '9')) return false;
     }
-    // Validar que empiece con "20" en año, por ejemplo
-    if (date[6] != '2' || date[7] != '0') return false;
+
+ 
+    int year = (date[6] - '0') * 1000 + (date[7] - '0') * 100
+        + (date[8] - '0') * 10 + (date[9] - '0');
+
+    if (year < 2025) return false;
 
     int day = (date[0] - '0') * 10 + (date[1] - '0');
     int month = (date[3] - '0') * 10 + (date[4] - '0');
 
+   
     if (month < 1 || month > 12) return false;
     if (day < 1 || day > 31) return false;
 
@@ -204,10 +209,6 @@ string Event::getValidStringInput(const string& prompt) {
     }
 }
 
-// ----------------------------------------------------------------------
-// Método que recibe una ventana SFML para pedir datos (nombre, fecha, etc.)
-// y luego llama a "segment.saveSegments(...)" al final.
-// * Incluye verificación para rechazar una fecha inválida. *
 void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
     // Cambiar título de la ventana
     win.setTitle("Agregar Nuevo Evento");
@@ -221,9 +222,9 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
 
     // Definir dimensiones y colores
     const float headerHeight = 100.f;
-    sfml::Color bgColor(200, 200, 200);
-    sfml::Color headerColor(160, 160, 160);
-    sfml::Color textColor = sfml::Color::Black;
+    sfml::Color bgColor(50, 50, 50);      // Fondo oscuro igual que en Menu.cpp
+    sfml::Color headerColor(70, 70, 70);  // Encabezado gris igual que en Menu.cpp
+    sfml::Color textColor = sfml::Color::White;
     sfml::Color highlightColor = sfml::Color::Red;
 
     // Crear un header
@@ -253,7 +254,7 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
     boxName.setOutlineThickness(1.f);
     boxName.setPosition(formStartX, formStartY + 30.f);
     sfml::Text inputName("", font, 20);
-    inputName.setFillColor(textColor);
+    inputName.setFillColor(sfml::Color::Black);
     inputName.setPosition(boxName.getPosition().x + 5.f, boxName.getPosition().y + 2.f);
 
     // Caja para la fecha
@@ -266,7 +267,7 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
     boxDate.setOutlineThickness(1.f);
     boxDate.setPosition(formStartX, formStartY + 80.f + 30.f);
     sfml::Text inputDate("", font, 20);
-    inputDate.setFillColor(textColor);
+    inputDate.setFillColor(sfml::Color::Black);
     inputDate.setPosition(boxDate.getPosition().x + 5.f, boxDate.getPosition().y + 2.f);
     sfml::Text dateErrorText("", font, 12);
     dateErrorText.setFillColor(sfml::Color::Red);
@@ -282,7 +283,7 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
     boxDesc.setOutlineThickness(1.f);
     boxDesc.setPosition(formStartX, formStartY + 160.f + 30.f);
     sfml::Text inputDesc("", font, 20);
-    inputDesc.setFillColor(textColor);
+    inputDesc.setFillColor(sfml::Color::Black);
     inputDesc.setPosition(boxDesc.getPosition().x + 5.f, boxDesc.getPosition().y + 2.f);
 
     // Botones "Guardar" y "Volver"
@@ -354,7 +355,7 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
                         else
                         {
                             dateErrorText.setString("");
-                            // **Importante:** En lugar de modificar el objeto actual (this),
+                           
                             // creamos un nuevo objeto de tipo Event y lo llenamos con los datos ingresados.
                             Event newEvent;
                             newEvent.setName(strName);
@@ -367,6 +368,19 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
                             // Se invoca la función de segmentos para el nuevo evento.
                             // Se asume que segment.saveSegments acepta (ventana, segment, indiceEvento, indiceEvento)
                             segment.saveSegments(win, segment, this->getEventCount(), this->getEventCount());
+                            
+                            sfml::Text successMsg("Evento guardado", font, 24);
+                            successMsg.setFillColor(sfml::Color::Red);
+                            successMsg.setPosition(50.f, 300.f);  // Ajusta la posición si es necesario
+
+                            // Mostrar mensaje por 1 segundo
+                            win.clear(bgColor);
+                            win.draw(header);
+                            win.draw(headerTitle);
+                            win.draw(successMsg);
+                            win.display();
+                            sfml::sleep(sfml::seconds(1));
+
                             inEventForm = false;
                         }
                     }

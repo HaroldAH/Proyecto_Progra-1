@@ -18,7 +18,7 @@ Discount::Discount(float percentage, int count) {
 }
 
 Discount::~Discount() {
-    // La lista se libera automáticamente con su destructor
+  
 }
 
 void Discount::configure(float percentage, int count) {

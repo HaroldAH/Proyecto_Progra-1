@@ -3,54 +3,49 @@
 #include "Menu.h"
 #include <iostream>
 
-
-
-
-// Alias para evitar conflictos entre las clases de SFML y las del proyecto
 namespace sfml = sf;
 
 #include "Menu.h"
 
-// Colores usados en el menú
-static const sfml::Color BG_COLOR(200, 200, 200);      // Fondo gris
-static const sfml::Color HEADER_COLOR(160, 160, 160);  // Encabezado gris medio
-static const sfml::Color BOX_COLOR(230, 230, 230);     // Botones (no usado en este ejemplo)
-static const sfml::Color HIGHLIGHT_COLOR(255, 0, 0);   // Rojo para resaltar
-static const sfml::Color TEXT_COLOR(sfml::Color::Black);// Texto negro
+static const sfml::Color BG_COLOR(50, 50, 50);      
+static const sfml::Color HEADER_COLOR(70, 70, 70);  
+static const sfml::Color BOX_COLOR(90, 90, 90);     
+static const sfml::Color HIGHLIGHT_COLOR(255, 140, 0); 
+static const sfml::Color TEXT_COLOR(sfml::Color::White); 
 
 void Menu::showMenu() {
     // Crear la ventana principal si aún no existe
     if (!window) {
-        // Se crea la ventana con el tamaño especificado sin maximizarla
+     
         window = new sfml::RenderWindow(sfml::VideoMode(1200, 600), "Sistema de Ventas de Entradas", sfml::Style::Close);
-        window->setKeyRepeatEnabled(true);  // Habilita la repetición de teclas
+        window->setKeyRepeatEnabled(true);  
     }
 
-    // Cargar la fuente (asegúrate de que la ruta sea correcta)
+   
     sfml::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
         std::cerr << "Error: No se pudo cargar la fuente.\n";
         return;
     }
 
-    // Cargar el logo usando la ruta completa (usando raw string literal)
+   
     sfml::Texture logoTexture;
     if (!logoTexture.loadFromFile(R"(C:\Users\Ericka\Desktop\CURSOS\Programacion I Verano\trabajando con sfml\Proyecto_Progra-1\#ProyectoProgra\#ProyectoProgra\resourses\Logo-UNA-Rojo_FondoTransparente.png)")) {
         std::cerr << "Error: No se pudo cargar la imagen del logo.\n";
-        // Puedes optar por continuar sin el logo si lo deseas
+
     }
     sfml::Sprite logoSprite;
     logoSprite.setTexture(logoTexture);
-    // Reducir el tamaño del logo; ajusta el factor de escala según lo necesites (en este ejemplo se usa 0.2 en ambos ejes)
+    
     logoSprite.setScale(0.2f, 0.2f);
 
-    // Sección del header: área de 100 píxeles dividida en dos filas
+    
     const float headerHeight = 100.f;
     sfml::RectangleShape header(sfml::Vector2f(1200.f, headerHeight));
     header.setFillColor(HEADER_COLOR);
     header.setPosition(0.f, 0.f);
 
-    // Etiquetas para las opciones del menú principal
+  
     const int numOptions = 9;
     std::string optionLabels[numOptions] = {
         "Configurar Evento",
@@ -66,7 +61,7 @@ void Menu::showMenu() {
 
     sfml::Text headerText[numOptions];
 
-    // Distribuir las opciones en el encabezado en dos filas:
+  
     const int row1Count = 5;
     const int row2Count = 4;
     float row1Spacing = 1200.f / row1Count;
@@ -92,7 +87,7 @@ void Menu::showMenu() {
     }
 
     // Texto central de bienvenida
-    sfml::Text welcomeText("Bienvenido\nSistema de ventas de entrada\nDesarrollado por:", font, 30);
+    sfml::Text welcomeText("Bienvenido\nSistema de ventas de entrada\nDesarrollado por:\nHarold Avila.\nCristian Cordero.", font, 30);
     welcomeText.setFillColor(TEXT_COLOR);
     welcomeText.setStyle(sfml::Text::Bold);
     welcomeText.setPosition(200.f, 200.f);
@@ -129,8 +124,6 @@ void Menu::showMenu() {
             }
         }
 
-        // Actualizar la posición del logo para mantenerlo en la esquina inferior derecha
-        // con un margen de 10 píxeles desde la derecha y 30 píxeles desde abajo.
         sf::Vector2u winSize = window->getSize();
         sf::FloatRect logoGlobalBounds = logoSprite.getGlobalBounds();
         logoSprite.setPosition(winSize.x - logoGlobalBounds.width - 10, winSize.y - logoGlobalBounds.height - 30);
@@ -146,24 +139,24 @@ void Menu::showMenu() {
         window->display();
     }
 }
-// Ejecuta la acción correspondiente a cada opción
+
 void Menu::executeOption(int option, sfml::RenderWindow& window) {
    
     switch (option) {
     case 1:
-        // Configurar evento
+      
         configureEvent(event, segment);
         break;
     case 2:
-        // Configurar descuentos (ahora con submenú SFML)
+     
         showDiscountMenuSFML(discount);
         break;
     case 3:
-        // Vender entrada
-        sellTicket(user, window);  // Pasamos la ventana aquí
+        
+        sellTicket(user, window);  
         break;
     case 4:
-        // Consultar ventas
+        
         seating.checkSales(event, segment, seatingMap,window);
         break;
     case 5:
@@ -171,21 +164,17 @@ void Menu::executeOption(int option, sfml::RenderWindow& window) {
         sale.cancelPurchase(user, event, segment, seatingMap, window);
         break;
     case 6:
-        // Acerca de
+     
         showAbout();
         break;
     case 7:
-        // Preguntas y Respuestas (FAQ)
+       
         showFaqMenuSFML();
         break;
     case 8:
-        // Salir
-        std::cout << "Saliendo del programa. Gracias!" << std::endl;
         window.close();
         break;
     case 9:
-        // Actualizar reporte
-        std::cout << "Opción 9: Actualizar Reporte\n";
         updateReport();
         break;
     default:
@@ -306,7 +295,7 @@ void Menu::showDiscountMenuSFML(Discount& discount)
         win.draw(titleText);
         win.display();
     }
-    // Al salir del submenú, restablecemos el título del menú principal
+  
     win.setTitle("Sistema de Ventas de Entradas");
 }
 
@@ -445,7 +434,7 @@ void Menu::listEventAndSegments(Event& event, Segment& segment)
         return;
     }
 
-    // Encabezado de 100 píxeles (sin const)
+    // Encabezado de 100 píxeles
     float headerHeight = 100.f;
     sf::RectangleShape header(sf::Vector2f(1200.f, headerHeight));
     header.setFillColor(HEADER_COLOR);
@@ -475,17 +464,14 @@ void Menu::listEventAndSegments(Event& event, Segment& segment)
         backButtonText.setPosition(btnX, btnY);
     }
 
-    // Variable donde construiremos la información a mostrar
+    // Construir la información a mostrar
     std::string info;
-
-    // Verificar si hay eventos
     if (event.getEventCount() == 0)
     {
         info = "No hay eventos guardados.\n\nPresione \"Volver\" para regresar...";
     }
     else
     {
-        // Acceder a las estructuras de segmentos
         List<List<Segment>>& segmentsByEvent = segment.getSegmentsByEvent();
         List<int>& segmentCounts = segment.getSegmentCount();
 
@@ -498,7 +484,6 @@ void Menu::listEventAndSegments(Event& event, Segment& segment)
             info += "  Descripcion: " + event.getEvents().getAt(i).getDescription() + "\n";
             info += "  Segmentos asociados:\n";
 
-            // Verificar si tiene segmentos
             if (segmentCounts.getAt(i) == 0 || segmentsByEvent.getAt(i).getHead() == nullptr)
             {
                 info += "    - No tiene segmentos asignados.\n";
@@ -506,27 +491,40 @@ void Menu::listEventAndSegments(Event& event, Segment& segment)
                 continue;
             }
 
-            // Recorrer los segmentos de cada evento
             for (int j = 1; j <= segmentCounts.getAt(i); j++)
             {
-                // Aquí removemos el const
                 Segment seg = segmentsByEvent.getAt(i).getAt(j);
-
                 info += "    Segmento #" + std::to_string(j) + ":\n";
                 info += "      Nombre: " + seg.getName() + "\n";
                 info += "      Filas: " + std::to_string(seg.getRows()) + "\n";
                 info += "      Asientos por fila: " + std::to_string(seg.getSeats()) + "\n";
-                info += "      Precio: " + std::to_string(seg.getPrice()) + "\n";
+                std::ostringstream precioStream;
+                precioStream << std::fixed << std::setprecision(2) << seg.getPrice();
+                info += "      Precio: $" + precioStream.str() + "\n";
             }
             info += "--------------------------\n\n";
         }
-        info += "\nPresione \"Volver\" para regresar...";
+        info += "\n";
     }
 
-    // Texto que mostrará toda la información
+    // Zona de visualización del texto:
+    // Se reserva un área desde infoStartY hasta el fondo de la ventana.
+    float infoStartY = headerHeight + 80.f;
+    float availableHeight = static_cast<float>(win.getSize().y) - infoStartY;
+
+    // Configuramos el texto a mostrar, ubicado en coordenadas locales de la vista.
     sf::Text infoText(info, font, 18);
     infoText.setFillColor(TEXT_COLOR);
-    infoText.setPosition(50.f, headerHeight + 80.f);
+    infoText.setPosition(50.f, 0.f); // Posición relativa a la vista
+
+    // Variables para el desplazamiento vertical
+    float scrollOffset = 0.f;
+    const float scrollSpeed = 20.f;
+    float textHeight = infoText.getLocalBounds().height;
+
+    // Agregamos un margen inferior para que la instrucción "Volver" quede un poco más arriba.
+    float bottomMargin = 20.f;
+    float minOffset = (textHeight > availableHeight) ? (availableHeight - textHeight + bottomMargin) : 0.f;
 
     bool inShowScreen = true;
     while (inShowScreen && win.isOpen())
@@ -549,13 +547,33 @@ void Menu::listEventAndSegments(Event& event, Segment& segment)
                     inShowScreen = false;
                 }
             }
+            // Manejo del desplazamiento con la rueda del ratón
+            if (ev.type == sf::Event::MouseWheelScrolled)
+            {
+                scrollOffset -= ev.mouseWheelScroll.delta * scrollSpeed;
+                if (scrollOffset < minOffset)
+                    scrollOffset = minOffset;
+                if (scrollOffset > 0)
+                    scrollOffset = 0;
+            }
         }
+
         win.clear(BG_COLOR);
+        // Dibujamos primero los elementos fijos en la vista por defecto.
+        win.setView(win.getDefaultView());
         win.draw(header);
         win.draw(headerTitle);
         win.draw(backButton);
         win.draw(backButtonText);
+
+        // Creamos una vista para la zona de información que limita el área de dibujo.
+        sf::View infoView(sf::FloatRect(0, 0, static_cast<float>(win.getSize().x), availableHeight));
+        infoView.setViewport(sf::FloatRect(0.f, infoStartY / win.getSize().y, 1.f, availableHeight / win.getSize().y));
+        infoView.setCenter(win.getSize().x / 2.f, availableHeight / 2.f - scrollOffset);
+        win.setView(infoView);
         win.draw(infoText);
+
+        win.setView(win.getDefaultView());
         win.display();
     }
 
@@ -579,10 +597,9 @@ void Menu::showAbout() {
     if (!window)
         return;
 
-    // Cambiar el título de la ventana para la sección "Acerca de"
     window->setTitle("Acerca de - Sistema de Ventas de Entradas");
 
-    // Crear el objeto Music y cargar la canción de Morat
+  
     Music moratMusic;
     std::string musicPath = "C:/Users/Ericka/Desktop/CURSOS/Programacion I Verano/trabajando con sfml/Proyecto_Progra-1/#ProyectoProgra/#ProyectoProgra/resourses/umbrella.ogg";
     if (!moratMusic.loadMusic(musicPath)) {
@@ -613,9 +630,9 @@ void Menu::showAbout() {
 
     // Texto con la información del proyecto
     std::string aboutInfo =
-        "Integrantes del Proyecto:\n"
-        "  - Harold Avila Hernandez\n"
-        "  - Cristhian Cordero Varela\n\n"
+        "Integrantes del Proyecto:\n\n"
+        "  - Harold Avila Hernandez.\n"
+        "  - Cristhian Cordero Varela.\n\n"
         "Presione cualquier tecla o haga clic para volver al menú.";
     sf::Text aboutText(aboutInfo, font, 30);
     aboutText.setFillColor(TEXT_COLOR);
@@ -664,7 +681,7 @@ int Menu::readIntInRange(int min, int max, const std::string& prompt) {
 void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     std::map<std::tuple<int, int>, Seating>& seatingMap)
 {
-    // Usamos la ventana principal
+
     sf::RenderWindow& win = *window;
     win.setTitle("Modificar o Eliminar Segmentos");
 
@@ -675,13 +692,9 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         return;
     }
 
-    // ======================================================================
-    // Botón "Volver" en la parte superior (siempre visible)
-    // ======================================================================
-    // Lo posicionamos en la esquina superior derecha dentro del header.
     sf::RectangleShape backButton(sf::Vector2f(120.f, 40.f));
     backButton.setFillColor(sf::Color(150, 150, 150));
-    // Colocarlo, por ejemplo, a 20 píxeles del borde superior y derecho:
+  
     backButton.setPosition(1200.f - 140.f, 20.f);
 
     sf::Text backButtonText("Volver", font, 20);
@@ -693,9 +706,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         backButtonText.setPosition(btnX, btnY);
     }
 
-    // ======================================================================
-    // STATE 1: Mostrar listado de eventos para elegir uno
-    // ======================================================================
+
     float headerHeight = 100.f;
     sf::RectangleShape header(sf::Vector2f(1200.f, headerHeight));
     header.setFillColor(HEADER_COLOR);
@@ -709,13 +720,36 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         float posY = (headerHeight - b.height) / 2.f - b.top;
         headerTitle.setPosition(posX, posY);
     }
+    // Verificar si hay eventos antes de continuar
+    if (event.getEventCount() == 0) {
+        sf::Text noEventsText("No hay eventos disponibles.", font, 24);
+        noEventsText.setFillColor(sf::Color::White);
+        noEventsText.setPosition(50.f, headerHeight + 50.f);
+
+        sf::Clock clock; // Reloj para contar el tiempo
+        while (clock.getElapsedTime().asSeconds() < 1.0f && win.isOpen()) { // Espera 1 segundo
+            sf::Event ev;
+            while (win.pollEvent(ev)) {
+                if (ev.type == sf::Event::Closed) {
+                    win.close();
+                    return;
+                }
+            }
+            win.clear(BG_COLOR);
+            win.draw(header);
+            win.draw(headerTitle);
+            win.draw(noEventsText);
+            win.display();
+        }
+        return; // Salir de la función después de 1 segundo
+    }
+
 
     sf::Text chooseEventText("Elige un evento:", font, 20);
-    chooseEventText.setFillColor(sf::Color::Black);
+    chooseEventText.setFillColor(sf::Color::White);
     chooseEventText.setPosition(50.f, headerHeight + 50.f);
 
-    // (El botón "Volver" ya se muestra arriba en el header)
-
+   
     std::vector<sf::Text> eventTexts;
     {
         float eventStartY = headerHeight + 100.f;
@@ -723,7 +757,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         {
             std::string evtName = std::to_string(i) + ". " + event.getEvents().getAt(i).getName();
             sf::Text t(evtName, font, 20);
-            t.setFillColor(sf::Color::Black);
+            t.setFillColor(sf::Color::White);
             float x = 50.f;
             float y = eventStartY + (i - 1) * 50.f;
             t.setPosition(x, y);
@@ -750,13 +784,13 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
                     if (t.getGlobalBounds().contains(mousePos))
                         t.setFillColor(HIGHLIGHT_COLOR);
                     else
-                        t.setFillColor(sf::Color::Black);
+                        t.setFillColor(sf::Color::White);
                 }
             }
             if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
             {
                 sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x), static_cast<float>(ev.mouseButton.y));
-                // Si se hace clic en el botón "Volver" (que ya está en la parte superior)
+                
                 if (backButton.getGlobalBounds().contains(mousePos))
                 {
                     return;
@@ -799,7 +833,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     {
         sf::Text noSegmentsText("El evento seleccionado no tiene segmentos.\nDesea registrar un nuevo segmento?\n(Click en Si/No)",
             font, 20);
-        noSegmentsText.setFillColor(sf::Color::Black);
+        noSegmentsText.setFillColor(sf::Color::White);
         noSegmentsText.setPosition(50.f, 200.f);
 
         sf::RectangleShape yesButton(sf::Vector2f(60.f, 40.f));
@@ -871,7 +905,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     // ======================================================================
     sf::Text chooseSegmentText("Segmentos para el evento " + std::to_string(chosenEventIndex) +
         ":\nElige uno para Modificar/Eliminar", font, 20);
-    chooseSegmentText.setFillColor(sf::Color::Black);
+    chooseSegmentText.setFillColor(sf::Color::White);
     chooseSegmentText.setPosition(50.f, 110.f);
 
     std::vector<sf::Text> segmentTexts;
@@ -885,7 +919,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
                 ", Asientos:" + std::to_string(seg.getSeats()) +
                 ", Precio:" + std::to_string(seg.getPrice()) + ")";
             sf::Text t(segStr, font, 20);
-            t.setFillColor(sf::Color::Black);
+            t.setFillColor(sf::Color::White);
             t.setPosition(50.f, segmentStartY + (j - 1) * 50.f);
             segmentTexts.push_back(t);
         }
@@ -910,7 +944,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
                     if (txt.getGlobalBounds().contains(m))
                         txt.setFillColor(HIGHLIGHT_COLOR);
                     else
-                        txt.setFillColor(sf::Color::Black);
+                        txt.setFillColor(sf::Color::White);
                 }
             }
             if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
@@ -969,7 +1003,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     sf::Text actionPrompt;
     actionPrompt.setFont(font);
     actionPrompt.setCharacterSize(20);
-    actionPrompt.setFillColor(sf::Color::Black);
+    actionPrompt.setFillColor(sf::Color::White);
     actionPrompt.setPosition(50.f, 420.f);
     if (seatsSoldFlag)
         actionPrompt.setString("El segmento tiene entradas vendidas,\nsolo puede actualizar el precio.");
@@ -1060,16 +1094,10 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         return;
     }
 
-    // ======================================================================
-    // STATE 5: Verificar si hay asientos vendidos (seatsSold)
-    // ======================================================================
-    // La variable seatsSoldFlag ya contiene este valor.
-    // Referencia al segmento seleccionado
+    
     Segment& segRef = segmentsByEvent.getAt(chosenEventIndex).getAt(chosenSegmentIndex);
 
-    // ======================================================================
-    // STATE 6: Actualizar o eliminar el segmento
-    // ======================================================================
+   
     if (actionChosen == 1)
     {
         if (seatsSoldFlag)
@@ -1086,7 +1114,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
 
             sf::Text pricePrompt("El segmento tiene entradas vendidas;\nsolo puede actualizar el precio.\nDigite el nuevo precio y Enter:",
                 font, 20);
-            pricePrompt.setFillColor(sf::Color::Black);
+            pricePrompt.setFillColor(sf::Color::White);
             pricePrompt.setPosition(50.f, 110.f);
 
             sf::Text priceInput("", font, 20);
@@ -1152,7 +1180,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
 
                 sf::Text okText("Precio actualizado exitosamente.\nClick 'Volver' para salir.",
                     font, 20);
-                okText.setFillColor(sf::Color::Black);
+                okText.setFillColor(sf::Color::White);
                 okText.setPosition(50.f, 220.f);
 
                 bool waitOk = true;
@@ -1191,7 +1219,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
             bool doneEditing = false;
             std::string rowStr, seatsStr, priceStr;
             sf::Text rowPrompt("Nueva cantidad de filas:", font, 20);
-            rowPrompt.setFillColor(sf::Color::Black);
+            rowPrompt.setFillColor(sf::Color::White);
             rowPrompt.setPosition(50.f, 110.f);
 
             sf::RectangleShape rowBox(sf::Vector2f(100.f, 30.f));
@@ -1205,7 +1233,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
             rowInput.setPosition(55.f, 145.f);
 
             sf::Text seatsPrompt("Nueva cantidad de asientos:", font, 20);
-            seatsPrompt.setFillColor(sf::Color::Black);
+            seatsPrompt.setFillColor(sf::Color::White);
             seatsPrompt.setPosition(50.f, 190.f);
 
             sf::RectangleShape seatsBox(sf::Vector2f(100.f, 30.f));
@@ -1219,7 +1247,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
             seatsInput.setPosition(55.f, 225.f);
 
             sf::Text pricePrompt("Nuevo precio:", font, 20);
-            pricePrompt.setFillColor(sf::Color::Black);
+            pricePrompt.setFillColor(sf::Color::White);
             pricePrompt.setPosition(50.f, 270.f);
 
             sf::RectangleShape priceBox(sf::Vector2f(100.f, 30.f));
@@ -1233,7 +1261,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
             priceInput.setPosition(55.f, 305.f);
 
             sf::Text instruct("Presione Enter para guardar.", font, 18);
-            instruct.setFillColor(sf::Color::Blue);
+            instruct.setFillColor(sf::Color::White);
             instruct.setPosition(50.f, 350.f);
 
             int activeField = 0; // 0=rows, 1=seats, 2=price
@@ -1284,7 +1312,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
 
                                 sf::Text doneText("Segmento actualizado exitosamente.\nClick 'Volver' para salir.",
                                     font, 20);
-                                doneText.setFillColor(sf::Color::Black);
+                                doneText.setFillColor(sf::Color::White);
                                 doneText.setPosition(50.f, 400.f);
 
                                 bool waitOk = true;
@@ -1418,7 +1446,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
         {
             sf::Text msg("No se puede eliminar el segmento,\nya tiene entradas vendidas.\n\nClick 'Volver' para continuar.",
                 font, 20);
-            msg.setFillColor(sf::Color::Black);
+            msg.setFillColor(sf::Color::White);
             msg.setPosition(50.f, 150.f);
 
             bool waitMsg = true;
@@ -1460,7 +1488,7 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
 
             sf::Text doneMsg("Segmento eliminado exitosamente.\n\nClick 'Volver' para continuar...",
                 font, 20);
-            doneMsg.setFillColor(sf::Color::Black);
+            doneMsg.setFillColor(sf::Color::White);
             doneMsg.setPosition(50.f, 150.f);
 
             bool waitDone = true;
@@ -1581,19 +1609,16 @@ void Menu::generateCodesSFML(Discount& discount)
         return;
     }
 
-    // (Opcional) Un header de 100 px
     const float headerHeight = 100.f;
     sf::RectangleShape header(sf::Vector2f(1200.f, headerHeight));
     header.setFillColor(HEADER_COLOR);
     header.setPosition(0.f, 0.f);
 
-    // Título principal
     sf::Text titleText("Generar Códigos de Descuento", font, 30);
     titleText.setFillColor(TEXT_COLOR);
     sf::FloatRect titleBounds = titleText.getLocalBounds();
     titleText.setPosition((1200.f - titleBounds.width) / 2.f, headerHeight + 50.f);
 
-    // Etiquetas para inputs
     sf::Text labelPercentage("Porcentaje de descuento:", font, 20);
     labelPercentage.setFillColor(TEXT_COLOR);
     labelPercentage.setPosition(300.f, 250.f);
@@ -1602,20 +1627,17 @@ void Menu::generateCodesSFML(Discount& discount)
     labelCount.setFillColor(TEXT_COLOR);
     labelCount.setPosition(300.f, 350.f);
 
-    // Cadenas de entrada
     std::string percentageString;
     std::string countString;
 
-    // Textos de entrada para mostrar lo que va digitando el usuario
     sf::Text percentageInputText("", font, 20);
-    percentageInputText.setFillColor(TEXT_COLOR);
+    percentageInputText.setFillColor(sf::Color::Black);
     percentageInputText.setPosition(300.f, 280.f);
 
     sf::Text countInputText("", font, 20);
-    countInputText.setFillColor(TEXT_COLOR);
+    countInputText.setFillColor(sf::Color::Black);
     countInputText.setPosition(300.f, 380.f);
 
-    // Cajas de texto
     sf::RectangleShape percentageBox(sf::Vector2f(300.f, 30.f));
     percentageBox.setFillColor(sf::Color::White);
     percentageBox.setOutlineColor(sf::Color::Black);
@@ -1628,16 +1650,13 @@ void Menu::generateCodesSFML(Discount& discount)
     countBox.setOutlineThickness(1.f);
     countBox.setPosition(300.f, 380.f);
 
-    // Banderas de foco
     bool percentageActive = false;
     bool countActive = false;
 
-    // Mensaje de error
     sf::Text errorMessage("", font, 20);
     errorMessage.setFillColor(sf::Color::Red);
     errorMessage.setPosition(300.f, 450.f);
 
-    // Botón "Generar"
     sf::RectangleShape generateButton(sf::Vector2f(120.f, 40.f));
     generateButton.setFillColor(sf::Color(0, 180, 0));
     generateButton.setPosition(300.f, 500.f);
@@ -1655,7 +1674,6 @@ void Menu::generateCodesSFML(Discount& discount)
         generateButtonText.setPosition(btnPosX, btnPosY);
     }
 
-    // Botón "Volver"
     sf::RectangleShape backButton(sf::Vector2f(120.f, 40.f));
     backButton.setFillColor(sf::Color(150, 150, 150));
     backButton.setPosition(450.f, 500.f);
@@ -1673,7 +1691,6 @@ void Menu::generateCodesSFML(Discount& discount)
         backButtonText.setPosition(btnPosX, btnPosY);
     }
 
-    // Área para mostrar los códigos generados
     sf::Text codesText("", font, 18);
     codesText.setFillColor(TEXT_COLOR);
     codesText.setPosition(650.f, 250.f);
@@ -1689,12 +1706,8 @@ void Menu::generateCodesSFML(Discount& discount)
                 win.close();
                 return;
             }
-            // Cambio de color si se usan sub-opciones? (Ya no hay submenú, se omite)
-            // ...
 
-            // Detectar clic sobre las cajas y los botones
-            if (ev.type == sf::Event::MouseButtonPressed &&
-                ev.mouseButton.button == sf::Mouse::Left)
+            if (ev.type == sf::Event::MouseButtonPressed && ev.mouseButton.button == sf::Mouse::Left)
             {
                 sf::Vector2f mousePos(static_cast<float>(ev.mouseButton.x),
                     static_cast<float>(ev.mouseButton.y));
@@ -1711,7 +1724,6 @@ void Menu::generateCodesSFML(Discount& discount)
                 }
                 else
                 {
-                    // Si no se clickeó dentro de las cajas, se desactivan
                     percentageActive = false;
                     countActive = false;
                 }
@@ -1741,7 +1753,7 @@ void Menu::generateCodesSFML(Discount& discount)
                             try {
                                 countValue = std::stoi(countString);
                                 if (countValue <= 0)
-                                    errorMessage.setString("Cantidad debe ser mayor a 0.");
+                                    errorMessage.setString("La cantidad debe ser mayor a 0.");
                             }
                             catch (...)
                             {
@@ -1749,18 +1761,46 @@ void Menu::generateCodesSFML(Discount& discount)
                             }
                         }
                         else
-                            errorMessage.setString("Ingrese cantidad.");
+                            errorMessage.setString("Ingrese la cantidad de códigos.");
                     }
 
                     if (errorMessage.getString().isEmpty())
                     {
-                        // Llamamos a discount.configure(...) con los datos
-                        discount.configure(percentageValue, countValue);
-                        // Se actualiza el área de texto con los códigos generados
-                        codesText.setString(discount.getCodesString());
-                        // Limpiar campos (si lo deseas)
-                        percentageString.clear();
-                        countString.clear();
+                        // Calcular cuántos códigos existen actualmente
+                        // a través de la cadena que nos devuelve discount.
+                        // Contaremos líneas (códigos) no vacías.
+                        std::string currentCodes = discount.getCodesString();
+                        int currentCount = 0;
+                        {
+                            std::stringstream ss(currentCodes);
+                            std::string line;
+                            while (std::getline(ss, line))
+                            {
+                                if (!line.empty())
+                                    currentCount++;
+                            }
+                        }
+
+                        // VALIDACIONES EXIGIDAS:
+                        // 1) No generar más de 15 códigos en total
+                        if (currentCount + countValue > 15)
+                        {
+                            errorMessage.setString("El límite de descuentos es 15.");
+                        }
+                        // 2) Porcentaje no mayor al 100%
+                        else if (percentageValue > 100)
+                        {
+                            errorMessage.setString("No se pueden generar descuentos mayores al 100%.");
+                        }
+                        else
+                        {
+                            // Si todo OK, generar
+                            discount.configure(percentageValue, countValue);
+                            codesText.setString(discount.getCodesString());
+                            // Limpiar campos
+                            percentageString.clear();
+                            countString.clear();
+                        }
                     }
                 }
 
@@ -1774,16 +1814,16 @@ void Menu::generateCodesSFML(Discount& discount)
             // Manejo de texto en las cajas
             if (ev.type == sf::Event::TextEntered)
             {
-                if (ev.text.unicode == 8) // Backspace
+                if (ev.text.unicode == 8)
                 {
+                    // Backspace
                     if (percentageActive && !percentageString.empty())
                         percentageString.pop_back();
                     else if (countActive && !countString.empty())
                         countString.pop_back();
                 }
-                else if (ev.text.unicode >= 32 && ev.text.unicode < 127)
+                else if (ev.text.unicode < 128)
                 {
-                    // Carácter ASCII imprimible
                     char c = static_cast<char>(ev.text.unicode);
                     if (percentageActive)
                     {
@@ -1807,7 +1847,6 @@ void Menu::generateCodesSFML(Discount& discount)
         percentageBox.setOutlineColor(percentageActive ? sf::Color::Blue : sf::Color::Black);
         countBox.setOutlineColor(countActive ? sf::Color::Blue : sf::Color::Black);
 
-        // Render
         win.clear(BG_COLOR);
         win.draw(header);
         win.draw(titleText);
@@ -1833,7 +1872,7 @@ void Menu::generateCodesSFML(Discount& discount)
         win.draw(backButton);
         win.draw(backButtonText);
 
-        // Texto con la lista de códigos
+        // Texto con la lista de códigos generados
         win.draw(codesText);
 
         win.display();
@@ -1859,7 +1898,7 @@ void Menu::showDiscountCodesSFML(Discount& discount)
     std::string codesStr = discount.getCodesString();
 
     sf::Text codesText(codesStr, font, 20);
-    codesText.setFillColor(sf::Color::Black);
+    codesText.setFillColor(sf::Color::White);
     codesText.setPosition(50.f, 150.f);
 
     // Botón "Volver"
@@ -1898,7 +1937,7 @@ void Menu::showDiscountCodesSFML(Discount& discount)
                 }
             }
         }
-        win.clear(sf::Color(200, 200, 200));
+        win.clear(BG_COLOR);
         win.draw(backButton);
         win.draw(backText);
         win.draw(codesText);
@@ -1922,13 +1961,13 @@ void Menu::deleteDiscountSFML(Discount& discount)
 
     // Texto de instrucción
     sf::Text promptText("Digite el número del código a eliminar:", font, 20);
-    promptText.setFillColor(sf::Color::Black);
+    promptText.setFillColor(sf::Color::White);
     promptText.setPosition(50.f, 30.f);
 
     // Área de códigos
     std::string codesStr = discount.getCodesString();
     sf::Text codesText(codesStr, font, 18);
-    codesText.setFillColor(sf::Color::Black);
+    codesText.setFillColor(sf::Color::White);
     codesText.setPosition(50.f, 150.f);
 
     // Cuadro de entrada para el número

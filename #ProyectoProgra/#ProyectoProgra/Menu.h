@@ -54,7 +54,7 @@ public:
     int readIntInRange(int min, int max, const string& prompt = "Opción inválida. Reingrese: ");
     void cancelPurchase();
     void updateReport();
-    void executeOption(int option, sf::RenderWindow& window); // Pasar la ventana
+    void executeOption(int option, sf::RenderWindow& window); 
     void generateCodesSFML(Discount& discount);
     void showDiscountCodes(Discount& discount);
     void showDiscountMenuSFML(Discount& discount);

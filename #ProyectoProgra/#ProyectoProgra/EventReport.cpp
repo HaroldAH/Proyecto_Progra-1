@@ -21,15 +21,14 @@ void EventReport::generateGlobalReport(Event& evento,Segment& segmento,map<tuple
         return;
     }
 
-    // ====================================
-    // Uso de localtime_s en lugar de localtime
+
     time_t now = time(nullptr);
-    tm localNow;                       // Estructura tm en el stack
-    localtime_s(&localNow, &now);      // Llamada "segura"
+    tm localNow;                       
+    localtime_s(&localNow, &now);      
 
     char fechaHora[80];
     strftime(fechaHora, sizeof(fechaHora), "%d/%m/%Y %H:%M:%S", &localNow);
-    // ====================================
+    
 
     reporte << "================== REPORTE DE EVENTOS ==================\n";
     reporte << "Actualizado el: " << fechaHora << "\n\n";
