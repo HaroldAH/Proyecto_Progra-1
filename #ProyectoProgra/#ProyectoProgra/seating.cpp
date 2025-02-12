@@ -96,29 +96,29 @@ Seating& Seating::operator=(const Seating& other) {
     return *this;
 }
 
-/// Función adaptada a SFML para dibujar la sala
+
 void Seating::displaySeats(sf::RenderWindow& window) {
-    // Parámetros de dibujo
+  
     const float seatWidth = 30.f;
     const float seatHeight = 30.f;
-    const float spacing = 10.f;      // Espaciado entre asientos
-    const float marginX = 50.f;      // Margen izquierdo
+    const float spacing = 10.f;      
+    const float marginX = 50.f;      
     const float marginY = 150.f;
 
-    // Cargar fuente para etiquetas
+  
     sf::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
         std::cerr << "Error al cargar la fuente en Seating::displaySeats." << std::endl;
         return;
     }
 
-    // Dibujar título en la parte superior
+    
     sf::Text title("Representacion de la sala", font, 20);
     title.setFillColor(sf::Color::Black);
     title.setPosition(marginX, marginY - 90.f);
     window.draw(title);
 
-    // Dibujar etiquetas de columnas (letras)
+  
     for (int j = 0; j < numberOfColumns; j++) {
         sf::Text colLabel;
         colLabel.setFont(font);
@@ -126,16 +126,16 @@ void Seating::displaySeats(sf::RenderWindow& window) {
         colLabel.setFillColor(sf::Color::Black);
         char colChar = 'A' + j;
         colLabel.setString(std::string(1, colChar));
-        // Centrar el label en el asiento
+       
         float posX = marginX + j * (seatWidth + spacing) + seatWidth / 2.f - colLabel.getLocalBounds().width / 2.f;
         float posY = marginY - 40.f;
         colLabel.setPosition(posX, posY);
         window.draw(colLabel);
     }
 
-    // Dibujar la cuadrícula de asientos y etiquetas de filas
+   
     for (int i = 0; i < numberOfRows; i++) {
-        // Etiqueta de fila (número)
+        
         sf::Text rowLabel;
         rowLabel.setFont(font);
         rowLabel.setCharacterSize(20);
@@ -152,7 +152,7 @@ void Seating::displaySeats(sf::RenderWindow& window) {
             float seatY = marginY + i * (seatHeight + spacing);
             seatRect.setPosition(seatX, seatY);
 
-            // Asignar color: verde si está disponible, rojo si está vendido
+            
             if (seatPurchased && seatPurchased[i][j])
                 seatRect.setFillColor(sf::Color::Red);
             else

@@ -261,27 +261,41 @@ UserData* Sale::getOrRegisterUser(User& user, sf::RenderWindow& win) {
             return nullptr;
         }
 
+        // Fondo
+        sf::RectangleShape background(sf::Vector2f(win.getSize().x, win.getSize().y));
+        background.setFillColor(sf::Color(50, 50, 50));  // BG_COLOR
+
+        // Encabezado
+        sf::RectangleShape header(sf::Vector2f(win.getSize().x, 80.f));
+        header.setFillColor(sf::Color(70, 70, 70));  // HEADER_COLOR
+        header.setPosition(0.f, 0.f);
+
+        sf::Text title("Registro de Usuario", font, 30);
+        title.setFillColor(sf::Color::White);
+        sf::FloatRect titleBounds = title.getLocalBounds();
+        title.setPosition((win.getSize().x - titleBounds.width) / 2.f, 20.f);
+
         // Texto de la consigna
         sf::Text promptText("Ingrese su numero de cedula (9 digitos):", font, 24);
-        promptText.setFillColor(TEXT_COLOR_EV);
-        promptText.setPosition(50.f, 50.f);
+        promptText.setFillColor(sf::Color::White);
+        promptText.setPosition(50.f, 100.f);
 
-        // Caja de entrada más pequeña: 300 x 30
-        sf::RectangleShape inputBox(sf::Vector2f(300.f, 30.f));
+        // Caja de entrada
+        sf::RectangleShape inputBox(sf::Vector2f(300.f, 40.f));
         inputBox.setFillColor(sf::Color::White);
         inputBox.setOutlineColor(sf::Color::Black);
         inputBox.setOutlineThickness(1.f);
-        inputBox.setPosition(50.f, 120.f);
+        inputBox.setPosition(50.f, 160.f);
 
         // Texto para mostrar lo que el usuario escribe
         sf::Text inputText("", font, 24);
-        inputText.setFillColor(TEXT_COLOR_EV);
-        inputText.setPosition(55.f, 125.f);
+        inputText.setFillColor(sf::Color::Black);
+        inputText.setPosition(55.f, 165.f);
 
-        // Texto de error, en rojo y posicionado más abajo
+        // Texto de error
         sf::Text errorText("", font, 20);
         errorText.setFillColor(sf::Color::Red);
-        errorText.setPosition(50.f, 160.f);
+        errorText.setPosition(50.f, 210.f);
 
         std::string idNumber;
         bool done = false;
@@ -294,7 +308,6 @@ UserData* Sale::getOrRegisterUser(User& user, sf::RenderWindow& win) {
                 }
                 if (event.type == sf::Event::KeyPressed) {
                     if (event.key.code == sf::Keyboard::Enter) {
-                        // Validar que la cédula tenga 9 dígitos y sea numérica
                         if (idNumber.length() == 9 && idNumber.find_first_not_of("0123456789") == std::string::npos) {
                             done = true;
                         }
@@ -321,7 +334,11 @@ UserData* Sale::getOrRegisterUser(User& user, sf::RenderWindow& win) {
                     }
                 }
             }
-            win.clear(BG_COLOR_EV);
+
+            win.clear();
+            win.draw(background);
+            win.draw(header);
+            win.draw(title);
             win.draw(promptText);
             win.draw(inputBox);
             win.draw(inputText);
@@ -332,49 +349,43 @@ UserData* Sale::getOrRegisterUser(User& user, sf::RenderWindow& win) {
         // Buscar el usuario por cédula
         UserData* currentUser = user.searchUserById(idNumber);
         if (currentUser) {
-            std::string welcomeMessage = "Usuario encontrado. Bienvenido, " + currentUser->getName() + ".";
-            sf::Text welcomeText(welcomeMessage, font, 24);
-            welcomeText.setFillColor(TEXT_COLOR_EV);
-            welcomeText.setPosition(50.f, 200.f);
-            win.clear(BG_COLOR_EV);
+            sf::Text welcomeText("Usuario encontrado. Bienvenido, " + currentUser->getName() + ".", font, 24);
+            welcomeText.setFillColor(sf::Color::White);
+            welcomeText.setPosition(50.f, 250.f);
+            win.clear();
+            win.draw(background);
+            win.draw(header);
+            win.draw(title);
             win.draw(welcomeText);
             win.display();
-            sf::sleep(sf::seconds(2)); // Pausa para mostrar el mensaje
+            sf::sleep(sf::seconds(2));
             return currentUser;
         }
 
-        // Si no se encuentra al usuario, mostrar dos botones para elegir registrar
+        // Texto de registro
         sf::Text registerPrompt("Usuario no encontrado. ¿Desea registrarse?", font, 24);
-        registerPrompt.setFillColor(TEXT_COLOR_EV);
+        registerPrompt.setFillColor(sf::Color::White);
         registerPrompt.setPosition(50.f, 250.f);
 
-        // Botón "Si": verde
+        // Botón "Sí"
         sf::RectangleShape siButton(sf::Vector2f(100.f, 40.f));
-        siButton.setFillColor(sf::Color::Green);
+        siButton.setFillColor(sf::Color(255, 140, 0));  // HIGHLIGHT_COLOR
         siButton.setPosition(50.f, 320.f);
-        sf::Text siText("Si", font, 24);
-        siText.setFillColor(sf::Color::White);
-        {
-            sf::FloatRect siBounds = siText.getLocalBounds();
-            siText.setPosition(
-                siButton.getPosition().x + (siButton.getSize().x - siBounds.width) / 2.f - siBounds.left,
-                siButton.getPosition().y + (siButton.getSize().y - siBounds.height) / 2.f - siBounds.top
-            );
-        }
 
-        // Botón "No": rojo
+        sf::Text siText("Sí", font, 24);
+        siText.setFillColor(sf::Color::White);
+        sf::FloatRect siBounds = siText.getLocalBounds();
+        siText.setPosition(siButton.getPosition().x + (siButton.getSize().x - siBounds.width) / 2.f, siButton.getPosition().y + 5.f);
+
+        // Botón "No"
         sf::RectangleShape noButton(sf::Vector2f(100.f, 40.f));
-        noButton.setFillColor(sf::Color::Red);
+        noButton.setFillColor(sf::Color(90, 90, 90));  // BOX_COLOR
         noButton.setPosition(200.f, 320.f);
+
         sf::Text noText("No", font, 24);
         noText.setFillColor(sf::Color::White);
-        {
-            sf::FloatRect noBounds = noText.getLocalBounds();
-            noText.setPosition(
-                noButton.getPosition().x + (noButton.getSize().x - noBounds.width) / 2.f - noBounds.left,
-                noButton.getPosition().y + (noButton.getSize().y - noBounds.height) / 2.f - noBounds.top
-            );
-        }
+        sf::FloatRect noBounds = noText.getLocalBounds();
+        noText.setPosition(noButton.getPosition().x + (noButton.getSize().x - noBounds.width) / 2.f, noButton.getPosition().y + 5.f);
 
         bool selectionMade = false;
         bool registerUser = false;
@@ -397,7 +408,11 @@ UserData* Sale::getOrRegisterUser(User& user, sf::RenderWindow& win) {
                     }
                 }
             }
-            win.clear(BG_COLOR_EV);
+
+            win.clear();
+            win.draw(background);
+            win.draw(header);
+            win.draw(title);
             win.draw(registerPrompt);
             win.draw(siButton);
             win.draw(siText);
@@ -407,22 +422,23 @@ UserData* Sale::getOrRegisterUser(User& user, sf::RenderWindow& win) {
         }
 
         if (!registerUser) {
-            std::cout << "Regresando al menu principal...\n";
             return nullptr;
         }
 
-        // Proceder a registrar el usuario
-        user.createUser(user, idNumber,win);
+        // Registrar usuario
+        user.createUser(user, idNumber, win);
         currentUser = user.searchUserById(idNumber);
         if (currentUser) {
-            std::string successMessage = "Usuario registrado. Bienvenido, " + currentUser->getName();
-            sf::Text successText(successMessage, font, 24);
-            successText.setFillColor(TEXT_COLOR_EV);
-            successText.setPosition(50.f, 200.f);
-            win.clear(BG_COLOR_EV);
+            sf::Text successText("Usuario registrado. Bienvenido, " + currentUser->getName(), font, 24);
+            successText.setFillColor(sf::Color::White);
+            successText.setPosition(50.f, 250.f);
+            win.clear();
+            win.draw(background);
+            win.draw(header);
+            win.draw(title);
             win.draw(successText);
             win.display();
-            sf::sleep(sf::seconds(2)); // Pausa para mostrar el mensaje
+            sf::sleep(sf::seconds(2));
             return currentUser;
         }
 
@@ -549,11 +565,10 @@ Seating& Sale::ensureSeating(int selectedEvent, int selectedSegment, List<List<S
 }
 
 int Sale::buyTickets(UserData* currentUser, Event& event, int selectedEvent, Seating& seating, sf::RenderWindow& window) {
-    // Obtén el evento específico de la lista de eventos.
-    // Se asume que 'selectedEvent' es 1-indexado.
+    
     Event& currentEvent = event.getEvents().getAt(selectedEvent);
 
-    // 1. Contar los asientos disponibles en el segmento.
+    
     int availableSeats = 0;
     for (int i = 0; i < seating.getNumberOfRows(); i++)
         for (int j = 0; j < seating.getNumberOfColumns(); j++)
@@ -580,7 +595,7 @@ int Sale::buyTickets(UserData* currentUser, Event& event, int selectedEvent, Sea
         return 0;
     }
 
-    // 4. Ajustar el máximo permitido según la disponibilidad de asientos en el segmento.
+    
     if (availableSeats < maxTickets)
         maxTickets = availableSeats;
 

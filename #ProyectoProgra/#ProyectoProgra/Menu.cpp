@@ -14,7 +14,7 @@ static const sfml::Color HIGHLIGHT_COLOR(255, 140, 0);
 static const sfml::Color TEXT_COLOR(sfml::Color::White); 
 
 void Menu::showMenu() {
-    // Crear la ventana principal si aún no existe
+    
     if (!window) {
      
         window = new sfml::RenderWindow(sfml::VideoMode(1200, 600), "Sistema de Ventas de Entradas", sfml::Style::Close);
@@ -86,14 +86,14 @@ void Menu::showMenu() {
         headerText[i].setPosition(posX, posY);
     }
 
-    // Texto central de bienvenida
+    
     sfml::Text welcomeText("Bienvenido\nSistema de ventas de entrada\nDesarrollado por:\nHarold Avila.\nCristian Cordero.", font, 30);
     welcomeText.setFillColor(TEXT_COLOR);
     welcomeText.setStyle(sfml::Text::Bold);
     welcomeText.setPosition(200.f, 200.f);
     welcomeText.setLineSpacing(1.5f);
 
-    // Bucle principal
+    
     while (window->isOpen()) {
         sfml::Event event;
         while (window->pollEvent(event)) {
@@ -101,7 +101,7 @@ void Menu::showMenu() {
                 window->close();
                 return;
             }
-            // Resaltar opción al pasar el mouse
+            
             if (event.type == sfml::Event::MouseMoved) {
                 sfml::Vector2f mousePos(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
                 for (int i = 0; i < numOptions; i++) {
@@ -111,7 +111,7 @@ void Menu::showMenu() {
                         headerText[i].setFillColor(TEXT_COLOR);
                 }
             }
-            // Detectar clic en alguna opción
+            
             if (event.type == sfml::Event::MouseButtonPressed &&
                 event.mouseButton.button == sfml::Mouse::Left) {
                 sfml::Vector2f mousePos(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
@@ -134,7 +134,7 @@ void Menu::showMenu() {
             window->draw(headerText[i]);
         }
         window->draw(welcomeText);
-        // Dibujar el logo en la esquina inferior derecha
+        
         window->draw(logoSprite);
         window->display();
     }
@@ -182,15 +182,13 @@ void Menu::executeOption(int option, sfml::RenderWindow& window) {
     }
 }
 
-// Menú SFML para configurar descuentos (extraído del primer código)
 void Menu::showDiscountMenuSFML(Discount& discount)
 {
-    // Reutilizamos la ventana principal
+   
     sf::RenderWindow& win = *window;
-    // Cambiamos el título para el submenú de descuentos
+    
     win.setTitle("Gestión de Descuentos");
 
-    // Cargar la fuente (asegúrate de que la ruta sea correcta)
     sf::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
     {
@@ -198,7 +196,7 @@ void Menu::showDiscountMenuSFML(Discount& discount)
         return;
     }
 
-    // Configuración del encabezado
+  
     const float headerHeight = 100.f;
     sf::RectangleShape header(sf::Vector2f(1200.f, headerHeight));
     header.setFillColor(HEADER_COLOR);
@@ -583,7 +581,7 @@ void Menu::listEventAndSegments(Event& event, Segment& segment)
 
 void Menu::sellTicket(User& user, sfml::RenderWindow& window)
 {
-    // Pasa la ventana de SFML a la clase Sale sin desreferenciarla
+    
     sale.sell(user, event, segment, seatingMap, discount, window);
 }
 
@@ -1523,8 +1521,6 @@ void Menu::modifyOrDeleteSegment(Menu& menu, Event& event, Segment& segment,
     }
 }
 
-
-
 void Menu::updateReport() {
 
     if (!window)
@@ -2103,10 +2099,10 @@ void Menu::deleteDiscountSFML(Discount& discount)
 
 void Menu::sellTicketSFML()
 {
-    // Cambiar el título de la ventana
+    
     window->setTitle("Vender Entrada - Sistema de Ventas");
 
-    // Cargar fuente (asegúrate de que la ruta sea correcta)
+    
     sf::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf"))
     {
@@ -2114,27 +2110,22 @@ void Menu::sellTicketSFML()
         return;
     }
 
-    // Variables para almacenar la entrada del usuario
+    
     std::string cedula = "";
     int selectedEvent = -1;
     int selectedSegment = -1;
     std::string ticketCountStr = "";
     int ticketCount = 0;
 
-    // Estado de la interfaz:
-    // 0: Ingresar cédula
-    // 1: Seleccionar evento
-    // 2: Seleccionar segmento (del evento escogido)
-    // 3: Ingresar cantidad de boletos
-    // 4: Confirmación final
+    
     int currentStep = 0;
 
-    // Textos y elementos gráficos
+    
     sf::Text promptText("", font, 24);
     promptText.setFillColor(sf::Color::Black);
     promptText.setPosition(50.f, 20.f);
 
-    // Para mostrar opciones (eventos o segmentos) se almacenarán en un vector
+    
     std::vector<sf::Text> optionsTexts;
 
     // Bucle principal de la venta
@@ -2264,9 +2255,7 @@ void Menu::sellTicketSFML()
                     }
                 }
             }
-        } // Fin del pollEvent
-
-        // Renderizado de la pantalla según el paso
+        } 
         window->clear(sf::Color(200, 200, 200));
         if (currentStep == 0)
         {
@@ -2318,11 +2307,10 @@ void Menu::sellTicketSFML()
             window->draw(promptText);
         }
         window->display();
-    } // Fin del while
+    } 
 
-    // Una vez confirmada la venta, se podría invocar la función de venta real (por ejemplo, sale.sell(...))
-    // Aquí, por simplicidad, solo mostramos una pantalla de "Venta completada".
-    window->clear(sf::Color(200, 200, 200));
+    
+    window->clear(BG_COLOR);
     sf::Text successText("Venta completada con exito!", font, 30);
     successText.setFillColor(sf::Color::Green);
     successText.setPosition(50.f, 100.f);
