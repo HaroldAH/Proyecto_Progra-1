@@ -10,13 +10,13 @@
 #include <cstdlib>
 
 using namespace std;
-namespace sfml = sf;  // Para usar sfml:: en vez de sf::
+namespace sfml = sf;  
 
-// Colores para la interfaz
-static const sfml::Color BG_COLOR_EV(50, 50, 50);     // Fondo oscuro suave
-static const sfml::Color HEADER_COLOR_EV(80, 80, 80); // Encabezado gris oscuro
-static const sfml::Color TEXT_COLOR_EV(230, 230, 230); // Texto en gris claro
-static const sfml::Color HIGHLIGHT_COLOR_EV(255, 120, 0); // Resaltado en naranja
+
+static const sfml::Color BG_COLOR_EV(50, 50, 50);     
+static const sfml::Color HEADER_COLOR_EV(80, 80, 80); 
+static const sfml::Color TEXT_COLOR_EV(230, 230, 230); 
+static const sfml::Color HIGHLIGHT_COLOR_EV(255, 120, 0); 
 
 
 
@@ -57,8 +57,7 @@ int Event::getTicketsPurchasedByUser(const string& userId) {
     }
     return 0;
 }
-// ---------------------------------------------------------------------------
-// Lógica de compra/cancelación (como antes)
+
 bool Event::purchaseTickets(const string& userId, int numTickets, sfml::RenderWindow& window) {
     List<int>::NodePtr purchaseNode = purchasesByUser.getHead();
     List<string>::NodePtr userNode = userIds.getHead();
@@ -66,7 +65,7 @@ bool Event::purchaseTickets(const string& userId, int numTickets, sfml::RenderWi
     while (userNode) {
         if (userNode->data == userId) {
             if (purchaseNode->data + numTickets > 5) {
-                // Mostrar mensaje de error en SFML
+                
                 sfml::Font font;
                 if (font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
                     sfml::Text errorMsg("No puedes comprar mas de 5 boletos para este evento.", font, 24);
@@ -83,7 +82,7 @@ bool Event::purchaseTickets(const string& userId, int numTickets, sfml::RenderWi
             return true;
         }
         if (userNode->data == "") {
-            // Si aún no se ha registrado el usuario, se asigna aquí
+            
             userNode->data = userId;
             purchaseNode->data = numTickets;
             return true;
@@ -91,7 +90,7 @@ bool Event::purchaseTickets(const string& userId, int numTickets, sfml::RenderWi
         userNode = userNode->next;
         purchaseNode = purchaseNode->next;
     }
-    // Si se llega al final sin encontrar espacio, mostrar error
+    
     sfml::Font font;
     if (font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
         sfml::Text errorMsg("No se pudo registrar la compra. Maximo de usuarios alcanzado.", font, 24);
@@ -147,7 +146,6 @@ bool Event::cancelTickets(string userId, int numTickets, sfml::RenderWindow& win
 
 
 
-//  Asigna 'numEvents' al objeto 'evt' (ejemplo muy sencillo)
 void Event::assignEvents(Event& evt, int numEvents) {
     if (numEvents <= 0) {
         cout << "El número de eventos debe ser mayor a cero." << endl;
@@ -172,10 +170,10 @@ int Event::getValidIntInput() {
 }
 
 bool Event::isValidDate(string& date) {
-    // Mismo largo
+    
     if (date.length() != 10) return false;
 
-    // Mismo formato dd/mm/yyyy
+    
     for (int i = 0; i < 10; i++) {
         if ((i == 2 || i == 5) && date[i] != '/') return false;
         if (i != 2 && i != 5 && (date[i] < '0' || date[i] > '9')) return false;
@@ -210,24 +208,24 @@ string Event::getValidStringInput(const string& prompt) {
 }
 
 void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
-    // Cambiar título de la ventana
+    
     win.setTitle("Agregar Nuevo Evento");
 
-    // Cargar la fuente
+   
     sfml::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
         std::cerr << "Error: No se pudo cargar la fuente." << std::endl;
         return;
     }
 
-    // Definir dimensiones y colores
+  
     const float headerHeight = 100.f;
-    sfml::Color bgColor(50, 50, 50);      // Fondo oscuro igual que en Menu.cpp
-    sfml::Color headerColor(70, 70, 70);  // Encabezado gris igual que en Menu.cpp
-    sfml::Color textColor = sfml::Color::White;
+    sfml::Color bgColor(200, 200, 200);      
+    sfml::Color headerColor(70, 70, 70);  
+    sfml::Color textColor = sfml::Color::Black;
     sfml::Color highlightColor = sfml::Color::Red;
 
-    // Crear un header
+    
     sfml::RectangleShape header(sfml::Vector2f(1200.f, headerHeight));
     header.setFillColor(headerColor);
     header.setPosition(0.f, 0.f);
@@ -240,11 +238,10 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
         headerTitle.setPosition(posX, posY);
     }
 
-    // Posiciones base para el formulario
+   
     float formStartX = 50.f;
     float formStartY = headerHeight + 50.f;
 
-    // Caja para el nombre
     sfml::Text labelName("Nombre del Evento:", font, 20);
     labelName.setFillColor(textColor);
     labelName.setPosition(formStartX, formStartY);
@@ -257,7 +254,7 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
     inputName.setFillColor(sfml::Color::Black);
     inputName.setPosition(boxName.getPosition().x + 5.f, boxName.getPosition().y + 2.f);
 
-    // Caja para la fecha
+  
     sfml::Text labelDate("Fecha (DD/MM/YYYY):", font, 20);
     labelDate.setFillColor(textColor);
     labelDate.setPosition(formStartX, formStartY + 80.f);
@@ -273,7 +270,7 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
     dateErrorText.setFillColor(sfml::Color::Red);
     dateErrorText.setPosition(formStartX, boxDate.getPosition().y + 30.f);
 
-    // Caja para la descripción
+
     sfml::Text labelDesc("Descripción:", font, 20);
     labelDesc.setFillColor(textColor);
     labelDesc.setPosition(formStartX, formStartY + 160.f);
@@ -286,7 +283,7 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
     inputDesc.setFillColor(sfml::Color::Black);
     inputDesc.setPosition(boxDesc.getPosition().x + 5.f, boxDesc.getPosition().y + 2.f);
 
-    // Botones "Guardar" y "Volver"
+   
     sfml::RectangleShape saveButton(sfml::Vector2f(120.f, 40.f));
     saveButton.setFillColor(sfml::Color(0, 180, 0));
     saveButton.setPosition(formStartX, formStartY + 260.f);
@@ -310,14 +307,14 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
         backButtonText.setPosition(btnX, btnY);
     }
 
-    // Variables para almacenar los textos ingresados
+    
     std::string strName;
     std::string strDate;
     std::string strDesc;
-    int activeField = 0; // 0 = sin foco, 1 = Nombre, 2 = Fecha, 3 = Descripción
+    int activeField = 0; 
     bool inEventForm = true;
 
-    // Bucle principal del formulario
+ 
     while (inEventForm && win.isOpen())
     {
         sfml::Event ev;
@@ -356,24 +353,23 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
                         {
                             dateErrorText.setString("");
                            
-                            // creamos un nuevo objeto de tipo Event y lo llenamos con los datos ingresados.
+                            
                             Event newEvent;
                             newEvent.setName(strName);
                             newEvent.setDate(strDate);
                             newEvent.setDescription(strDesc);
                             newEvent.initializeTracking(100);
-                            // Insertamos el nuevo evento en la lista del objeto global.
+                            
                             this->events.insertAtEnd(newEvent);
                             this->eventCount++;
-                            // Se invoca la función de segmentos para el nuevo evento.
-                            // Se asume que segment.saveSegments acepta (ventana, segment, indiceEvento, indiceEvento)
+                            
                             segment.saveSegments(win, segment, this->getEventCount(), this->getEventCount());
                             
                             sfml::Text successMsg("Evento guardado", font, 24);
                             successMsg.setFillColor(sfml::Color::Red);
-                            successMsg.setPosition(50.f, 300.f);  // Ajusta la posición si es necesario
+                            successMsg.setPosition(50.f, 300.f);  
 
-                            // Mostrar mensaje por 1 segundo
+                            
                             win.clear(bgColor);
                             win.draw(header);
                             win.draw(headerTitle);
@@ -452,6 +448,6 @@ void Event::saveEvent(sfml::RenderWindow& win, Segment& segment) {
         win.draw(backButtonText);
         win.display();
     }
-    // Al salir, se restablece el título de la ventana
+    
     win.setTitle("Sistema de Ventas de Entradas");
 }

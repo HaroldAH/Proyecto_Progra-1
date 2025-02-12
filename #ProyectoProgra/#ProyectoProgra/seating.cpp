@@ -230,7 +230,6 @@ void Seating::sellField(int row, int column) {
         << " vendido exitosamente.\n";
 }
 
-// Función checkSales adaptada parcialmente (sigue mostrando texto por consola)
 void Seating::checkSales(Event& event, Segment& segment,
     std::map<std::tuple<int, int>, Seating>& seatingMap, sf::RenderWindow& win)
 {
@@ -241,7 +240,7 @@ void Seating::checkSales(Event& event, Segment& segment,
         return;
     }
 
-    // 1. Verificar que haya eventos disponibles y mostrarlos en pantalla.
+    
     if (event.getEventCount() == 0) {
         sf::Text noEvents("No hay eventos disponibles.", font, 24);
         noEvents.setFillColor(TEXT_COLOR_EV);
@@ -376,7 +375,7 @@ void Seating::checkSales(Event& event, Segment& segment,
         return;
     }
     else {
-        // **Modificación solicitada: ajustar la posición del título para separar el mensaje y la visualización de asientos.**
+        
         Seating& seating = seatingMap[seatingKey];
         sf::Text seatingTitle("Representacion grafica del segmento \"" +
             segments.getAt(selectedEvent).getAt(selectedSegment).getName() + "\":", font, 28);

@@ -3,19 +3,15 @@
 #include <limits>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include <cctype>    // Para isdigit
+#include <cctype>    /
 
 using namespace std;
 
-// Definiciones de colores (ajusta según tus necesidades)
-static const sf::Color BG_COLOR_EV(50, 50, 50);
+
+static const sf::Color BG_COLOR_EV(200, 200, 200);
 static const sf::Color HEADER_COLOR_EV(70, 70, 70);
-static const sf::Color TEXT_COLOR_EV = sf::Color::White;
+static const sf::Color TEXT_COLOR_EV = sf::Color::Black;
 static const sf::Color HIGHLIGHT_COLOR_EV = sf::Color(255, 140, 0);
-
-
-
-// Función auxiliar: Solicitar una cadena usando SFML
 
 std::string getValidStringInputSFML(sf::RenderWindow& win, const std::string& prompt) {
     sf::Font font;
@@ -82,9 +78,6 @@ std::string getValidStringInputSFML(sf::RenderWindow& win, const std::string& pr
     win.display();
     return inputStr;
 }
-
-
-// Función auxiliar: Solicitar un entero 
 
 int getValidIntInputSFML(sf::RenderWindow& win, const std::string& prompt) {
     sf::Font font;
@@ -156,9 +149,6 @@ int getValidIntInputSFML(sf::RenderWindow& win, const std::string& prompt) {
     return value;
 }
 
-
-// Función auxiliar: Solicitar un float 
-
 float getValidFloatInputSFML(sf::RenderWindow& win, const std::string& prompt) {
     sf::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
@@ -228,9 +218,6 @@ float getValidFloatInputSFML(sf::RenderWindow& win, const std::string& prompt) {
     return value;
 }
 
-// Métodos de la clase Segment
-
-
 Segment::Segment() {
     segmentName = "";
     rows = 0;
@@ -240,7 +227,7 @@ Segment::Segment() {
 }
 
 Segment::~Segment() {
-    // El destructor de List se encargará de liberar la memoria.
+    
 }
 std::string Segment::getName() {
     return segmentName;
@@ -266,7 +253,6 @@ List<List<Segment>>& Segment::getSegmentsByEvent() {
     return segmentsByEvent;
 }
 
-// Setters
 void Segment::setName(const std::string& aSegmentName) {
     segmentName = aSegmentName;
 }
@@ -282,8 +268,6 @@ void Segment::setSeats(int aSeats) {
 void Segment::setPrice(float aPrice) {
     price = aPrice;
 }
-
-// Gestionar (crear/ampliar) las listas de segmentos según el número de eventos
 
 void Segment::manageSegments(Segment& segment, int& numEvents) {
     if (numEvents <= 0) {
@@ -307,7 +291,6 @@ void Segment::manageSegments(Segment& segment, int& numEvents) {
     }
     segmentCapacity = numEvents;
 }
-
 
 void Segment::addSegmentData(Segment& segment, int index, sf::RenderWindow& win)
 {
@@ -338,19 +321,19 @@ void Segment::addSegmentData(Segment& segment, int index, sf::RenderWindow& win)
 
     // Etiquetas
     sf::Text labelName("Nombre del Segmento:", font, 18);
-    labelName.setFillColor(sf::Color::White);
+    labelName.setFillColor(sf::Color::Black);
     labelName.setPosition(formStartX, formStartY);
 
     sf::Text labelRows("Numero de Filas:", font, 18);
-    labelRows.setFillColor(sf::Color::White);
+    labelRows.setFillColor(sf::Color::Black);
     labelRows.setPosition(formStartX, formStartY + 60.f);
 
     sf::Text labelSeats("Cantidad de Asientos:", font, 18);
-    labelSeats.setFillColor(sf::Color::White);
+    labelSeats.setFillColor(sf::Color::Black);
     labelSeats.setPosition(formStartX, formStartY + 120.f);
 
     sf::Text labelPrice("Precio del Segmento:", font, 18);
-    labelPrice.setFillColor(sf::Color::White);
+    labelPrice.setFillColor(sf::Color::Black);
     labelPrice.setPosition(formStartX, formStartY + 180.f);
 
     // Cajas de texto
@@ -669,10 +652,6 @@ void Segment::addSegmentData(Segment& segment, int index, sf::RenderWindow& win)
     }
 }
 
-
-/////////////////////////////////////////
-// Función que solicita la cantidad de segmentos para cada evento y guarda los datos ingresados
-/////////////////////////////////////////
 void Segment::saveSegments(sf::RenderWindow& win, Segment& segment, int events, int eventIndex)
 {
     if (events == 0) {
@@ -704,15 +683,15 @@ void Segment::saveSegments(sf::RenderWindow& win, Segment& segment, int events, 
         headerTitle.setPosition(posX, posY);
     }
 
-    // Área "main" donde se pregunta cuántos segmentos se añadirán
+    
     float formStartX = 50.f;
     float formStartY = headerHeight + 50.f;
 
     sf::Text instruction("", font, 20);
-    instruction.setFillColor(sf::Color::White);
+    instruction.setFillColor(sf::Color::Black);
     instruction.setPosition(formStartX, formStartY);
 
-    // Cajas para mostrar/ingresar cantidad de segmentos
+   
     sf::RectangleShape boxNumSegments(sf::Vector2f(150.f, 30.f));
     boxNumSegments.setFillColor(sf::Color::White);
     boxNumSegments.setOutlineColor(sf::Color::Black);
@@ -723,15 +702,16 @@ void Segment::saveSegments(sf::RenderWindow& win, Segment& segment, int events, 
     inputSegments.setFillColor(sf::Color::Black);
     inputSegments.setPosition(boxNumSegments.getPosition().x + 5, boxNumSegments.getPosition().y + 2);
 
-    // Botón "Guardar"
+   
     sf::Text saveButton("Guardar", font, 20);
+    saveButton.setFillColor(sf::Color::Black);
     {
         float btnX = formStartX + 160.f;
         float btnY = formStartY + 40.f;
         saveButton.setPosition(btnX, btnY);
     }
 
-    // Para resaltar la caja activa
+  
     sf::RectangleShape activeBorder;
     activeBorder.setFillColor(sf::Color::Transparent);
     activeBorder.setOutlineColor(HIGHLIGHT_COLOR_EV);
@@ -763,7 +743,7 @@ void Segment::saveSegments(sf::RenderWindow& win, Segment& segment, int events, 
             if (ev.type == sf::Event::MouseButtonReleased && ev.mouseButton.button == sf::Mouse::Left)
             {
                 sf::Vector2f mousePos(ev.mouseButton.x, ev.mouseButton.y);
-                // Clic en "Guardar" => se convierte la cadena a int
+               
                 sf::FloatRect sbBounds = saveButton.getGlobalBounds();
                 if (sbBounds.contains(mousePos)) {
                     try {
@@ -771,18 +751,18 @@ void Segment::saveSegments(sf::RenderWindow& win, Segment& segment, int events, 
                             int numSegments = std::stoi(segmentsCountStr);
                             if (numSegments > 0) {
                                 haveSegmentsCount = true;
-                                // Asignar en la lista de segmentCount
+                                
                                 countNode->data = numSegments;
-                                inSegmentForm = false; // Salimos del bucle para crear los segmentos
+                                inSegmentForm = false; 
                             }
                         }
                     }
                     catch (...) {
-                        // Si falla el stoi, ignoramos
+                        
                     }
                 }
             }
-            // Manejo de teclado
+      
             if (ev.type == sf::Event::KeyPressed) {
                 if (ev.key.code == sf::Keyboard::Backspace && !segmentsCountStr.empty()) {
                     segmentsCountStr.pop_back();
@@ -834,10 +814,10 @@ void Segment::saveSegments(sf::RenderWindow& win, Segment& segment, int events, 
         win.draw(boxNumSegments);
         win.draw(inputSegments);
 
-        // Botón Guardar
+       
         win.draw(saveButton);
 
-        // Borde activo (para la caja de texto)
+       
         win.draw(activeBorder);
 
         win.display();
@@ -858,8 +838,6 @@ void Segment::saveSegments(sf::RenderWindow& win, Segment& segment, int events, 
         return;
     }
 }
-
-
 
 int Segment::getValidIntInput() {
     int input;

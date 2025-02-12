@@ -38,7 +38,7 @@ void User::createUser(User& usersObj, const std::string& idNumber, sf::RenderWin
         return;
     }
 
-    // Configuración de elementos gráficos para ambos campos en una misma ventana
+ 
 
     // Campo: Nombre
     sf::Text nameLabel("Ingrese el nombre del usuario:", font, 24);
@@ -95,7 +95,7 @@ void User::createUser(User& usersObj, const std::string& idNumber, sf::RenderWin
     activeBorder.setOutlineColor(HIGHLIGHT_COLOR_EV);
     activeBorder.setOutlineThickness(2.f);
 
-    // Variable para saber qué campo está activo: 0 = nombre, 1 = fecha
+    
     int activeField = 0;
     activeBorder.setPosition(nameBox.getPosition());
     activeBorder.setSize(nameBox.getSize());
@@ -111,7 +111,7 @@ void User::createUser(User& usersObj, const std::string& idNumber, sf::RenderWin
                 win.close();
                 return;
             }
-            // Detectar clics para seleccionar el campo activo o el botón guardar
+            
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
                 sf::Vector2f mousePos(static_cast<float>(event.mouseButton.x),
                     static_cast<float>(event.mouseButton.y));
@@ -157,7 +157,7 @@ void User::createUser(User& usersObj, const std::string& idNumber, sf::RenderWin
             if (event.type == sf::Event::TextEntered) {
                 if (event.text.unicode < 128) {
                     char c = static_cast<char>(event.text.unicode);
-                    // Si el campo activo es nombre, se aceptan caracteres imprimibles
+                    
                     if (activeField == 0) {
                         if (std::isprint(c)) {
                             name.push_back(c);
@@ -188,7 +188,7 @@ void User::createUser(User& usersObj, const std::string& idNumber, sf::RenderWin
         win.display();
     }
 
-    // Una vez confirmados los datos, se asignan al usuario
+    
     userNode->data.setName(name);
     userNode->data.setBirthDate(birthDate);
     userCount++;

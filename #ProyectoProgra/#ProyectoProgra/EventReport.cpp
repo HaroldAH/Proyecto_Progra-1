@@ -50,7 +50,7 @@ void EventReport::generateGlobalReport(Event& evento,Segment& segmento,map<tuple
         int totalVendidos = 0;
         float gananciasTotales = 0.0f;
 
-        // Se obtienen todos los segmentos asociados al evento i
+        
         List<Segment> listaSegmentos = segmento.getSegmentsByEvent().getAt(i);
         int numSegmentos = segmento.getSegmentCount().getAt(i);
 
@@ -63,7 +63,7 @@ void EventReport::generateGlobalReport(Event& evento,Segment& segmento,map<tuple
             reporte << "  Filas                 : " << seg.getRows()
                 << "    |    Asientos por fila: " << seg.getSeats() << "\n";
 
-            // La clave en el map seatingMap es (eventoId, segmentoId)
+            
             tuple<int, int> key = make_tuple(i, segIndex);
 
             if (seatingMap.find(key) != seatingMap.end()) {
@@ -92,7 +92,7 @@ void EventReport::generateGlobalReport(Event& evento,Segment& segmento,map<tuple
                 totalVendidos += vendidos;
                 gananciasTotales += ganancias;
 
-                // Imprimir el mapa de asientos (X = vendido, [ ] = disponible)
+              
                 reporte << "  Mapa de Asientos:\n";
                 for (int r = 0; r < filas; r++) {
                     for (int c = 0; c < columnas; c++) {

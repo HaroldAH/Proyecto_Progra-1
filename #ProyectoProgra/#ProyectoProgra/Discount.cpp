@@ -93,7 +93,7 @@ void Discount::deleteDiscount() {
         return;
     }
 
-    showDiscountList();  // Mostrar la lista antes de la eliminación
+    showDiscountList();  
 
     cout << "Ingrese el numero del codigo a eliminar (1-" << discountCount << "): ";
     int num = getValidIntInput();
@@ -103,13 +103,13 @@ void Discount::deleteDiscount() {
         return;
     }
 
-    // Buscar el estado del código seleccionado
+    
     List<bool>::NodePtr usedNode = used.getHead();
     for (int i = 1; i < num; i++) {
         usedNode = usedNode->next;
     }
 
-    // Si el código ya ha sido usado, impedir la eliminación
+    
     if (usedNode->data) {
         cout << "El codigo seleccionado ya ha sido usado y no puede eliminarse." << endl;
         cout << "Presione Enter para continuar..." << endl;
@@ -118,16 +118,16 @@ void Discount::deleteDiscount() {
         return;
     }
 
-    // Eliminar elementos de las listas en la posición ingresada
+    
     codes.deletePosition(num);
     percentages.deletePosition(num);
     used.deletePosition(num);
 
-    discountCount--;  // Disminuir el conteo después de la eliminación
+    discountCount--;  
 
     cout << "\nCodigo eliminado exitosamente.\n";
 
-    showDiscountList();  // Mostrar la lista después de la eliminación
+    showDiscountList();  
 
     cout << "\nPresione Enter para continuar...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -213,24 +213,24 @@ string Discount::getCodesString() {
 
 
 bool Discount::deleteDiscountAtIndex(int index) {
-    // Verificar que exista al menos un código
+    
     if (codes.getHead() == nullptr) {
         return false;
     }
-    // Verificar que el índice sea válido
+   
     if (index < 1 || index > discountCount) {
         return false;
     }
-    // Recorrer la lista de "used" para determinar si el código ya fue usado
+    
     List<bool>::NodePtr usedNode = used.getHead();
     for (int i = 1; i < index; i++) {
         usedNode = usedNode->next;
     }
     if (usedNode->data) {
-        // Si el código ya fue usado, no se puede eliminar
+        
         return false;
     }
-    // Eliminar los elementos en la posición indicada
+   
     codes.deletePosition(index);
     percentages.deletePosition(index);
     used.deletePosition(index);

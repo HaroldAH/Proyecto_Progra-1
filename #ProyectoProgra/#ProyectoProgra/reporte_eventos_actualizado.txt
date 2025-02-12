@@ -1,25 +1,26 @@
 ================== REPORTE DE EVENTOS ==================
-Actualizado el: 11/02/2025 17:13:22
+Actualizado el: 11/02/2025 22:53:34
 
 ================== REPORTE DEL EVENTO #1 ==================
-Nombre del Evento: evento 
+Nombre del Evento: casd
 
 -------------------- SEGMENTO #1 --------------------
-  Nombre del Segmento   : asdf
-  Precio por asiento    : $2.00
-  Filas                 : 2    |    Asientos por fila: 2
-  Asientos Disponibles  : 4
-  Asientos Vendidos     : 0
-  Ganancias Segmento    : $0.00
+  Nombre del Segmento   : asdasd
+  Precio por asiento    : $5.00
+  Filas                 : 3    |    Asientos por fila: 3
+  Asientos Disponibles  : 6
+  Asientos Vendidos     : 3
+  Ganancias Segmento    : $15.00
 
   Mapa de Asientos:
-[ ][ ]
-[ ][ ]
+[ ][X][ ]
+[ ][X][ ]
+[ ][X][ ]
 
 ================== RESUMEN DEL EVENTO ==================
-  Total de asientos disponibles: 4
-  Total de asientos vendidos   : 0
-  Ganancias generadas          : $0.00
+  Total de asientos disponibles: 6
+  Total de asientos vendidos   : 3
+  Ganancias generadas          : $15.00
 ========================================================
 
 =======================================================
